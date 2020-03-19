@@ -27,7 +27,12 @@ ng add @angular/material
   - **? Set up global Angular Material typography styles? No**  
   - **? Set up browser animations for Angular Material? Yes**
 
-Y ya tendríamos todo lo necesario para que el proyecto se pueda importar sin necesidad de descargar la carpeta node_modules (gran tamaño, ignorada gracias a .gitignore)
+Y ya tendríamos todo lo necesario para que el proyecto se pueda importar sin necesidad de descargar la carpeta node_modules (gran tamaño, ignorada gracias a .gitignore)  
+
+Para finalizar también agregué Flex Layout
+```
+npm i -s @angular/flex-layout @angular/cdk
+```  
 ## Despliegue de la web app
 Se ejecuta el siguiente comando en la consola de comandos de NodeJS en la carpeta del proyecto:
 ```

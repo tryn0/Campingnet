@@ -1,14 +1,52 @@
-<mat-toolbar color="primary">  
-  <h1>
-    Campingnet
-  </h1>  
-  <button mat-button [routerLink]="'/'" class="text-center">Inicio</button>  
-  <button mat-button [routerLink]="'/reservas'">Reservar</button>
-  <button mat-button [routerLink]="'/acerca'">Acerca</button>
-  <button mat-button [routerLink]="'/contacto'">Contacto</button>
+<div style="height: 100vh;">
+  
+  <!--Menú-->
+  <mat-toolbar color="primary">
 
-  <!--Estos 2 elementos ponerlos a la derecha del todo-->
-  <button mat-button [routerLink]="'/login'">Iniciar sesión</button>
-  <button mat-button [routerLink]="'/registrar'">Registrarse</button>
-</mat-toolbar>
-<router-outlet></router-outlet>
+    <!--Título del menú-->
+    <span>Campingnet</span>
+
+    <!-- https://github.com/angular/flex-layout/wiki/Responsive-API -->
+    <!--Elemento para mostrar menú, oculto a partir de 960px hacia arriba-->
+    <div fxShow="true" fxHide.gt-sm="true">
+      <button mat-button (click)="sidenav.toggle()">foofoo</button>
+    </div>
+
+    <!--Menú desplegado en tamaño de pantalla, oculto a partir de 959px hacia abajo-->
+    <div fxShow="true" fxHide.lt-md="true">
+      <button mat-button (click)="sidenav.close()" [routerLink]="'/'" class="text-center">Inicio</button>  
+      <button mat-button (click)="sidenav.close()"[routerLink]="'/reservas'">Reservar</button>
+      <button mat-button (click)="sidenav.close()"[routerLink]="'/acerca'">Acerca</button>
+      <button mat-button (click)="sidenav.close()"[routerLink]="'/contacto'">Contacto</button>
+    </div>
+
+    <!-- Span para alinear a la derecha Iniciar sesión y Registrarse, para ello separo el div de los elementos del menú para que se separe correctamente-->
+    <span style="flex: 1 1 auto;"></span>
+
+    <div fxShow="true" fxHide.lt-md="true">    
+      <button mat-button (click)="sidenav.close()" [routerLink]="'/login'">Iniciar sesión</button>
+      <button mat-button (click)="sidenav.close()" [routerLink]="'/registrar'">Registrarse</button>
+    </div>
+  </mat-toolbar>
+
+  <!--Menú a desplegar-->
+  <mat-sidenav-container fxFlexFill class="example-container">
+    <mat-sidenav #sidenav fxLayout="column">
+      <div fxLayout="column">
+        <button mat-button (click)="sidenav.toggle()" [routerLink]="'/'" class="text-center">Inicio</button>  
+        <button mat-button (click)="sidenav.toggle()" [routerLink]="'/reservas'">Reservar</button>
+        <button mat-button (click)="sidenav.toggle()" [routerLink]="'/acerca'">Acerca</button>
+        <button mat-button (click)="sidenav.toggle()" [routerLink]="'/contacto'">Contacto</button>
+        <button mat-button (click)="sidenav.toggle()" [routerLink]="'/login'">Iniciar sesión</button>
+        <button mat-button (click)="sidenav.toggle()" [routerLink]="'/registrar'">Registrarse</button>
+      </div>
+    </mat-sidenav>
+
+    <!--Contenido del cuerpo-->
+    <mat-sidenav-content fxFlexFill>
+      <router-outlet></router-outlet>
+    </mat-sidenav-content>
+
+  </mat-sidenav-container>
+</div>
+
