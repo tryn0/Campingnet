@@ -1,1 +1,26 @@
-<p>login works!</p>
+<div *ngIf="userdata == null && comprobado == null; else user">
+    <div class="container">
+        <div *ngIf="comprobado == 'false'">
+            <span style="color: red;">No existe usuario con ese correo y/o contraseña.</span>
+        </div>
+        <form [formGroup]="login" (ngSubmit)="LogIn()" novalidate>
+            <table>
+                <tr>
+                    <td><label>Correo electrónico</label></td>
+                    <td><input formControlName="email" type="email"></td>
+                    <span *ngIf="login.get('email').touched && login.get('email').hasError('required')"> El correo electrónico es obligatorio.</span>
+                </tr>
+                <tr>
+                    <td><label>Contraseña</label></td>
+                    <td><input formControlName="password" type="password"></td>
+                    <span *ngIf="login.get('password').touched && login.get('password').hasError('required')"> La contraseña es obligatoria.</span>
+                    <span *ngIf="login.get('password').touched && login.get('password').hasError('minlength')"> La contraseña tiene que tener un minimo de 3 caracteres.</span>
+                </tr>
+            </table>
+            <button mat-raised-button color="primary">Iniciar sesión</button>
+        </form>
+    </div>
+</div>
+<ng-template #user>
+    <mat-spinner class="mt-5" style="display: block; margin: auto;"></mat-spinner>
+</ng-template>
