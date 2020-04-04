@@ -17,7 +17,7 @@ ng new Campingnet
   - **? Would you like to add Angular routing Yes**  
   - **? Which stylesheet format would you like to use? CSS**
   
-+ Luego añadí al proyecto Material, que es como bootstrap para HTML, una biblioteca de componentes de diseño.
++ Luego añadí al proyecto Material, que es como bootstrap (visualmente) para HTML, una biblioteca de componentes de diseño:
 
 ```
 ng add @angular/material
@@ -29,10 +29,16 @@ ng add @angular/material
 
 Y ya tendríamos todo lo necesario para que el proyecto se pueda importar sin necesidad de descargar la carpeta node_modules (gran tamaño, ignorada gracias a .gitignore)  
 
-Para finalizar también agregué Flex Layout
+Se agregó Flex Layout (Responsive):
 ```
 npm i -s @angular/flex-layout @angular/cdk
 ```  
+
+Y por último Ignite UI (Carrusel):
+```
+ng add igniteui-angular
+```
+
 ## Despliegue de la web app
 Se ejecuta el siguiente comando en la consola de comandos de NodeJS en la carpeta del proyecto:
 ```
