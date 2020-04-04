@@ -1,13 +1,18 @@
-<div *ngIf="userdata == null && comprobado == null; else user">
-    <div class="container">
+<div class="container-fluid">
+    <div *ngIf="userdata == null && (comprobado == null || comprobado == 'false'); else user" class="col-3 mt-5" style=" display: block; margin: auto;">
         <div *ngIf="comprobado == 'false'">
             <span style="color: red;">No existe usuario con ese correo y/o contraseña.</span>
         </div>
-        <form [formGroup]="login" (ngSubmit)="LogIn()" novalidate>
-            <table>
+        <span class="mt-5" style="display: table; margin: auto;">Iniciar sesión</span>
+        <form [formGroup]="login" (ngSubmit)="LogIn()" novalidate class="py-3 px-4" style="border: 1px solid black; display: table; margin: auto;">
+            <table class="mt-2">
                 <tr>
-                    <td><label>Correo electrónico</label></td>
-                    <td><input formControlName="email" type="email"></td>
+                    <td>
+                        <label class="mr-3">Correo electrónico</label>
+                    </td>
+                    <td>
+                        <input formControlName="email" type="email">
+                    </td>
                     <span *ngIf="login.get('email').touched && login.get('email').hasError('required')"> El correo electrónico es obligatorio.</span>
                 </tr>
                 <tr>
@@ -19,8 +24,11 @@
             </table>
             <button mat-raised-button color="primary">Iniciar sesión</button>
         </form>
+        <span class="mt-5" style="display: table; margin: auto; cursor: pointer;">¿No tienes cuenta? Registrate <b [routerLink]="'/reservas'">aquí</b></span>
     </div>
+    <ng-template #user>
+        <span class="mt-5" style="display: table; margin: auto;">Iniciando sesión...</span>
+        <mat-spinner class="mt-1" style="display: block; margin: auto;"></mat-spinner>
+    </ng-template>
 </div>
-<ng-template #user>
-    <mat-spinner class="mt-5" style="display: block; margin: auto;"></mat-spinner>
-</ng-template>
+<!--Centrar formulario de login con bootstrap NO con style display margin-->

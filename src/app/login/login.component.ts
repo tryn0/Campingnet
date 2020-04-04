@@ -32,9 +32,9 @@ export class LoginComponent implements OnInit {
 
   }
 
-  //Función para mandar los datos introducidos (email y contraseña) al archivo login-usuario.php
+  //Función para mandar los datos introducidos (email y contraseña) al archivo login-usuario.php y comprobar si existe el usuario
   LogIn(){
-    this.comprobado = 'null';
+    this.comprobado = null;
     let fd: any = new FormData();
     fd.append('email', this.login.get('email').value);
     fd.append('password', this.login.get('password').value);

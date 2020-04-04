@@ -45,9 +45,9 @@
   <mat-sidenav-container fxFlexFill>
     <mat-sidenav #sidenav fxLayout="column">
       <div fxLayout="column">
-        <span class="px-2" *ngIf="usuarioActual != null">Bienvenido {{usuarioActual.nombre}}</span>
-        <button mat-button (click)="logOff()" class="text-center">Cerrar sesión</button>
-        <br>
+        <span *ngIf="usuarioActual != null" class="px-2">Bienvenido {{usuarioActual.nombre}}</span>
+        <button *ngIf="usuarioActual != null" mat-button (click)="logOff()" class="text-center">Cerrar sesión</button>
+        <br *ngIf="usuarioActual != null">
         <button mat-button (click)="sidenav.toggle()" [routerLink]="'/'" class="text-center">Inicio</button>  
         <button mat-button (click)="sidenav.toggle()" [routerLink]="'/reservas'">Reservar</button>
         <button mat-button (click)="sidenav.toggle()" [routerLink]="'/acerca'">Acerca</button>
