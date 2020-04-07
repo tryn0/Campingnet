@@ -46,7 +46,12 @@ ng serve
 ```  
 Navegar a la URL `http://localhost:4200/` y aparecerá la web app recargada automáticamente.
 ## Herramientas usadas
-This project was generated with [Angular CLI](https://github.com/angular/angular-cli) version 9.0.2.
+This project was generated with:  
+- [Angular CLI](https://github.com/angular/angular-cli) version 9.1.0.  
+- [Angular Material](https://material.angular.io/) version 9.2.0  
+- [Angular FlexLayout](https://github.com/angular/flex-layout) version 9.0.0  
+- [Ignite UI Angular](https://github.com/angular/flex-layout) version 9.0.7  
+
 ## Code scaffolding
 
 Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
