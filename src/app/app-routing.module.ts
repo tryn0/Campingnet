@@ -19,6 +19,8 @@ const routes: Routes = [
   { path: 'reservas', component: ReservasComponent },
   { path: 'login', component: LoginComponent },
   { path: 'registrar', component: RegistrarComponent },
+  { path: '**', redirectTo: 'inicio'}, //Si no existe la página
+  
 ];
 
 @NgModule({

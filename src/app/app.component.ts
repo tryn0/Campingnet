@@ -1,5 +1,7 @@
 import { Component } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
+import { Router } from "@angular/router";
+import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-root',
@@ -10,8 +12,9 @@ export class AppComponent {
   title = 'CampingNet';
   public usuarioActual: any;
   public mensaje;
+  public trigger: boolean = false;
 
-  constructor(private _snackBar: MatSnackBar) {
+  constructor(private _snackBar: MatSnackBar, public router: Router, public ar: ActivatedRoute) {
     //Mensaje de información
     if(localStorage.getItem('mensaje') != '0'){
       this.mensaje = this._snackBar.open('Guardamos su información de forma local, gracias.','Ok');
@@ -19,6 +22,8 @@ export class AppComponent {
       this.mensaje.afterDismissed().subscribe(() => {
         localStorage.setItem('mensaje', '0');
       });
+
+      
     }
     
     
@@ -34,8 +39,7 @@ export class AppComponent {
 
   }
 
-  ngOnInit(): void {
-    
+  ngOnInit(): void {    
   }
 
 }

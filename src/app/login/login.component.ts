@@ -11,7 +11,7 @@ import { Router } from "@angular/router";
 })
 export class LoginComponent implements OnInit {
 
-  userdata: any;
+  public userdata: string;
 
   public login: FormGroup;
 
@@ -55,6 +55,7 @@ export class LoginComponent implements OnInit {
 
   crearUsuario(){
     if(this.existe != null){
+      //Pendiente si dejar la creación del objeto Usuario o no hace falta
       this.usuario = new Usuario(this.existe.EMAIL, this.existe.NIF_USUARIO, this.existe.NOMBRE_USUARIO, this.existe.PASSWD, this.existe.ROL, this.existe.TELEFONO);
       //console.log(this.usuario);
       localStorage.setItem('usuarioActual',JSON.stringify(this.usuario));
