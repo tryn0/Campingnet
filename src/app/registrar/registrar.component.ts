@@ -11,9 +11,32 @@ import { Router } from "@angular/router";
 })
 export class RegistrarComponent implements OnInit {
 
-  constructor() { }
+  public userdata: string;
 
+  public registro: FormGroup;
+
+  constructor(public fb: FormBuilder, private router: Router) {
+    this.userdata = localStorage.getItem('usuarioActual');
+
+    this.registro = this.fb.group({
+      //alias: ['', Validators.required],
+      dni: ['', Validators.required],
+      nombreCompleto: ['', Validators.required],
+      telefono: ['', Validators.required],
+      email: ['', [Validators.required]],
+      password: ['', [Validators.minLength(3), Validators.required]],
+      password2: ['', [Validators.minLength(3), Validators.required]],
+    });
+   }
+
+   registrar(){
+     console.log(this.registro);
+   }
   ngOnInit(): void {
+    if(this.userdata != null){
+      this.router.navigate(['/']);
+    }
   }
 
 }
+//Queda hacer la parte de unir este formulario con base de datos (php) y las validaciones del formulario repetir contraseñas, patrón del DNI y del correo (SINO con las validaciones del HTML como tel email etc)
