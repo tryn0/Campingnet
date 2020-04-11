@@ -31,7 +31,7 @@
 
     <div fxShow="true" fxHide.lt-sm="true">
       <div *ngIf="usuarioActual != null">
-        Bienvenido {{usuarioActual.nombre}}
+        Bienvenido {{usuarioActual.alias}}
         <br>
         <small (click)="logOff()" style="cursor: pointer;">Cerrar sesión</small>
       </div>
@@ -45,7 +45,7 @@
   <mat-sidenav-container fxFlexFill>
     <mat-sidenav #sidenav fxLayout="column">
       <div fxLayout="column">
-        <span *ngIf="usuarioActual != null" class="px-2">Bienvenido {{usuarioActual.nombre}}</span>
+        <span *ngIf="usuarioActual != null" class="px-2">Bienvenido {{usuarioActual.alias}}</span>
         <button *ngIf="usuarioActual != null" mat-button (click)="logOff()" class="text-center">Cerrar sesión</button>
         <br *ngIf="usuarioActual != null">
         <button mat-button (click)="sidenav.toggle()" [routerLink]="'/'" class="text-center">Inicio</button>  
@@ -123,6 +123,9 @@
         <!--Copyright-->
         <div class="footer-copyright text-center text-white py-3">© 2020 Copyright:
           <a href="https://github.com/tryn0"> Web realizada para CampingNet (Camping Naúfrago)</a>
+          <!--Solo DEV-->
+          <br>
+          Tu IP: {{this.ip}}
         </div>
       </footer>
 

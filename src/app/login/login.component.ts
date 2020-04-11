@@ -40,14 +40,12 @@ export class LoginComponent implements OnInit {
     fd.append('password', this.login.get('password').value);
 
     this.http.post<any>('http://localhost/login-usuario.php', fd).subscribe(data =>{
-      //console.log(data);
-      if(data != null){
+      if(data != null){//Si encuentra el usuario y la pass coincide
         this.comprobado = 'true';
         this.existe = data[0];
         this.crearUsuario();
-      }else{
+      }else{//No se encuentra el usuario o la pass no coincide
         this.comprobado = 'false';
-        //console.log('No se encuentra usuario o contraseña.')
       }
     }, error => console.log(error)
     );
@@ -55,16 +53,19 @@ export class LoginComponent implements OnInit {
 
   crearUsuario(){
     if(this.existe != null){
-      //Pendiente si dejar la creación del objeto Usuario o no hace falta
-      this.usuario = new Usuario(this.existe.EMAIL, this.existe.NIF_USUARIO, this.existe.NOMBRE_USUARIO, this.existe.PASSWD, this.existe.ROL, this.existe.TELEFONO);
-      //console.log(this.usuario);
+      //Si el usuario está en la BD (coincide email y pass) creo usuario y lo guardo localmente para mantener sesión iniciada
+      this.usuario = new Usuario(this.existe.email, this.existe.nif_usuario, this.existe.nombre_usuario, this.existe.rol, this.existe.telefono, this.existe.alias_usuario);
       localStorage.setItem('usuarioActual',JSON.stringify(this.usuario));
+      //Redirijo a la misma página pero como tendrá sesión iniciada aparecerá el elemento de carga y al acabar redigirá a Inicio
       this.router.navigate(['/login']);
       window.location.reload();
+      console.log(this.usuario);
+      console.log(this.existe);
     }
   }
 
   ngOnInit(): void {
+    // Si hay una sesión iniciada redirige a Inicio
     if(this.userdata != null){
       this.router.navigate(['/']);
     }

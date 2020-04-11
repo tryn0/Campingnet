@@ -2,16 +2,16 @@ export class Usuario {
     public email: string;
     public nif: string;
     public nombre: string;
-    public pwd: string;
     public rol: string;
     public telefono: number;
+    public alias: string;
     
-    constructor(email: string, nif: string, nombre: string, pwd: string, rol: string, telefono: number) {
+    constructor(email: string, nif: string, nombre: string, rol: string, telefono: number, alias: string) {
     this.email = email;
     this.nif = nif;
     this.nombre = nombre;
-    this.pwd = pwd;
     this.rol = rol;
     this.telefono = telefono;
+    this.alias = alias;
     }
 }
