@@ -38,6 +38,14 @@ Y por último Ignite UI (Carrusel):
 ```
 ng add igniteui-angular
 ```
+Elegir presionando Enter las opciones predeterminadas.  
+
+
+Luego copiar la carpeta src/ en la carpeta del proyecto (Campingnet) y desde un terminal ejecutar:
+```
+ng serve
+```
+Con este comando conseguiremos que se compile todo el proyecto, seguidamente se desplegará, por defecto en la IP de la máquina en el puerto 4200. Por ejemplo localhost:4200
 
 ## Despliegue de la web app
 Se ejecuta el siguiente comando en la consola de comandos de NodeJS en la carpeta del proyecto:

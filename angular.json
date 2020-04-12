@@ -3,7 +3,7 @@
   "version": 1,
   "newProjectRoot": "projects",
   "projects": {
-    "Campingnet": {
+    "CampingNet2": {
       "projectType": "application",
       "schematics": {},
       "root": "",
@@ -13,7 +13,7 @@
         "build": {
           "builder": "@angular-devkit/build-angular:browser",
           "options": {
-            "outputPath": "dist/Campingnet",
+            "outputPath": "dist/CampingNet2",
             "index": "src/index.html",
             "main": "src/main.ts",
             "polyfills": "src/polyfills.ts",
@@ -65,18 +65,18 @@
         "serve": {
           "builder": "@angular-devkit/build-angular:dev-server",
           "options": {
-            "browserTarget": "Campingnet:build"
+            "browserTarget": "CampingNet2:build"
           },
           "configurations": {
             "production": {
-              "browserTarget": "Campingnet:build:production"
+              "browserTarget": "CampingNet2:build:production"
             }
           }
         },
         "extract-i18n": {
           "builder": "@angular-devkit/build-angular:extract-i18n",
           "options": {
-            "browserTarget": "Campingnet:build"
+            "browserTarget": "CampingNet2:build"
           }
         },
         "test": {
@@ -115,16 +115,16 @@
           "builder": "@angular-devkit/build-angular:protractor",
           "options": {
             "protractorConfig": "e2e/protractor.conf.js",
-            "devServerTarget": "Campingnet:serve"
+            "devServerTarget": "CampingNet2:serve"
           },
           "configurations": {
             "production": {
-              "devServerTarget": "Campingnet:serve:production"
+              "devServerTarget": "CampingNet2:serve:production"
             }
           }
         }
       }
     }
   },
-  "defaultProject": "Campingnet"
+  "defaultProject": "CampingNet2"
 }

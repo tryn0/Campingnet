@@ -59,6 +59,10 @@ export class RegistrarComponent implements OnInit {
 
   }
 
+  volver(){
+    window.history.back();
+  }
+
   registrar(){
     if (!this.registro.get('alias').hasError('required') && !this.registro.get('alias').hasError('maxlength')) {
       this.aliasVal = true;

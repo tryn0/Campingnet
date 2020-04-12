@@ -1,7 +1,7 @@
 <div class="container d-flex justify-content-center">
     <div *ngIf="userdata == null && (registrado == null || registrado == 'false'); else user" class="col-md-6 col-xl-4 mt-1">
         <p class="mt-5 text-center">Registrarse</p>
-        <form [formGroup]="registro" (ngSubmit)="registrar()" novalidate class="py-3 px-4" style="border: 1px solid black;">
+        <form [formGroup]="registro" novalidate class="py-3 px-4" style="border: 1px solid black;">
             <div class="mt-2">
                 <div>
                     <div>
@@ -56,7 +56,8 @@
                 </div>
             </div>
             <br>
-            <button mat-raised-button color="primary">Registrarse</button>
+            <button mat-raised-button color="primary" [routerLink]="'/inicio'">Volver</button>
+            <button mat-raised-button color="primary" (click)="registrar()" class="float-right">Registrarse</button>
         </form>
         <span class="mt-2" style="display: table; margin: auto;">¿Ya tienes cuenta? Inicia sesión <b style="cursor: pointer;" [routerLink]="'/login'">aquí</b></span>
     </div>

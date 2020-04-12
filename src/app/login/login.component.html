@@ -5,7 +5,7 @@
         </div>
         
         <p class="mt-5 text-center">Iniciar sesión</p>
-        <form [formGroup]="login" (ngSubmit)="LogIn()" novalidate class="py-3 px-4" style="border: 1px solid black; ">
+        <form [formGroup]="login" novalidate class="py-3 px-4" style="border: 1px solid black; ">
             <div class="mt-2">
                 <div>
                     <div>
@@ -24,11 +24,11 @@
                         <input class="col-12" formControlName="password" type="password">
                     </div>
                     <span *ngIf="login.get('password').touched && login.get('password').hasError('required')"> La contraseña es obligatoria.</span>
-                    <span *ngIf="login.get('password').touched && login.get('password').hasError('minlength')"> La contraseña tiene que tener un minimo de 3 caracteres.</span>
                 </div>
             </div>
             <br>
-            <button mat-raised-button color="primary">Iniciar sesión</button>
+            <button mat-raised-button color="primary" [routerLink]="'/inicio'">Volver</button>
+            <button mat-raised-button color="primary" (click)="LogIn()" class="float-right">Iniciar sesión</button>
         </form>
         <span class="mt-2" style="display: table; margin: auto;">¿No tienes cuenta? Registrate <b style="cursor: pointer;" [routerLink]="'/registrar'">aquí</b></span>
     </div>
