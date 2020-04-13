@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-home',
@@ -12,7 +11,7 @@ export class HomeComponent implements OnInit {
 
   userdata = [];
 
-  constructor(private http: HttpClient) {
+  constructor() {
 
   }
 
@@ -21,7 +20,7 @@ export class HomeComponent implements OnInit {
       src: "assets/images/carrusel/bienvenida.jpg", alt: "Playa de bienvenida", texto: "Te damos la bienvenida"
     },
     {
-      src: "assets/images/carrusel/imagen2.jpg", alt: "Diapositiva 1 con bungalows", texto: "Conozca nuestros bungalows", link: "/alojamiento:bungalows"
+      src: "assets/images/carrusel/imagen2.jpg", alt: "Diapositiva 1 con bungalows", texto: "Conozca nuestros bungalows", link: "/alojamiento:bungalows" // CREAR LINK Y ESO PARA ESTO
     },
     {
       src: "assets/images/carrusel/imagen2.jpg", alt: "Bungalows", texto: "prueba"

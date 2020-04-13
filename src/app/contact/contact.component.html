@@ -1,25 +1,25 @@
 <div class="container d-flex justify-content-center">
-    <div class="col-md-6 col-xl-4 mt-1">
+    <div class="col-md-6 col-xl-4 mt-1" *ngIf="contactoVal != true; else validado">
         <p class="mt-5 text-center">Contacto</p>
-        <form [formGroup]="contacto" (ngSubmit)="contactar()" novalidate class="py-3 px-4" style="border: 1px solid black;">
+        <form [formGroup]="contacto" novalidate class="py-3 px-4" style="border: 1px solid black;">
             <div class="mt-2">
                 <div>
                     <div class="mt-2">
                         <label class="col-12 mb-0">Nombre y apellidos</label>
                         <input class="col-12" formControlName="nombreCompleto" type="text">
-                        
+                        <span style="color: red;" *ngIf="errorNombre == true">Por favor escriba su nombre y sus apellidos.</span>
                     </div>
 
                     <div class="mt-2">
-                        <label class="col-12 mb-0">Teléfono</label>
+                        <label class="col-12 mb-0">Teléfono móvil</label>
                         <input class="col-12" formControlName="telefono" type="tel">
-
+                        <span style="color: red;" *ngIf="errorTel == true">Por favor escriba su teléfono móvil correctamente.</span>
                     </div>
 
                     <div class="mt-2">
                         <label class="col-12 mb-0">Correo electrónico</label>
                         <input class="col-12" formControlName="email" type="email">
-
+                        <span style="color: red;" *ngIf="errorEmail == true">Por favor escriba su correo electrónico.</span>
                     </div>
                 </div>
 
@@ -28,13 +28,19 @@
                         <label class="col-12 mb-0">Mensaje</label>
                         <textarea class="col-12" formControlName="mensaje" (keyup)="changed()" maxlength="255"></textarea>
                         <span>Quedan: {{caracteres}} carácteres.</span>
-
+                        <span style="color: red;" *ngIf="errorMensaje == true"><br>Por favor escriba el mensaje para contactar.</span>
                     </div>
                 </div>
             </div>
             <br>
             <button mat-raised-button color="primary" [routerLink]="'/inicio'">Volver</button>
-            <button mat-raised-button color="primary" class="float-right">Contactar</button>
+            <button mat-raised-button color="primary" class="float-right" (click)="contactar()">Contactar</button>
         </form>
     </div>
+    <ng-template #validado>
+        <div class="justify-content-center mt-5">
+            <span>Gracias por contactar</span>
+            <mat-spinner class="mt-4"></mat-spinner>
+        </div>
+    </ng-template>
 </div>

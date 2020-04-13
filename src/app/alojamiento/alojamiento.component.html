@@ -1,0 +1,10 @@
+<!-- Si viene con URL solo con el parámetro alojamiento -->
+<div *ngIf='situacion == 0'>
+    <span>Estas aqui desde la URL /alojamiento</span>
+</div>
+
+<!-- Si viene con URL con parametros alojamiento/(bungalows o parcelas) -->
+<div *ngIf='situacion == 1'>
+    <span *ngIf="alojamiento == 'bungalows'">Bungalows funciona</span>
+    <span *ngIf="alojamiento == 'parcelas'">Parcelas funciona</span>
+</div>

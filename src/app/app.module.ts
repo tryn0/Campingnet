@@ -27,6 +27,7 @@ import { ContactComponent } from './contact/contact.component';
 import { LoginComponent } from './login/login.component';
 import { RegistrarComponent } from './registrar/registrar.component';
 import { UsuarioComponent } from './usuario/usuario.component';
+import { AlojamientoComponent } from './alojamiento/alojamiento.component';
 
 @NgModule({
   declarations: [
@@ -37,7 +38,8 @@ import { UsuarioComponent } from './usuario/usuario.component';
     ContactComponent,
     LoginComponent,
     RegistrarComponent,
-    UsuarioComponent
+    UsuarioComponent,
+    AlojamientoComponent
   ],
   imports: [
     BrowserModule,
