@@ -21,21 +21,23 @@
       <button mat-button (click)="sidenav.close()" [routerLink]="'/contacto'">Contacto</button>
     </div>
 
-    <!--Elemento span para pegar botones iniciar sesión y registrarse a la derecha (FlexLayout)-->
-    <span style="flex: 1 1 auto;"></span>
+    <!-- Botón para iniciar sesión, registrarse y mensaje bienvenida, link para cerrar sesión y link para ir al panel de control -->
+    <div style="position: absolute; right: 15px;">
+      <div *ngIf="usuarioActual == null" fxShow="true" fxHide.lt-sm="true">
+        <button mat-raised-button (click)="sidenav.close()" [routerLink]="'/login'" class="mr-1">Iniciar sesión</button>
+        <button mat-raised-button (click)="sidenav.close()" [routerLink]="'/registrar'">Registrarse</button>
+      </div>
 
-    <div *ngIf="usuarioActual == null" fxShow="true" fxHide.lt-sm="true">
-      <button mat-raised-button (click)="sidenav.close()" [routerLink]="'/login'" class="mr-1">Iniciar sesión</button>
-      <button mat-raised-button (click)="sidenav.close()" [routerLink]="'/registrar'">Registrarse</button>
-    </div>
-
-    <div fxShow="true" fxHide.lt-sm="true">
-      <div *ngIf="usuarioActual != null">
-        Bienvenido {{usuarioActual.alias}}
-        <br>
-        <small (click)="logOff()" style="cursor: pointer;">Cerrar sesión</small>
+      <div fxShow="true" fxHide.lt-sm="true">
+        <div *ngIf="usuarioActual != null">
+          <span>Bienvenido {{usuarioActual.alias}}</span>
+          <br>
+          <small (click)="logOff()" style="cursor: pointer;">Cerrar sesión</small>
+          <small class="ml-3" (click)="sidenav.close()" style="cursor: pointer;" [routerLink]="'/ControlPanel'">Panel de control</small>
+        </div>
       </div>
     </div>
+    
     
   </mat-toolbar>
 
@@ -45,16 +47,27 @@
   <mat-sidenav-container fxFlexFill>
     <mat-sidenav #sidenav fxLayout="column">
       <div fxLayout="column">
-        <span *ngIf="usuarioActual != null" class="px-2">Bienvenido {{usuarioActual.alias}}</span>
-        <button *ngIf="usuarioActual != null" mat-button (click)="logOff()" class="text-center">Cerrar sesión</button>
-        <br *ngIf="usuarioActual != null">
-        <button mat-button (click)="sidenav.toggle()" [routerLink]="'/'" class="text-center">Inicio</button>  
-        <button mat-button (click)="sidenav.toggle()" [routerLink]="'/reservas'">Reservar</button>
-        <button mat-button (click)="sidenav.toggle()" [routerLink]="'/acerca'">Acerca</button>
-        <button mat-button (click)="sidenav.toggle()" [routerLink]="'/contacto'">Contacto</button>
-        <br>
-        <button *ngIf="usuarioActual == null" mat-button (click)="sidenav.toggle()" [routerLink]="'/login'">Iniciar sesión</button>
-        <button *ngIf="usuarioActual == null" mat-button (click)="sidenav.toggle()" [routerLink]="'/registrar'">Registrarse</button>
+
+        <div *ngIf="usuarioActual != null" class="text-center">
+          <p class="px-2 mt-0 mb-0">Bienvenido {{usuarioActual.alias}}</p>
+          <button mat-button (click)="logOff()">Cerrar sesión</button><br>
+          <button mat-button (click)="sidenav.toggle()" [routerLink]="'/ControlPanel'">Panel de control</button>
+          <br><br>
+        </div>
+        
+        <div class="text-center">
+          <button mat-button (click)="sidenav.toggle()" [routerLink]="'/'" class="text-center">Inicio</button>
+          <br>
+          <button mat-button (click)="sidenav.toggle()" [routerLink]="'/reservas'">Reservar</button>
+          <br>
+          <button mat-button (click)="sidenav.toggle()" [routerLink]="'/acerca'">Acerca</button>
+          <br>
+          <button mat-button (click)="sidenav.toggle()" [routerLink]="'/contacto'">Contacto</button>
+          <br><br>
+          <button *ngIf="usuarioActual == null" mat-button (click)="sidenav.toggle()" [routerLink]="'/login'">Iniciar sesión</button>
+          <br>
+          <button *ngIf="usuarioActual == null" mat-button (click)="sidenav.toggle()" [routerLink]="'/registrar'">Registrarse</button>
+        </div>
 
       </div>
     </mat-sidenav>

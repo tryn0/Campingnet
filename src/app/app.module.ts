@@ -28,6 +28,8 @@ import { LoginComponent } from './login/login.component';
 import { RegistrarComponent } from './registrar/registrar.component';
 import { UsuarioComponent } from './usuario/usuario.component';
 import { AlojamientoComponent } from './alojamiento/alojamiento.component';
+import { NoencontradoComponent } from './noencontrado/noencontrado.component';
+import { PaneldeControlComponent } from './panelde-control/panelde-control.component';
 
 @NgModule({
   declarations: [
@@ -39,7 +41,9 @@ import { AlojamientoComponent } from './alojamiento/alojamiento.component';
     LoginComponent,
     RegistrarComponent,
     UsuarioComponent,
-    AlojamientoComponent
+    AlojamientoComponent,
+    NoencontradoComponent,
+    PaneldeControlComponent
   ],
   imports: [
     BrowserModule,

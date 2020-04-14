@@ -10,13 +10,19 @@ import { HttpClient  } from '@angular/common/http';
   styleUrls: ['./app.component.css']
 })
 export class AppComponent {
+
   title = 'CampingNet';
+
   public usuarioActual: any;
-  public mensaje;
+
+  public mensaje: any;
+
   public trigger: boolean = false;
+
   public ip: string;
 
   constructor(private http: HttpClient, private _snackBar: MatSnackBar, public router: Router, public ar: ActivatedRoute) {
+
     //Mensaje de información
     if(localStorage.getItem('mensaje') != '0'){
       this.mensaje = this._snackBar.open('Le informamos que su información se guarda en su dispositivo.','No mostrar más.');
@@ -26,13 +32,14 @@ export class AppComponent {
       });      
     }
 
+    // Para obtener la IP
     this.http.get("http://api.ipify.org/?format=json").subscribe((res:any) =>{
       this.ip = res.ip;
-      
     });
     
     //Comprobar si hay algún usuario con sesión iniciada
     this.usuarioActual = JSON.parse(localStorage.getItem('usuarioActual'));
+    //console.log(this.usuarioActual);
   }
 
   logOff(){
@@ -41,7 +48,5 @@ export class AppComponent {
   }
 
   ngOnInit(): void {  
-    
-
   }
 }
