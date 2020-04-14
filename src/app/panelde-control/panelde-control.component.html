@@ -1,0 +1,18 @@
+<div class="container d-flex justify-content-center">
+    <div *ngIf="usuarioActual.rol == 'cliente'" class="col-md-8 col-xl-6 mt-2">        
+        <p class="mt-5 text-center">Panel de Control</p>
+        <form [formGroup]="cp" novalidate class="py-3 px-4" style="border: 1px solid black; ">
+            <div class="mt-2">
+                <div>
+                    <div>
+                        <label class="col-6">Nombre de usuario</label>
+                        <span class="col-6">{{usuarioActual.nombre}}</span>
+                    </div>
+                </div>
+            </div>
+            <br>
+            <button mat-raised-button color="primary" class="float-right">Guardar</button>
+            <button mat-raised-button color="primary" [routerLink]="'/inicio'">Volver</button>
+        </form>
+        <span class="mt-2" style="display: table; margin: auto;">¿No tienes cuenta? Registrate <b style="cursor: pointer;" [routerLink]="'/registrar'">aquí</b></span>
+    </div>

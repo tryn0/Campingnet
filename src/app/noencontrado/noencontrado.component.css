@@ -1,0 +1,37 @@
+.thumbnail {
+    position: relative;
+}
+.caption {
+    position: absolute;
+    top: 33%;
+    left: 23%;
+    width: 100%;
+    color: white;
+}
+#m404{
+    position: absolute;
+    top: 62%;
+    left: 37%;
+    color: lightgrey;
+}
+
+/* Mensaje error en pantalla maximo 767px de ancho*/
+@media only screen and (max-width: 767px) {
+    #m404{
+        left: 32%;
+    }
+}
+
+/* Mensaje error en pantalla minimo 992px de ancho*/
+@media only screen and (min-width: 992px) {
+    #m404{
+        left: 40%;
+    }
+}
+
+/* Mensaje error en pantalla minimo 1199px de ancho*/
+@media only screen and (min-width: 1199px) {
+    #m404{
+        left: 41%;
+    }
+}
