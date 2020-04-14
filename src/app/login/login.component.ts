@@ -59,8 +59,8 @@ export class LoginComponent implements OnInit {
       //Redirijo a la misma página pero como tendrá sesión iniciada aparecerá el elemento de carga y al acabar redigirá a Inicio
       this.router.navigate(['/login']);
       window.location.reload();
-      console.log(this.usuario);
-      console.log(this.existe);
+      //console.log(this.usuario);
+      //console.log(this.existe);
     }
   }
 

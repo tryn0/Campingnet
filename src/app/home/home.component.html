@@ -54,51 +54,23 @@
         </div>
     </div>
 
-    <!--Listado de alojamientos-->
+    <!--Alojamientos-->
     <div class="container mt-5 rounded" style="box-shadow: 5px 5px lightgrey;">
         <h4 style="text-align: center; margin-top: 0;">Nuestros alojamientos</h4>
         <div class="row mt-2">
             <!--Parcelas-->
             <div class="col-12">
-                <img [routerLink]="'/alojamiento:parcelas'" style="width: 75%; display: block; margin: auto; cursor: pointer;" src="assets/images/alojamientos/parcela1.jpg" class="rounded">
+                <img [routerLink]="'/alojamiento/parcelas'" style="width: 75%; display: block; margin: auto; cursor: pointer;" src="assets/images/alojamientos/parcela1.jpg" class="rounded">
                 <p style="text-align: center; margin-top: 0; cursor: pointer;">Parcelas</p>
             </div>
-            <!--<div class="col-6">
-                <table align="center">
-                    <tr>
-                        <th align="center" style="padding-right: 10px;">Precio</th>
-                        <th align="center" style="padding-right: 10px;">Número de la parcela</th>
-                        <th align="center">Sombra</th>
-                    </tr>
-                    <tr *ngFor="let parcela of parcelas[0]">
-                        <td align="center">{{parcela.precio}}</td>
-                        <td align="center">{{parcela.num}}</td>
-                        <td align="center">{{parcela.sombra}}</td>
-                    </tr>
-                </table>
-            </div>-->
 
             <br>
 
             <!--Bungalows-->
             <div class="col-12">
-                <img [routerLink]="'/alojamiento:bungalows'" style="width: 75%; display: block; margin: auto; cursor: pointer;" src="assets/images/alojamientos/bungalow1.jpg" class="rounded">
+                <img [routerLink]="'/alojamiento/bungalows'" style="width: 75%; display: block; margin: auto; cursor: pointer;" src="assets/images/alojamientos/bungalow1.jpg" class="rounded">
                 <p style="text-align: center; margin-top: 0; cursor: pointer;">Bungalows</p>
             </div>
-            <!--<div class="col-6">
-                <table align="center">
-                    <tr>
-                        <th align="center" style="padding-right: 10px;">Precio</th>
-                        <th align="center" style="padding-right: 10px;">Número del bungalow</th>
-                        <th align="center">Nº hab.</th>
-                    </tr>
-                    <tr *ngFor="let bungalow of bungalows[0]">
-                        <td align="center">{{bungalow.precio}}</td>
-                        <td align="center">{{bungalow.num}}</td>
-                        <td align="center">{{bungalow.habitaciones}}</td>
-                    </tr>
-                </table>
-            </div>-->
         </div>
     </div>
 </main>

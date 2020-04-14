@@ -1,8 +1,5 @@
 <div class="container d-flex justify-content-center">
     <div *ngIf="userdata == null && (comprobado == null || comprobado == 'false'); else user" class="col-md-6 col-xl-4 mt-2">
-        <div *ngIf="comprobado == 'false'">
-            <span style="color: red;">No existe usuario con ese correo y/o contraseña.</span>
-        </div>
         
         <p class="mt-5 text-center">Iniciar sesión</p>
         <form [formGroup]="login" novalidate class="py-3 px-4" style="border: 1px solid black; ">
@@ -26,9 +23,12 @@
                     <span *ngIf="login.get('password').touched && login.get('password').hasError('required')"> La contraseña es obligatoria.</span>
                 </div>
             </div>
+            <div *ngIf="comprobado == 'false'" class="text-center">
+                <span style="color: red;">No existe usuario con ese correo y/o contraseña.</span>
+            </div>
             <br>
-            <button mat-raised-button color="primary" [routerLink]="'/inicio'">Volver</button>
             <button mat-raised-button color="primary" (click)="LogIn()" class="float-right">Iniciar sesión</button>
+            <button mat-raised-button color="primary" [routerLink]="'/inicio'">Volver</button>
         </form>
         <span class="mt-2" style="display: table; margin: auto;">¿No tienes cuenta? Registrate <b style="cursor: pointer;" [routerLink]="'/registrar'">aquí</b></span>
     </div>
