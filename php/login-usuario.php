@@ -11,6 +11,7 @@
     //Este archivo se encarga de recoger los datos de la app de Angular y comprobar si el usuario a iniciar sesión existe
 
     require_once('conexion.php');
+    $conn = conexion();
 
     //Información enviada a través de POST desde el formulario de la app Angular
     $email = json_encode($_POST['email']);
@@ -24,10 +25,11 @@
             while($row = $resultado->fetch_assoc()) {
                 $rows[] = $row;
             }
+            cerrar_conexion($conn);
             print json_encode($rows);
         }else{
+            cerrar_conexion($conn);
             print json_encode(null);
         }
     }
-    //CERRAR CONEXION
 ?>
