@@ -1,0 +1,7 @@
+.cards{
+    max-width: 400px;
+}
+.imagen-cuerpo-card{
+    display: block;
+    margin: auto;
+}
