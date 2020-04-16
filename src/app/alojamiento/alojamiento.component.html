@@ -1,69 +1,38 @@
-<!-- Si viene con URL solo con el parámetro alojamiento -->
-<div *ngIf='situacion == 0'>
-    <h3 class="mt-5 text-center">Alojamientos</h3>
-    <div class="container">
-        <h5 class="mt-5 text-center">Parcelas</h5>
-        <div class="col-12 mt-2 mb-5">
-            <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-around center" fxLayoutGap="20px">
-                <mat-card *ngFor='let parcela of arrayParcelas | slice:0:3;' class="mb-3 col-md-4">
-                    <mat-card-header>
-                    <div mat-card-avatar class="avatar"></div>
-                    <mat-card-title>Parcela nº{{parcela.numeroAlojamiento}}</mat-card-title>
-                    <mat-card-subtitle>ID: {{parcela.idAlojamiento}}</mat-card-subtitle>
-                    </mat-card-header>
-                    <img class="imagen-cuerpo-card" mat-card-image src="../../assets/images/alojamientos/parcela1.jpg"
-                    alt="Foto de una parcela">
-                    <mat-card-content>
-                    <p>
-                        Sombra: {{parcela.sombra}} <br>
-                        Dimensiones: {{parcela.dimension}}<br>
-                    </p>
-                    </mat-card-content>
-                    <mat-card-actions>
-                    <button mat-button>LIKE</button>
-                    <button mat-button>SHARE</button>
-                    </mat-card-actions>
-                </mat-card>
+<div *ngIf="errorExiste != true; else noExiste">
+    <!-- Si viene con la URL /alojamiento -->
+    <div *ngIf='situacion == 0'>
+        <h3 class="mt-5 text-center">Alojamiento</h3>
+        <div class="container">
+            <h5 class="mt-5 text-center">Parcelas</h5>
+            <div class="col-12 mt-2 mb-5">
+                <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-around center" fxLayoutGap="20px">
+                    <mat-card *ngFor='let parcela of arrayParcelas | slice:0:3;' class="mb-3 col-md-4">
+                        <mat-card-header>
+                        <div mat-card-avatar class="avatar"></div>
+                        <mat-card-title>Parcela nº{{parcela.numeroAlojamiento}}</mat-card-title>
+                        <mat-card-subtitle>ID: {{parcela.idAlojamiento}}</mat-card-subtitle>
+                        </mat-card-header>
+                        <img class="imagen-cuerpo-card" mat-card-image src="../../assets/images/alojamientos/parcela1.jpg"
+                        alt="Foto de una parcela">
+                        <mat-card-content>
+                        <p>
+                            Sombra: {{parcela.sombra}} <br>
+                            Dimensiones: {{parcela.dimension}}<br>
+                        </p>
+                        </mat-card-content>
+                        <mat-card-actions>
+                        <button [routerLink]="['/alojamiento/parcelas/', parcela.numeroAlojamiento]" mat-button>VER</button>
+                        <button class="float-right" mat-button>RESERVAR</button>
+                        </mat-card-actions>
+                    </mat-card>
+                </div>
+                <span class="float-right" style="cursor: pointer;" [routerLink]="'/alojamiento/parcelas'"> Ver todas las parcelas </span>
             </div>
-            <span class="float-right" style="cursor: pointer;" [routerLink]="'/alojamiento/parcelas'"> Ver todas las parcelas </span>
-        </div>
 
-        <h5 class="mt-5 text-center">Bungalows</h5>
-        <div class="col-12 mt-2">
-            <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-around center" fxLayoutGap="20px">
-                <mat-card *ngFor='let bungalow of arrayBungalows | slice:0:3;' class="mb-3 col-md-4">
-                    <mat-card-header>
-                    <div mat-card-avatar class="avatar"></div>
-                    <mat-card-title>Bungalow nº{{bungalow.numeroAlojamiento}}</mat-card-title>
-                    <mat-card-subtitle>ID: {{bungalow.idAlojamiento}}</mat-card-subtitle>
-                    </mat-card-header>
-                    <img class="imagen-cuerpo-card" mat-card-image src="../../assets/images/alojamientos/bungalow1.jpg"
-                    alt="Foto de un bungalow">
-                    <mat-card-content>
-                    <p>
-                        Habitaciones: {{bungalow.habitaciones}} <br>
-                        Maximo depersonas: {{bungalow.maximo_personas}}<br>
-                    </p>
-                    </mat-card-content>
-                    <mat-card-actions>
-                    <button mat-button>LIKE</button>
-                    <button mat-button>SHARE</button>
-                    </mat-card-actions>
-                </mat-card>
-            </div>
-            <span class="float-right" style="cursor: pointer;" [routerLink]="'/alojamiento/bungalows'"> Ver todos los bungalows </span>
-        </div>
-    </div>
-</div>
-
-<!-- Si viene con URL con parametros alojamiento/(bungalows o parcelas) -->
-<div *ngIf='situacion == 1'>
-    <div *ngIf="alojamiento == 'bungalows'">
-        <h3 class="mt-5 text-center">Bungalows</h3>
-        <div class="container-lg">
-            <div class="mt-2 mb-5">
-                <div class="row">
-                    <mat-card *ngFor='let bungalow of arrayBungalows' class="mb-3 col-md-5 col-lg-3 ml-md-5">
+            <h5 class="mt-5 text-center">Bungalows</h5>
+            <div class="col-12 mt-2">
+                <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-around center" fxLayoutGap="20px">
+                    <mat-card *ngFor='let bungalow of arrayBungalows | slice:0:3;' class="mb-3 col-md-4">
                         <mat-card-header>
                         <div mat-card-avatar class="avatar"></div>
                         <mat-card-title>Bungalow nº{{bungalow.numeroAlojamiento}}</mat-card-title>
@@ -78,8 +47,70 @@
                         </p>
                         </mat-card-content>
                         <mat-card-actions>
-                        <button mat-button>LIKE</button>
-                        <button mat-button>SHARE</button>
+                            <button [routerLink]="['/alojamiento/bungalows/', bungalow.numeroAlojamiento]" mat-button>VER</button>
+                        <button class="float-right" mat-button>RESERVAR</button>
+                        </mat-card-actions>
+                    </mat-card>
+                </div>
+                <span class="float-right" style="cursor: pointer;" [routerLink]="'/alojamiento/bungalows'"> Ver todos los bungalows </span>
+            </div>
+        </div>
+    </div>
+
+    <!-- Si viene con URL con parametros alojamiento/(bungalows o parcelas) -->
+    <div *ngIf='situacion == 1'>
+        <div *ngIf="alojamiento == 'bungalows'">
+            <h3 class="mt-5 text-center">Bungalows</h3>
+            <div class="container-lg">
+                <div class="mt-2 mb-5">
+                    <div class="row">
+                        <mat-card *ngFor='let bungalow of arrayBungalows' class="mb-3 col-md-5 col-lg-3 ml-md-5">
+                            <mat-card-header>
+                            <div mat-card-avatar class="avatar"></div>
+                            <mat-card-title>Bungalow nº{{bungalow.numeroAlojamiento}}</mat-card-title>
+                            <mat-card-subtitle>ID: {{bungalow.idAlojamiento}}</mat-card-subtitle>
+                            </mat-card-header>
+                            <img class="imagen-cuerpo-card" mat-card-image src="../../assets/images/alojamientos/bungalow1.jpg"
+                            alt="Foto de un bungalow">
+                            <mat-card-content>
+                            <p>
+                                Habitaciones: {{bungalow.habitaciones}} <br>
+                                Maximo depersonas: {{bungalow.maximo_personas}}<br>
+                            </p>
+                            </mat-card-content>
+                            <mat-card-actions>
+                                <button [routerLink]="['/alojamiento/bungalows/', bungalow.numeroAlojamiento]" mat-button>VER</button>
+                            <button class="float-right" mat-button>RESERVAR</button>
+                            </mat-card-actions>
+                        </mat-card>
+                    </div>
+                    <span class="float-right" style="cursor: pointer;" (click)="volver()"> Volver </span>
+                </div>
+            </div>
+        </div>
+
+    <div *ngIf="alojamiento == 'parcelas'">
+        <h3 class="mt-5 text-center">Parcelas</h3>
+        <div class="container-lg">
+            <div class="mt-2 mb-5">
+                <div class="row">
+                    <mat-card *ngFor='let parcela of arrayParcelas' class="mb-3 col-md-5 col-lg-3 ml-md-5">
+                        <mat-card-header>
+                        <div mat-card-avatar class="avatar"></div>
+                        <mat-card-title>Parcela nº{{parcela.numeroAlojamiento}}</mat-card-title>
+                        <mat-card-subtitle>ID: {{parcela.idAlojamiento}}</mat-card-subtitle>
+                        </mat-card-header>
+                        <img class="imagen-cuerpo-card" mat-card-image src="../../assets/images/alojamientos/parcela1.jpg"
+                        alt="Foto de una parcela">
+                        <mat-card-content>
+                        <p>
+                            Sombra: {{parcela.sombra}} <br>
+                            Dimensiones: {{parcela.dimension}}<br>
+                        </p>
+                        </mat-card-content>
+                        <mat-card-actions>
+                            <button [routerLink]="['/alojamiento/parcelas/', parcela.numeroAlojamiento]" mat-button>VER</button>
+                        <button class="float-right" mat-button>RESERVAR</button>
                         </mat-card-actions>
                     </mat-card>
                 </div>
@@ -87,34 +118,73 @@
             </div>
         </div>
     </div>
+    </div>
 
-  <div *ngIf="alojamiento == 'parcelas'">
-    <h3 class="mt-5 text-center">Parcelas</h3>
-    <div class="container-lg">
-        <div class="mt-2 mb-5">
-            <div class="row">
-                <mat-card *ngFor='let parcela of arrayParcelas' class="mb-3 col-md-5 col-lg-3 ml-md-5">
-                    <mat-card-header>
-                    <div mat-card-avatar class="avatar"></div>
-                    <mat-card-title>Parcela nº{{parcela.numeroAlojamiento}}</mat-card-title>
-                    <mat-card-subtitle>ID: {{parcela.idAlojamiento}}</mat-card-subtitle>
-                    </mat-card-header>
-                    <img class="imagen-cuerpo-card" mat-card-image src="../../assets/images/alojamientos/parcela1.jpg"
-                    alt="Foto de una parcela">
-                    <mat-card-content>
-                    <p>
-                        Sombra: {{parcela.sombra}} <br>
-                        Dimensiones: {{parcela.dimension}}<br>
-                    </p>
-                    </mat-card-content>
-                    <mat-card-actions>
-                    <button mat-button>LIKE</button>
-                    <button mat-button>SHARE</button>
-                    </mat-card-actions>
-                </mat-card>
+
+    <!-- Si viene con URL con parametros alojamiento/(bungalows o parcelas)/numeroAlojamiento -->
+    <div *ngIf='situacion == 2'>
+        <div *ngIf="alojamiento == 'bungalows'">
+            <h3 class="mt-5 text-center">Bungalows</h3>
+            <div class="container-lg">
+                <div class="mt-2 mb-5">
+                    <div class="row">
+                        <mat-card *ngFor='let bungalow of arrayBungalows' class="mb-3 col-md-5 col-lg-3 ml-md-5">
+                            <mat-card-header>
+                            <div mat-card-avatar class="avatar"></div>
+                            <mat-card-title>Bungalow nº{{bungalow.numeroAlojamiento}}</mat-card-title>
+                            <mat-card-subtitle>ID: {{bungalow.idAlojamiento}}</mat-card-subtitle>
+                            </mat-card-header>
+                            <img class="imagen-cuerpo-card" mat-card-image src="../../assets/images/alojamientos/bungalow1.jpg"
+                            alt="Foto de un bungalow">
+                            <mat-card-content>
+                            <p>
+                                Habitaciones: {{bungalow.habitaciones}} <br>
+                                Maximo depersonas: {{bungalow.maximo_personas}}<br>
+                            </p>
+                            </mat-card-content>
+                            <mat-card-actions>
+                                <button [routerLink]="['/alojamiento/bungalows/', bungalow.numeroAlojamiento]" mat-button>VER</button>
+                            <button class="float-right" mat-button>RESERVAR</button>
+                            </mat-card-actions>
+                        </mat-card>
+                    </div>
+                    <span class="float-right" style="cursor: pointer;" (click)="volver()"> Volver </span>
+                </div>
             </div>
-            <span class="float-right" style="cursor: pointer;" (click)="volver()"> Volver </span>
+        </div>
+
+    <div *ngIf="alojamiento == 'parcelas'">
+        <h3 class="mt-5 text-center">Parcela {{this.numero}}</h3>
+        <div class="container-lg">
+            <div class="mt-2 mb-5">
+                <div class="row">
+                    <mat-card *ngFor='let parcela of arrayParcelas' class="mb-3 col-md-5 col-lg-3 ml-md-5">
+                        <mat-card-header>
+                        <div mat-card-avatar class="avatar"></div>
+                        <mat-card-title>Parcela nº{{parcela.numeroAlojamiento}}</mat-card-title>
+                        <mat-card-subtitle>ID: {{parcela.idAlojamiento}}</mat-card-subtitle>
+                        </mat-card-header>
+                        <img class="imagen-cuerpo-card" mat-card-image src="../../assets/images/alojamientos/parcela1.jpg"
+                        alt="Foto de una parcela">
+                        <mat-card-content>
+                        <p>
+                            Sombra: {{parcela.sombra}} <br>
+                            Dimensiones: {{parcela.dimension}}<br>
+                        </p>
+                        </mat-card-content>
+                        <mat-card-actions>
+                            <button [routerLink]="['/alojamiento/parcelas/', parcela.numeroAlojamiento]" mat-button>VER</button>
+                        <button class="float-right" mat-button>RESERVAR</button>
+                        </mat-card-actions>
+                    </mat-card>
+                </div>
+                <span class="float-right" style="cursor: pointer;" (click)="volver()"> Volver </span>
+            </div>
         </div>
     </div>
-  </div>
+    </div>
 </div>
+
+<ng-template #noExiste>
+    
+</ng-template>

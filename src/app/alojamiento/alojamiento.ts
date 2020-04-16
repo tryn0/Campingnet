@@ -20,9 +20,13 @@ export class Alojamiento {
            break; 
         } 
         case '2': { 
-           this.sombra = 'Mucha';
+           this.sombra = 'Bastante';
            break; 
-        } 
+        }
+        case '3':{
+           this.sombra = 'Mucha';
+           break;
+        }
      }
     this.dimension = dimension;
     this.habitaciones = habitaciones;
