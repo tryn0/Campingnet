@@ -1,18 +1,78 @@
 <div class="container d-flex justify-content-center">
-    <div *ngIf="usuarioActual.rol == 'cliente'" class="col-md-8 col-xl-6 mt-2">        
-        <p class="mt-5 text-center">Panel de Control</p>
-        <form [formGroup]="cp" novalidate class="py-3 px-4" style="border: 1px solid black; ">
-            <div class="mt-2">
-                <div>
+    <div *ngIf="noUser == null" class="col-md-8 col-xl-6 mt-2">
+        <div *ngIf="modificado != true; else cambiado">
+            <h4 class="mt-5 text-center mb-2">Panel de Control</h4>
+            <form [formGroup]="cp" novalidate class="py-3 px-4" style="border: 1px solid black; ">
+                <div class="mt-2">
                     <div>
-                        <label class="col-6">Nombre de usuario</label>
-                        <span class="col-6">{{usuarioActual.nombre}}</span>
+                        <div class="mb-2">
+                            <label class="col-lg-6 col-xs-12 mb-0 texto-oscuro">Nombre de usuario</label>
+                            <span class="col-lg-6 col-xs-12 text-muted">{{usuarioActual.nombre}}</span>
+                        </div>
+
+                        <div class="mb-2">
+                            <label class="col-lg-6 col-xs-12 mb-0 texto-oscuro">Teléfono</label> <!-- CAMBIAR COLOR LETRAS -->
+                            <input class="col-lg-6 col-xs-12" formControlName="telefono" type="tel">
+                            <span class="col-12" style="color: red;" *ngIf="errorTel == true">Escriba un teléfono válido o déjelo en blanco para no modificarlo.</span>
+                            <span class="col-12" style="color: red;" *ngIf="existeTel == true">Ya existe otro usuario con ese teléfono.</span>
+                        </div>
+
+                        <div class="mb-2">
+                            <label class="col-lg-6 col-xs-12 mb-0 texto-oscuro">DNI</label>
+                            <span class="col-lg-6 col-xs-12 text-muted">{{usuarioActual.nif}}</span>
+                        </div>
+
+                        <div class="mb-2">
+                            <label class="col-lg-6 col-xs-12 mb-0 texto-oscuro">Nombre de usuario</label>
+                            <span class="col-lg-6 col-xs-12 text-muted">{{usuarioActual.alias}}</span>
+                        </div>
+
+                        <div class="mb-2">
+                            <label class="col-lg-6 col-xs-12 mb-0 texto-oscuro">Correo electrónico</label>
+                            <input class="col-lg-6 col-xs-12" formControlName="email" type="text">
+                            <span class="col-12" style="color: red;" *ngIf="errorEmail == true">Escriba un correo electrónico válido o déjelo en blanco para no modificarlo.</span>
+                            <span class="col-12" style="color: red;" *ngIf="existeEmail == true">Ya existe otro usuario con ese correo electrónico.</span>
+                        </div>
+
+                        <div class="mb-2">
+                            <label class="col-lg-6 col-xs-12 mb-0 texto-oscuro">Nueva contraseña</label>
+                            <input class="col-lg-6 col-xs-12" formControlName="password" type="password">
+                            <span class="col-12" style="color: red;" *ngIf="errorPass == true">Escriba una contraseña válida o déjela en blanco para no cambiarla.</span>
+                        </div>
+
+                        <div>
+                            <label class="col-lg-6 col-xs-12 mb-0 texto-oscuro">Repita la contraseña</label>
+                            <input class="col-lg-6 col-xs-12" formControlName="password2" type="password">
+                            <span class="col-12" style="color: red;" *ngIf="errorPass2 == true">Las contraseñas deben coincidir.</span>
+                        </div>
+                        <span class="col-12" style="color: red;" *ngIf="existeError == true">Ha habido un error inesperado, inténtelo más tarde, gracias.</span>
                     </div>
                 </div>
-            </div>
-            <br>
-            <button mat-raised-button color="primary" class="float-right">Guardar</button>
-            <button mat-raised-button color="primary" [routerLink]="'/inicio'">Volver</button>
-        </form>
-        <span class="mt-2" style="display: table; margin: auto;">¿No tienes cuenta? Registrate <b style="cursor: pointer;" [routerLink]="'/registrar'">aquí</b></span>
+                <br>
+                <button mat-raised-button color="primary" (click)="cambiar()" class="float-right">Guardar</button>
+                <button mat-raised-button color="primary" [routerLink]="'/inicio'">Volver</button>
+            </form>
+        </div>     
     </div>
+</div>
+
+<!-- Al modificar algún campo -->
+<!-- MEJORAR VISTA DE LOS LINKS, HACER MÁS ADELANTE NO PRIORITARIO -->
+<ng-template #cambiado>
+
+    <div class="text-center col-12">
+        <div class="col-12">
+            <p>Se ha modificado con éxito.</p>
+        </div>
+        <div class="row">
+            <div class="col-md-6">
+                <p class="float-left" style="cursor: pointer;" (click)="volver()">Volver al panel de control</p>
+            </div>
+
+            <div class="col-md-6">
+                <p class="float-right" style="cursor: pointer;" [routerLink]="'/inicio'">Volver a inicio</p>
+            </div>
+        </div>
+    </div>
+    
+</ng-template>
