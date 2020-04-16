@@ -10,7 +10,7 @@
     }
     //Este archivo se encarga de recoger los datos de la app de Angular y comprobar si el usuario a iniciar sesión existe
 
-    require_once('conexion.php');
+    require_once('bd.php');
     $conn = conexion();
 
     //Información enviada a través de POST desde el formulario de la app Angular

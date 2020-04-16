@@ -10,7 +10,7 @@
     }
     //Este archivo se encarga de recoger los datos de la app de Angular y comprobar si el usuario a iniciar sesión existe
 
-    require_once('conexion.php');
+    require_once('bd.php');
     $conn = conexion();
 
     //Información enviada a través de POST desde el formulario de la app Angular
@@ -43,8 +43,16 @@
                     $sql4 = "INSERT INTO usuario (nif_usuario, nombre_usuario, telefono, email, rol, passwd, alias_usuario) VALUES ($dni, $nombre, $telefono, $email, '$rol', $pwd, $alias)";
                     $resultado4 = mysqli_query($conn, $sql4);
                     if($resultado4){
+                        $sql5 = "SELECT * FROM usuario WHERE nif_usuario = $dni AND nombre_usuario = $nombre AND telefono = $telefono AND email = $email AND rol = '$rol' AND passwd = $pwd AND alias_usuario = $alias;";
+                        $resultado5 = mysqli_query($conn, $sql5);
+                        $rows = array();
+                        if ($resultado5->num_rows > 0) {
+                            while($row = $resultado5->fetch_assoc()) {
+                                $rows[] = $row;
+                            }
+                        }
                         cerrar_conexion($conn);
-                        print json_encode('registrado');
+                        print json_encode($rows);
                     }else{
                         cerrar_conexion($conn);
                         print json_encode('error');
