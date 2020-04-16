@@ -4,7 +4,7 @@ import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { Usuario } from '../usuario/usuario';
 import { Router } from "@angular/router";
 
-import { MustMatch } from './must-match.validator';
+import { MustMatch } from '../must-match.validator';
 
 @Component({
   selector: 'app-registrar',
@@ -53,14 +53,14 @@ export class RegistrarComponent implements OnInit {
       //FALLA email
       //email: ['', [Validators.required, Validators.pattern("^(((\.)+)?[A-z0-9]+((\.)+)?)+@(((\.)+)?[A-z0-9]+((\.)+)?)+\.[A-z]+$")]],//Puede empezar por . o no, contener letras y numeros seguidos de punto o no, seguido por @ seguido por . o no letras y numeros y punto o no . letras
       email: ['', [Validators.required, Validators.pattern("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)$")]],
-      password: ['', [Validators.minLength(8), Validators.required, Validators.pattern('^(?=[^A-Z]*[A-Z])(?=[^a-z]*[a-z])(?=\\D*\\d)[A-Za-z\\d!$%@#£€*?&]{8,}$')]],
+      password: ['', [Validators.minLength(8), Validators.required, Validators.pattern('^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$')]],
       password2: ['',  Validators.required],
     }, {validator: MustMatch('password', 'password2')});
 
   }
 
   volver(){
-    window.history.back();
+    history.back();
   }
 
   registrar(){
@@ -74,7 +74,7 @@ export class RegistrarComponent implements OnInit {
             this.telVal = true;
             if (!this.registro.get('email').hasError('required') && !this.registro.get('email').hasError('pattern')) {
               this.emailVal = true;
-              if (!this.registro.get('password').hasError('required')) {
+              if (!this.registro.get('password').hasError('required') && !this.registro.get('password').hasError('pattern')) {
                 this.passVal = true;
                 if (!this.registro.get('password2').errors) {
                   this.pass2Val = true;
@@ -92,9 +92,6 @@ export class RegistrarComponent implements OnInit {
                   //Letra del DNI en mayúscula
                   let dniUser = this.registro.get('dni').value.slice(0, this.registro.get('dni').value.length - 1) + this.registro.get('dni').value[this.registro.get('dni').value.length - 1].toUpperCase();
 
-                  //Creacion del usuario, sino hace falta eliminar esta parte, aunque lo tengo para mostrar el nombre de Bienvenida y crear la sesión de sesion iniciada
-                  this.usuario = new Usuario(this.registro.get('email').value, dniUser, nombreUser, 'cliente', this.registro.get('telefono').value, this.registro.get('alias').value);
-                  //console.log(this.usuario);
 
                   //Preparación de variables del formulario para enviar a la BD a través de PHP
                   let fd: any = new FormData();
@@ -109,18 +106,7 @@ export class RegistrarComponent implements OnInit {
                   //Envío de variables a archivo PHP
                   this.http.post < any > ('http://localhost/registro-usuario.php', fd).subscribe(data => {
                     //console.log(data);
-                    if (data == 'registrado') { //El registro ha ido bien (no existia en la BD un usuario con mismo DNI, teléfono o email)
-
-                      this.registrado = 'true';
-                      this.errorEmail = null;
-                      this.errorDni = null;
-                      this.errorAlias = null;
-
-                      localStorage.setItem('usuarioActual', JSON.stringify(this.usuario));
-                      this.router.navigate(['/registrar']);
-                      window.location.reload();
-
-                    } else if(data == 'email'){ //Si no se pudo registrar el usuario (dni, telefono o email repetido u otro error ajeno a los datos)
+                     if(data == 'email'){ //Si no se pudo registrar el usuario (dni, telefono o email repetido u otro error ajeno a los datos)
 
                       this.registrado = 'false';
                       this.errorEmail = true;
@@ -138,9 +124,24 @@ export class RegistrarComponent implements OnInit {
                       this.errorAlias = true;
                       //console.log(data);
 
+                    }else{ // El registro ha ido bien (no existia en la BD un usuario con mismo DNI, teléfono o email)
+
+                      // Creacion del usuario, sino hace falta eliminar esta parte, aunque lo tengo para mostrar el nombre de Bienvenida y crear la sesión de sesion iniciada
+                      this.usuario = new Usuario(data[0].idUsuario, this.registro.get('email').value, dniUser, nombreUser, 'cliente', this.registro.get('telefono').value, this.registro.get('alias').value);
+                      console.log(this.usuario);
+
+                      this.registrado = 'true';
+                      this.errorEmail = null;
+                      this.errorDni = null;
+                      this.errorAlias = null;
+
+                      localStorage.setItem('usuarioActual', JSON.stringify(this.usuario));
+                      this.router.navigate(['/registrar']);
+                      window.location.reload();
+  
                     }
                   }, error => console.log(error));
-                } else { //Si el campo password2 (confirmación de contraseña) tiene algún error (requerido o no coincide con password)
+                } else { // Si el campo password2 (confirmación de contraseña) tiene algún error (requerido o no coincide con password)
                   this.pass2Val = false;
                   //console.log('pass2 falla');
                 }
