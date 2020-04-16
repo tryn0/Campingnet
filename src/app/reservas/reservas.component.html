@@ -1,2 +1,103 @@
-<p>reservas works!</p>
+<div class="container justify-content-center">
+    <h4 class="text-center">Hacer una reserva</h4>
+    <div class="col-12 mt-5">
+        <mat-horizontal-stepper [linear]="isLinear" #stepper >
+            <!-- Escoger/Buscar alojamiento -->
+            <mat-step [stepControl]="alojamiento" label="Escoger alojamiento">
+                <form [formGroup]="alojamiento">
+                    <ng-template matStepperIcon="edit"><mat-icon>search</mat-icon></ng-template>
+
+                    <div class="row justify-content-between bg-success">
+                        <div class="col-md-4 bg-warning">
+                            <mat-form-field >
+                                <mat-label>Tipo de alojamiento</mat-label>
+                                <mat-select formControlName="tipo" required>
+                                    <mat-option *ngFor="let tipo of tipos2" [value]="tipo" (click)="getDatos(tipo)">
+                                      {{tipo}}
+                                    </mat-option>
+                                  </mat-select>
+                            </mat-form-field>
+                        </div>
+                        
+    
+                        <div class="col-md-4 bg-danger">
+                            <mat-form-field >
+                            <mat-label>{{dato2}}</mat-label>
+                            <mat-select formControlName="caracteristicaUnica1" required>
+                                <mat-option *ngFor="let dato of arrayCaract1; let i = index" [value]="dato">
+                                  {{dato}}
+                                </mat-option>
+                              </mat-select>
+                            </mat-form-field>
+                        </div>
+                        
+                    </div>
+                    <div>
+                        <button mat-button matStepperNext>Siguiente</button>
+                    </div>
+                </form>
+            </mat-step>
+
+            <mat-step *ngIf="usuarioActual != null" [stepControl]="usuario" label="Datos personales">
+                <form [formGroup]="usuario">
+                    <ng-template matStepperIcon="edit"><mat-icon>search</mat-icon></ng-template>
+                    
+                    <mat-form-field>
+                        <mat-label>Nombre y apellidos</mat-label>
+                        <input matInput placeholder="18-06-2020" formControlName="nombreCompleto" required>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <mat-label>Teléfono</mat-label>
+                        <input matInput placeholder="25-06-2020" formControlName="telefono" required>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <mat-label>Correo electrónico</mat-label>
+                        <input matInput placeholder="25-06-2020" formControlName="email" required>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <mat-label>DNI</mat-label>
+                        <input matInput placeholder="25-06-2020" formControlName="dni" required>
+                    </mat-form-field>
+
+                    <div>
+                    <button mat-button matStepperNext>Siguiente</button>
+                    </div>
+                </form>
+            </mat-step>
+
+            <mat-step [stepControl]="fechas" label="Calendario">
+                <form [formGroup]="fechas">
+                    <ng-template matStepperIcon="edit"><mat-icon>search</mat-icon></ng-template>
+                    
+                    <mat-form-field>
+                        <mat-label>Fecha de entrada</mat-label>
+                        <input matInput placeholder="18-06-2020" formControlName="fechaEntrada" required>
+                    </mat-form-field>
+
+                    <mat-form-field>
+                        <mat-label>Fecha de salida</mat-label>
+                        <input matInput placeholder="25-06-2020" formControlName="fechaSalida" required>
+                    </mat-form-field>
+
+                    <div>
+                    <button mat-button matStepperNext>Siguiente</button>
+                    </div>
+                </form>
+            </mat-step>
+
+            <mat-step>
+                <ng-template matStepLabel>Reservar</ng-template>
+                <p>Acabaste</p>
+                <div>
+                    <button mat-button matStepperPrevious>Back</button>
+                    <button mat-button (click)="stepper.reset()">Resetear</button>
+                </div>
+            </mat-step>
+        </mat-horizontal-stepper>
+    </div>
+</div>
+
 <!--Para listar los alojamientos al buscarlos usar esto https://material.angular.io/components/card/examples-->
