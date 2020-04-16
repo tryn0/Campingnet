@@ -12,20 +12,20 @@
     position: absolute;
     top: 62%;
     left: 37%;
-    color: lightgrey;
+    color: white;
 }
 
 /* Mensaje error en pantalla maximo 767px de ancho*/
 @media only screen and (max-width: 767px) {
     #m404{
-        left: 32%;
+        left: 30%;
     }
 }
 
 /* Mensaje error en pantalla minimo 992px de ancho*/
 @media only screen and (min-width: 992px) {
     #m404{
-        left: 40%;
+        left: 39%;
     }
 }
 

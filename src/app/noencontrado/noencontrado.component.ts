@@ -1,5 +1,4 @@
 import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute } from '@angular/router';
 
 @Component({
   selector: 'app-noencontrado',
@@ -8,20 +7,12 @@ import { ActivatedRoute } from '@angular/router';
 })
 export class NoencontradoComponent implements OnInit {
 
-  public URL: string = '/';
+  constructor(){}
 
-  constructor(private router: ActivatedRoute) {
-    for (let i = 0; i < this.router.snapshot.url.length; i++) {
-      const element = this.router.snapshot.url[i];
-      if(i+1 == this.router.snapshot.url.length){
-        this.URL += element;
-      }else{
-        this.URL += element+'/';
-      }
-    }
+  volver(){ // Función para volver atrás en el historial
+    history.back();
   }
 
-  ngOnInit(): void {
-  }
+  ngOnInit(): void {}
 
 }

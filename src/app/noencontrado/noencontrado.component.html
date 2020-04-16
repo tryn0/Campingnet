@@ -1,14 +1,14 @@
 <div class="container">
     <div class="row" id="box-search">
         <div class="thumbnail text-center">
-            <h1 fxShow="true" fxHide.gt-xs="true">404</h1>
-            <span fxShow="true" fxHide.gt-xs="true">No se encontró la página {{URL}}</span>
+            <h1 class="mb-0" fxShow="true" fxHide.gt-xs="true">404</h1>
+            <span class="mt-0" fxShow="true" fxHide.gt-xs="true">No se pudo encontrar la página</span>
             <img src="../../assets/images/404/error.png" alt="Imagen no se encontró página, imgaen de un detective con su perro sabueso." class="img-responsive">
             <div class="caption" fxShow="true" fxHide.lt-sm="true">
                 <h1>404</h1>
-                <span id="m404">No se encontró la página {{URL}}</span>
+                <span id="m404">No se pudo encontrar la página</span>
             </div>
-
+            <h4 class="float-center" style="cursor: pointer;" (click)="volver()"> Volver </h4>
         </div>
     </div>
 </div>
