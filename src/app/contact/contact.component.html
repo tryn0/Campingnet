@@ -1,23 +1,23 @@
 <div class="container d-flex justify-content-center">
     <div class="col-md-6 col-xl-4 mt-1" *ngIf="contactoVal != true; else validado">
-        <p class="mt-5 text-center">Contacto</p>
+        <h4 class="mt-5 mb-2 text-center">Contacto</h4>
         <form [formGroup]="contacto" novalidate class="py-3 px-4" style="border: 1px solid black;">
             <div class="mt-2">
                 <div>
                     <div class="mt-2">
-                        <label class="col-12 mb-0">Nombre y apellidos</label>
+                        <label class="col-12 mb-0 texto-oscuro">Nombre y apellidos</label>
                         <input class="col-12" formControlName="nombreCompleto" type="text">
                         <span style="color: red;" *ngIf="errorNombre == true">Por favor escriba su nombre y sus apellidos.</span>
                     </div>
 
                     <div class="mt-2">
-                        <label class="col-12 mb-0">Teléfono móvil</label>
+                        <label class="col-12 mb-0 texto-oscuro">Teléfono móvil</label>
                         <input class="col-12" formControlName="telefono" type="tel">
                         <span style="color: red;" *ngIf="errorTel == true">Por favor escriba su teléfono móvil correctamente.</span>
                     </div>
 
                     <div class="mt-2">
-                        <label class="col-12 mb-0">Correo electrónico</label>
+                        <label class="col-12 mb-0 texto-oscuro">Correo electrónico</label>
                         <input class="col-12" formControlName="email" type="email">
                         <span style="color: red;" *ngIf="errorEmail == true">Por favor escriba su correo electrónico.</span>
                     </div>
@@ -25,15 +25,15 @@
 
                 <div>
                     <div class="mt-2">
-                        <label class="col-12 mb-0">Mensaje</label>
+                        <label class="col-12 mb-0 texto-oscuro">Mensaje</label>
                         <textarea class="col-12" formControlName="mensaje" (keyup)="changed()" maxlength="255"></textarea>
-                        <span>Quedan: {{caracteres}} carácteres.</span>
+                        <span class="text-muted">Quedan: {{caracteres}} carácteres.</span>
                         <span style="color: red;" *ngIf="errorMensaje == true"><br>Por favor escriba el mensaje para contactar.</span>
                     </div>
                 </div>
             </div>
             <br>
-            <button mat-raised-button color="primary" [routerLink]="'/inicio'">Volver</button>
+            <button mat-raised-button color="primary" (click)="volver()">Volver</button>
             <button mat-raised-button color="primary" class="float-right" (click)="contactar()">Contactar</button>
         </form>
     </div>
