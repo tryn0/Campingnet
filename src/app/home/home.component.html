@@ -1,23 +1,23 @@
-<!--Carrusel-->
+<!-- Carrusel -->
 <div class="carousel-container mt-3" fxShow="true" fxHide.lt-sm="true">
     <igx-carousel [interval]="10000" [pause]="2000" animationType="fade" #carousel [loop]="true" indicatorsOrientation="top">
         <igx-slide *ngFor="let slide of slides;">
             <img style="width: 100%; display: block; margin: auto;" [src]="slide.src" [alt]="slide.alt">
-            <!--Si la imagen contiene texto-->
+            <!-- Si la imagen contiene texto -->
             <div class="texto" *ngIf="slide.texto" style="position: absolute; bottom: 0; left: 50%; transform: translate(-50%,0); padding: 10px; color: white; background-color: rgba(165,165,165,0.4); font-size: 2vw; border-radius: 5px;">
-                <!--Si la imagen que contiene texto contiene además link para visitar, sino llama al bloque noLink-->
+                <!-- Si la imagen que contiene texto contiene además link para visitar, sino llama al bloque noLink -->
                 <span *ngIf="slide.link; else noLink" [routerLink]="slide.link">{{slide.texto}}</span>
             </div>
-            <!--Solo imprime el texto, ya que tiene texto pero no link-->
+            <!-- Solo imprime el texto, ya que tiene texto pero no link -->
             <ng-template #noLink>{{slide.texto}}</ng-template>
         </igx-slide>
     </igx-carousel>
 </div>
 
 
-<!--Empieza main/section-->
+<!-- Empieza main/section -->
 
-<!--Información breve-->
+<!-- Información breve -->
 <main class="pt-5">
     <div class="container rounded" style="box-shadow: 5px 5px lightgrey;">
         <div class="row mt-3">
@@ -30,10 +30,10 @@
                 beatae. Minus enim exercitationem accusantium perferendis rem? Lorem ipsum dolor, sit amet consectetur adipisicing elit. Esse sapiente quam in tempore impedit quisquam est eos pariatur id dignissimos! Repudiandae tenetur nam tempora, reiciendis vero sed perferendis et accusantium!
             Lorem ipsum dolor sit amet consectetur adipisicing elit. Odio, sapiente. Cupiditate tempore commodi harum obcaecati neque dolor sed ducimus, similique quas veniam est repellat culpa sint veritatis provident voluptas exercitationem?</p>
             </div>
-            <!--Div con tamaño de columnas 6, osea la mitad del div padre-->
+            <!-- Div con tamaño de columnas 6, osea la mitad del div padre -->
             <div class="col-md-6" style="margin-bottom: 25px;">
                 <div class="row mt-3">
-                    <!--Ahora divido otra vez en 6 columnas para que quepan 2 fotos nada más-->
+                    <!-- Ahora divido otra vez en 6 columnas para que quepan 2 fotos nada más -->
                     <div class="col-6">
                         <figure class="figure">
                             <img src="assets/images/informacion/playa-noche2.jpg" class="rounded">
@@ -54,34 +54,34 @@
         </div>
     </div>
 
-    <!--Alojamientos-->
+    <!-- Alojamientos -->
     <div class="container mt-5 rounded" style="box-shadow: 5px 5px lightgrey;">
         <h4 style="text-align: center; margin-top: 0;">Nuestros alojamientos</h4>
         <div class="row mt-2">
-            <!--Parcelas-->
+            <!-- Parcelas -->
             <div class="col-12">
-                <img [routerLink]="'/alojamiento/parcelas'" style="width: 75%; display: block; margin: auto; cursor: pointer;" src="assets/images/alojamientos/parcela1.jpg" class="rounded">
+                <a href="/alojamiento/parcelas"><img  style="width: 75%; display: block; margin: auto; cursor: pointer;" src="assets/images/alojamientos/parcela1.jpg" class="rounded"></a>
                 <p style="text-align: center; margin-top: 0; cursor: pointer;">Parcelas</p>
             </div>
 
             <br>
 
-            <!--Bungalows-->
+            <!-- Bungalows -->
             <div class="col-12">
-                <img [routerLink]="'/alojamiento/bungalows'" style="width: 75%; display: block; margin: auto; cursor: pointer;" src="assets/images/alojamientos/bungalow1.jpg" class="rounded">
+                <a href="/alojamiento/bungalows"><img style="width: 75%; display: block; margin: auto; cursor: pointer;" src="assets/images/alojamientos/bungalow1.jpg" class="rounded"></a>
                 <p style="text-align: center; margin-top: 0; cursor: pointer;">Bungalows</p>
             </div>
         </div>
     </div>
 </main>
 
-<!--Imagen separadora entre secciones y con botón para ver actividades o eventos-->
+<!-- Imagen separadora entre secciones y con botón para ver actividades o eventos -->
 <div class="col-12 pl-0 pr-0 mt-5" style="position: relative; background: url('assets/images/playa.jpg'); background-position: 50% 43.5%; height: 350px;">
     <button mat-flat-button style="padding: 10px; background-color: black; color: white; position: absolute; top: 50%; left: 50%; transform: translate(-50%, -50%);" [routerLink]="'/eventos'">Ver eventos y actividades</button>
 </div>
 
 
-<!--Listado de servicios y listado de alrededores (información de las zonas, playas, etc)-->
+<!-- Listado de servicios y listado de alrededores (información de las zonas, playas, etc) -->
 <div class="container rounded mt-5" style="box-shadow: 5px 5px lightgrey;">
     <div class="row">
         <div class="col-md-6">
