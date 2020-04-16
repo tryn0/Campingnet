@@ -32,7 +32,7 @@ export class LoginComponent implements OnInit {
 
   }
 
-  //Función para mandar los datos introducidos (email y contraseña) al archivo login-usuario.php y comprobar si existe el usuario
+  // Función para mandar los datos introducidos (email y contraseña) al archivo login-usuario.php y comprobar si existe el usuario
   LogIn(){
     this.comprobado = null;
     let fd: any = new FormData();
@@ -40,11 +40,11 @@ export class LoginComponent implements OnInit {
     fd.append('password', this.login.get('password').value);
 
     this.http.post<any>('http://localhost/login-usuario.php', fd).subscribe(data =>{
-      if(data != null){//Si encuentra el usuario y la pass coincide
+      if(data != null){ // Si encuentra el usuario y la pass coincide
         this.comprobado = 'true';
         this.existe = data[0];
         this.crearUsuario();
-      }else{//No se encuentra el usuario o la pass no coincide
+      }else{ // No se encuentra el usuario o la pass no coincide
         this.comprobado = 'false';
       }
     }, error => console.log(error)
@@ -53,15 +53,17 @@ export class LoginComponent implements OnInit {
 
   crearUsuario(){
     if(this.existe != null){
-      //Si el usuario está en la BD (coincide email y pass) creo usuario y lo guardo localmente para mantener sesión iniciada
-      this.usuario = new Usuario(this.existe.email, this.existe.nif_usuario, this.existe.nombre_usuario, this.existe.rol, this.existe.telefono, this.existe.alias_usuario);
+      // Si el usuario está en la BD (coincide email y pass) creo usuario y lo guardo localmente para mantener sesión iniciada
+      this.usuario = new Usuario(this.existe.idUsuario, this.existe.email, this.existe.nif_usuario, this.existe.nombre_usuario, this.existe.rol, this.existe.telefono, this.existe.alias_usuario);
       localStorage.setItem('usuarioActual',JSON.stringify(this.usuario));
-      //Redirijo a la misma página pero como tendrá sesión iniciada aparecerá el elemento de carga y al acabar redigirá a Inicio
+      // Redirijo a la misma página pero como tendrá sesión iniciada aparecerá el elemento de carga y al acabar redigirá a Inicio
       this.router.navigate(['/login']);
       window.location.reload();
-      //console.log(this.usuario);
-      //console.log(this.existe);
     }
+  }
+
+  volver(){
+    history.back();
   }
 
   ngOnInit(): void {

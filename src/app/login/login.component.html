@@ -28,7 +28,7 @@
             </div>
             <br>
             <button mat-raised-button color="primary" (click)="LogIn()" class="float-right">Iniciar sesión</button>
-            <button mat-raised-button color="primary" [routerLink]="'/inicio'">Volver</button>
+            <button mat-raised-button color="primary" (click)="volver()">Volver</button>
         </form>
         <span class="mt-2" style="display: table; margin: auto;">¿No tienes cuenta? Registrate <b style="cursor: pointer;" [routerLink]="'/registrar'">aquí</b></span>
     </div>
