@@ -11,11 +11,12 @@ import { RegistrarComponent } from './registrar/registrar.component';
 import { AlojamientoComponent } from './alojamiento/alojamiento.component';
 import { NoencontradoComponent } from './noencontrado/noencontrado.component';
 import { PaneldeControlComponent } from './panelde-control/panelde-control.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 
 //Rutas de la URL
 const routes: Routes = [
-  { path: '', redirectTo: 'inicio', pathMatch: 'full'},
+  { path: '', component: HomeComponent},
   { path: 'inicio', component: HomeComponent },
   { path: 'acerca', component: AboutComponent },
   { path: 'contacto', component: ContactComponent },
@@ -25,8 +26,13 @@ const routes: Routes = [
   { path: 'alojamiento', component: AlojamientoComponent },
   { path: 'alojamiento/bungalows', component: AlojamientoComponent },
   { path: 'alojamiento/parcelas', component: AlojamientoComponent },
-  { path: 'ControlPanel', component: PaneldeControlComponent },
-  { path: '**', component: NoencontradoComponent }, //Si no existe la página
+  { path: 'alojamiento/bungalows/:numero', component: AlojamientoComponent },
+  { path: 'alojamiento/parcelas/:numero', component: AlojamientoComponent },
+  { path: 'controlpanel', component: PaneldeControlComponent },
+  { path: 'dashboard', component: DashboardComponent },
+
+  { path: '404', component: NoencontradoComponent}, // Si hay algún error en alguna página seteada
+  { path: '**', component: NoencontradoComponent }, // Si no existe la página
   
 ];
 

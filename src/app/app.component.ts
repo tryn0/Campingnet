@@ -1,8 +1,7 @@
 import { Component } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router } from "@angular/router";
-import { ActivatedRoute } from '@angular/router';
-import { HttpClient  } from '@angular/common/http';
+import { Router, ActivatedRoute,  } from "@angular/router";
+import { HttpClient } from '@angular/common/http';
 
 @Component({
   selector: 'app-root',
@@ -17,11 +16,10 @@ export class AppComponent {
 
   public mensaje: any;
 
-  public trigger: boolean = false;
 
   public ip: string;
 
-  constructor(private http: HttpClient, private _snackBar: MatSnackBar, public router: Router, public ar: ActivatedRoute) {
+  constructor(private http: HttpClient, private _snackBar: MatSnackBar, private router: Router, private ar: ActivatedRoute) {
 
     //Mensaje de información
     if(localStorage.getItem('mensaje') != '0'){
@@ -39,7 +37,6 @@ export class AppComponent {
     
     //Comprobar si hay algún usuario con sesión iniciada
     this.usuarioActual = JSON.parse(localStorage.getItem('usuarioActual'));
-    //console.log(this.usuarioActual);
   }
 
   logOff(){

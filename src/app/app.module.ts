@@ -16,6 +16,11 @@ import { MatProgressSpinnerModule } from '@angular/material/progress-spinner';
 import { MatSidenavModule } from '@angular/material/sidenav';
 import { MatDividerModule } from '@angular/material/divider';
 import { MatSnackBarModule } from '@angular/material/snack-bar';
+import { MatMenuModule } from '@angular/material/menu';
+import { MatStepperModule } from '@angular/material/stepper';
+import { MatFormFieldModule } from '@angular/material/form-field';
+import { MatInputModule } from '@angular/material/input';
+import { MatSelectModule } from '@angular/material/select';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { IgxCarouselModule } from 'igniteui-angular';
 
@@ -30,6 +35,7 @@ import { UsuarioComponent } from './usuario/usuario.component';
 import { AlojamientoComponent } from './alojamiento/alojamiento.component';
 import { NoencontradoComponent } from './noencontrado/noencontrado.component';
 import { PaneldeControlComponent } from './panelde-control/panelde-control.component';
+import { DashboardComponent } from './dashboard/dashboard.component';
 
 @NgModule({
   declarations: [
@@ -43,7 +49,8 @@ import { PaneldeControlComponent } from './panelde-control/panelde-control.compo
     UsuarioComponent,
     AlojamientoComponent,
     NoencontradoComponent,
-    PaneldeControlComponent
+    PaneldeControlComponent,
+    DashboardComponent
   ],
   imports: [
     BrowserModule,
@@ -59,6 +66,11 @@ import { PaneldeControlComponent } from './panelde-control/panelde-control.compo
     MatSidenavModule,
     MatDividerModule,
     MatSnackBarModule,
+    MatMenuModule,
+    MatStepperModule,
+    MatFormFieldModule,
+    MatInputModule,
+    MatSelectModule,
     FlexLayoutModule,
     IgxCarouselModule
   ],

@@ -15,30 +15,49 @@
 
     <!--Menú en pantallas medias y grandes (tablets y ordenadores), oculto a partir de 959px hacia abajo-->
     <div fxShow="true" fxHide.lt-sm="true">
-      <button mat-button (click)="sidenav.close()" [routerLink]="'/'" class="text-center">Inicio</button>  
-      <button mat-button (click)="sidenav.close()" [routerLink]="'/reservas'">Reservar</button>
-      <button mat-button (click)="sidenav.close()" [routerLink]="'/acerca'">Acerca</button>
-      <button mat-button (click)="sidenav.close()" [routerLink]="'/contacto'">Contacto</button>
+      <button class="botonInicio" mat-button (click)="sidenav.close()" [routerLink]="'/'"><mat-icon fxShow="true" fxHide.sm="true" class="icon">home</mat-icon>Inicio</button>  
+      <button class="botonInicio" mat-button (click)="sidenav.close()" [routerLink]="'/reservas'"><mat-icon fxShow="true" fxHide.sm="true" class="icon">store</mat-icon>Reservar</button>
+      <button class="botonInicio" mat-button [matMenuTriggerFor]="info"><mat-icon fxShow="true" fxHide.sm="true" class="icon">info</mat-icon>Información</button>
+      <mat-menu #info="matMenu" class="text-center">
+        <button class="botonInicio" mat-button (click)="sidenav.close()" [routerLink]="'/acerca'"><mat-icon fxShow="true" fxHide.sm="true" class="icon">business</mat-icon>Acerca</button><br>
+        <button class="botonInicio" mat-button (click)="sidenav.close()" [routerLink]="'/contacto'"><mat-icon fxShow="true" fxHide.sm="true" class="icon">email</mat-icon>Contacto</button>
+      </mat-menu>
     </div>
 
     <!-- Botón para iniciar sesión, registrarse y mensaje bienvenida, link para cerrar sesión y link para ir al panel de control -->
-    <div style="position: absolute; right: 15px;">
+    <div style="position: absolute; right: 30px;">
       <div *ngIf="usuarioActual == null" fxShow="true" fxHide.lt-sm="true">
         <button mat-raised-button (click)="sidenav.close()" [routerLink]="'/login'" class="mr-1">Iniciar sesión</button>
         <button mat-raised-button (click)="sidenav.close()" [routerLink]="'/registrar'">Registrarse</button>
       </div>
 
       <div fxShow="true" fxHide.lt-sm="true">
-        <div *ngIf="usuarioActual != null">
-          <span>Bienvenido {{usuarioActual.alias}}</span>
+        <div *ngIf="usuarioActual != null && usuarioActual.rol != 'cliente'; else noCliente">
+          <span id="bienvenida">Bienvenid@ {{usuarioActual.alias}}</span>
           <br>
-          <small (click)="logOff()" style="cursor: pointer;">Cerrar sesión</small>
-          <small class="ml-3" (click)="sidenav.close()" style="cursor: pointer;" [routerLink]="'/ControlPanel'">Panel de control</small>
+          <small (click)="logOff()" style="cursor: pointer;"><mat-icon fxShow="true" fxHide.sm="true" class="logout">input</mat-icon>Cerrar sesión</small>
+
+          <!-- Si el usuario con sesión iniciada no es cliente (trabajador o admin) aparecerá la opción Ajustes, sino solo aparecerá Panel de control-->
+          <div style="display: inline-block;">&nbsp;
+            <small style="cursor: pointer;" mat-button [matMenuTriggerFor]="ajustes">Ajustes<mat-icon fxShow="true" fxHide.sm="true" class="icon">arrow_drop_down</mat-icon></small>&nbsp;
+            <mat-menu #ajustes="matMenu" class="text-center">
+              <button class="botonInicio" mat-button (click)="sidenav.close()" [routerLink]="'/controlpanel'"><mat-icon fxShow="true" fxHide.sm="true" class="icon">dashboard</mat-icon>Panel de control</button><br>
+              <button class="botonInicio" *ngIf="usuarioActual != null && usuarioActual.rol != 'cliente'" mat-button (click)="sidenav.close()" [routerLink]="'/dashboard'"><mat-icon fxShow="true" fxHide.sm="true" class="icon">supervisor_account</mat-icon>Administración</button> <!-- Dashboard ADMIN-->
+            </mat-menu>
+          </div>
         </div>
+        
+        <!-- Si existe una sesión iniciada -->
+        <ng-template #noCliente *ngIf="usuarioActual != null">
+          <span id="bienvenida2">Bienvenid@ {{usuarioActual.alias}}</span>
+          <br>
+          <small (click)="logOff()" style="cursor: pointer;"><mat-icon fxShow="true" fxHide.sm="true" class="logout">input</mat-icon>Cerrar sesión</small>
+
+          <button mat-button (click)="sidenav.close()" [routerLink]="'/controlpanel'"><mat-icon fxShow="true" fxHide.sm="true" class="icon">dashboard</mat-icon>Panel de control</button>
+        </ng-template>
       </div>
     </div>
-    
-    
+
   </mat-toolbar>
 
 
@@ -51,7 +70,8 @@
         <div *ngIf="usuarioActual != null" class="text-center">
           <p class="px-2 mt-0 mb-0">Bienvenido {{usuarioActual.alias}}</p>
           <button mat-button (click)="logOff()">Cerrar sesión</button><br>
-          <button mat-button (click)="sidenav.toggle()" [routerLink]="'/ControlPanel'">Panel de control</button>
+          <button mat-button (click)="sidenav.toggle()" [routerLink]="'/controlpanel'">Panel de control</button><br>
+          <button *ngIf="usuarioActual.rol != 'cliente'" mat-button (click)="sidenav.toggle()" [routerLink]="'/dashboard'">Administración</button>
           <br><br>
         </div>
         
@@ -135,10 +155,12 @@
         </div>
         <!--Copyright-->
         <div class="footer-copyright text-center text-white py-3">© 2020 Copyright:
-          <a href="https://github.com/tryn0"> Web realizada para CampingNet (Camping Naúfrago)</a>
+          <a id="linkG" target="_blank" href="https://github.com/tryn0"> Web realizada para CampingNet (Camping Naúfrago)</a>
           <!--Solo DEV-->
-          <br>
           Tu IP: {{this.ip}}
+          <div>Esta web es visible en
+            <br>
+            <mat-icon class="bottom">smartphone</mat-icon> &nbsp; <mat-icon class="bottom">tablet</mat-icon> &nbsp; <mat-icon class="bottom">laptop</mat-icon> &nbsp; <mat-icon class="bottom">desktop_windows</mat-icon></div>
         </div>
       </footer>
 

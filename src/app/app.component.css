@@ -2,6 +2,60 @@ html,body{
     margin: 0;
 }
 
+#bienvenida{
+    position: absolute; 
+    right: 72px;
+}
+#bienvenida2{
+    position: absolute;
+    right: 118px;
+}
+.botonInicio{
+    padding: 7px 5px;
+}
+.icon {
+    display: inline-block;
+    height: 30px;
+    margin-right: 14px;
+    padding-right: 5px;
+    text-align: center;
+    vertical-align: middle;
+    width: 15%;
+}
+
+.cp {
+    display: inline-block;
+    height: 30px;
+    margin-right: -6px;
+    padding-right: 5px;
+    text-align: center;
+    vertical-align: middle;
+    width: 15%;
+}
+
+.logout {
+    display: inline-block;
+    height: 30px;
+    margin-right: -6px;
+    padding-right: 5px;
+    text-align: center;
+    vertical-align: middle;
+    width: 15%;
+}
+
+.bottom{
+    display: inline-block;
+    height: 30px;
+    margin: 0 auto;
+    padding-right: 5px;
+    text-align: center;
+    vertical-align: middle;
+}
+
+#linkG{
+    color: white;
+}
+
 /*Tamaño del título y del texto del menú de la cabecera en pantallas de ancho mayor o igual a 2000px*/
 @media only screen and (min-width: 2000px) {
     #titulo{
@@ -9,5 +63,14 @@ html,body{
     }
     button{
         font-size: 0.8vw;
+    }
+}
+
+@media only screen and (max-width: 959px) {
+    #bienvenida{
+        position: static;
+    }
+    #bienvenida2{
+        position: static;
     }
 }
