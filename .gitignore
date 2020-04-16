@@ -42,7 +42,6 @@ testem.log
 /typings
 /backup
 /base-datos
-/php
 
 # System Files
 .DS_Store
