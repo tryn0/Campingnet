@@ -47,6 +47,15 @@ ng serve
 ```
 Con este comando conseguiremos que se compile todo el proyecto, seguidamente se desplegará, por defecto en la IP de la máquina en el puerto 4200. Por ejemplo localhost:4200
 
+Para seleccionar fecha:
+```
+npm i @angular/material-moment-adapter ESTE NO (CREO)
+```
+O
+```
+npm i moment --save
+```
+
 ## Despliegue de la web app
 Se ejecuta el siguiente comando en la consola de comandos de NodeJS en la carpeta del proyecto:
 ```
