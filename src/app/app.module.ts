@@ -21,8 +21,11 @@ import { MatStepperModule } from '@angular/material/stepper';
 import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
+import { MatDatepickerModule } from '@angular/material/datepicker';
+import { MatNativeDateModule } from '@angular/material/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { IgxCarouselModule } from 'igniteui-angular';
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
 
 //Componentes añadidos
 import { HomeComponent } from './home/home.component';
@@ -36,6 +39,21 @@ import { AlojamientoComponent } from './alojamiento/alojamiento.component';
 import { NoencontradoComponent } from './noencontrado/noencontrado.component';
 import { PaneldeControlComponent } from './panelde-control/panelde-control.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+
+
+export const DD_MM_YYYY_Format = {
+  parse: {
+      dateInput: 'LL',
+  },
+  display: {
+      dateInput: 'DD/MM/YYYY',
+      monthYearLabel: 'MMM YYYY',
+      dateA11yLabel: 'LL',
+      monthYearA11yLabel: 'MMMM YYYY',
+  },
+};
+
+
 
 @NgModule({
   declarations: [
@@ -71,10 +89,14 @@ import { DashboardComponent } from './dashboard/dashboard.component';
     MatFormFieldModule,
     MatInputModule,
     MatSelectModule,
+    MatDatepickerModule,
+    MatNativeDateModule,
     FlexLayoutModule,
-    IgxCarouselModule
+    IgxCarouselModule,
+    MatMomentDateModule
   ],
-  providers: [],
+  providers: [MatDatepickerModule,
+  ],
   bootstrap: [AppComponent]
 })
 export class AppModule {
