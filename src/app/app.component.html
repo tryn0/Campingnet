@@ -46,19 +46,21 @@
             </mat-menu>
           </div>
         </div>
-        
-        <!-- Si existe una sesión iniciada -->
-        <ng-template #noCliente *ngIf="usuarioActual != null">
-          <span id="bienvenida2">Bienvenid@ {{usuarioActual.alias}}</span>
-          <br>
-          <small (click)="logOff()" style="cursor: pointer;"><mat-icon fxShow="true" fxHide.sm="true" class="logout">input</mat-icon>Cerrar sesión</small>
-
-          <button mat-button (click)="sidenav.close()" [routerLink]="'/controlpanel'"><mat-icon fxShow="true" fxHide.sm="true" class="icon">dashboard</mat-icon>Panel de control</button>
-        </ng-template>
       </div>
     </div>
 
   </mat-toolbar>
+
+  <!-- Si existe una sesión iniciada -->
+  <ng-template #noCliente>
+    <div *ngIf="usuarioActual != null && usuarioActual.rol == 'cliente'">
+      <span id="bienvenida2">Bienvenid@ {{usuarioActual.alias}}</span>
+      <br>
+      <small (click)="logOff()" style="cursor: pointer;"><mat-icon fxShow="true" fxHide.sm="true" class="logout">input</mat-icon>Cerrar sesión</small>
+
+      <button mat-button (click)="sidenav.close()" [routerLink]="'/controlpanel'"><mat-icon fxShow="true" fxHide.sm="true" class="icon">dashboard</mat-icon>Panel de control</button>
+    </div>
+  </ng-template>
 
 
   <!--Cuerpo-->
