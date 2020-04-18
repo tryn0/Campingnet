@@ -15,8 +15,13 @@
 
     <!--Menú en pantallas medias y grandes (tablets y ordenadores), oculto a partir de 959px hacia abajo-->
     <div fxShow="true" fxHide.lt-sm="true">
-      <button class="botonInicio" mat-button (click)="sidenav.close()" [routerLink]="'/'"><mat-icon fxShow="true" fxHide.sm="true" class="icon">home</mat-icon>Inicio</button>  
-      <button class="botonInicio" mat-button (click)="sidenav.close()" [routerLink]="'/reservas'"><mat-icon fxShow="true" fxHide.sm="true" class="icon">store</mat-icon>Reservar</button>
+      <!-- 
+        Coloco estos 2 botones como LINK para que refresque la página, 
+        si lo pongo todo como routerLink pienso que cada vez le costaría más al ordenador llevar tanta carga, 
+        así que he puesto en las 2 páginas más pesadas un link para que cuando entre en ellas se refresque 
+      -->
+      <a style="text-decoration: none; color: inherit;" href="/"><button class="botonInicio" mat-button (click)="sidenav.close()" ><mat-icon fxShow="true" fxHide.sm="true" class="icon">home</mat-icon>Inicio</button></a>
+      <a style="text-decoration: none; color: inherit;" href="/reservas"><button class="botonInicio" mat-button (click)="sidenav.close()"><mat-icon fxShow="true" fxHide.sm="true" class="icon">store</mat-icon>Reservar</button></a>
       <button class="botonInicio" mat-button [matMenuTriggerFor]="info"><mat-icon fxShow="true" fxHide.sm="true" class="icon">info</mat-icon>Información</button>
       <mat-menu #info="matMenu" class="text-center">
         <button class="botonInicio" mat-button (click)="sidenav.close()" [routerLink]="'/acerca'"><mat-icon fxShow="true" fxHide.sm="true" class="icon">business</mat-icon>Acerca</button><br>
