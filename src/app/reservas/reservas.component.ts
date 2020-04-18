@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { FormBuilder, FormGroup, Validators } from '@angular/forms';
+import { FormBuilder, FormGroup, Validators, FormControl } from '@angular/forms';
 import { HttpClient, HttpParams } from '@angular/common/http';
 
 import { DateAdapter } from '@angular/material/core';
@@ -17,11 +17,13 @@ export class ReservasComponent implements OnInit {
 
 
   // Variables del formulario 1
+  public fechas: FormGroup;
   public fecha1: Date;
   public fecha2: Date;
   public alojamientosDisponibles: any;
 
 
+  // Variables del formulario 2
   public alojamiento: FormGroup;
   public tipos: string;
   public tipos2: any = [];
@@ -34,15 +36,40 @@ export class ReservasComponent implements OnInit {
   public arrayCaract2: any = [];
   
 
-  // Variables del formulario 2
+  // Variables del formulario 3
   public usuario: FormGroup;
 
 
-  // Variables del formualrio 3
-  public fechas: FormGroup;
+  // Variables del formulario 4
+  public serviciosExtras: FormGroup;
+  public servicios: any = [];
+  
 
   constructor(private fb: FormBuilder, private http: HttpClient, private dateAdapter: DateAdapter<Date>) {
     this.dateAdapter.setLocale('es-ES');
+
+    let params = new HttpParams()
+    .set('opcion', '7');
+
+    this.serviciosExtras = this.fb.group({});
+
+    // Petición POST para obtener todos los servicios
+    this.http.post('http://localhost/reserva.php', params).subscribe(data => {
+      if (data != null) { // Si recibe algún alojamiento
+        this.servicios = data;
+        for (let i = 0; i < this.servicios.length; i++) {
+          this.serviciosExtras.addControl('servicio'+this.servicios[i]['idServicio'], new FormControl(false,[]));
+          this.serviciosExtras.addControl('num'+this.servicios[i]['idServicio'], new FormControl({value: '', disabled: true},[]));
+        }
+      }
+    }, error => console.log(error));
+
+    
+    
+  }
+
+  addServicios(){
+    //console.log(this.serviciosExtras.value);
     
   }
 
@@ -147,13 +174,24 @@ export class ReservasComponent implements OnInit {
      
     this.http.post('http://localhost/reserva.php', params2).subscribe(data =>{
       if(data != null){ // Si recibe algún alojamiento
-        console.log(data);
+        //console.log(data);
         this.arrayCaract2 = data;
         Object.keys(data[0]).forEach(key => { // Para sacar las keys del array obtenido desde reserva.php
           this.dato3 = key; // Sin mayúscula
         });
       }
     }, error => console.log(error));
+  }
+
+  // LO SIGUIENTE ES EN EL DESGLOSE VER EL PRECIO DE TODAS LAS COSAS
+
+  onChange(a){
+    if(this.serviciosExtras.get('servicio'+a['idServicio']).value){
+      this.serviciosExtras.get('num'+a['idServicio']).enable();
+    }else{
+      this.serviciosExtras.get('num'+a['idServicio']).disable()
+    }
+
   }
 
 
@@ -175,27 +213,42 @@ export class ReservasComponent implements OnInit {
       caracteristicaUnica1: ['', Validators.required],
       caracteristicaUnica2: ['', Validators.required],
     });
+  
 
+    // Formulario 3
+    this.usuario = this.fb.group({
+      nombreCompleto: [this.usuarioActual['nombre'], Validators.required],
+      telefono: ['', [Validators.required, Validators.pattern('^[6-7][0-9]{8}$')]],
+      //FALLA email
+      //email: ['', [Validators.required, Validators.pattern("^(((\.)+)?[A-z0-9]+((\.)+)?)+@(((\.)+)?[A-z0-9]+((\.)+)?)+\.[A-z]+$")]],//Puede empezar por . o no, contener letras y numeros seguidos de punto o no, seguido por @ seguido por . o no letras y numeros y punto o no . letras
+      email: ['', [Validators.required, Validators.pattern("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)$")]],
+      dni: ['', [Validators.required, Validators.pattern('^[0-9]{8,8}[A-Za-z]$')]],
+    });
 
     if(this.usuarioActual != null){ // SIN UTILIDAD AUN
       //console.log(this.usuarioActual);
-      let fd: any = new FormData();
+      /*this.usuario.get('nombreCompleto').setValue(this.usuarioActual['nombre']);
+      this.usuario.get('telefono').setValue(this.usuarioActual['telefono']);
+      this.usuario.get('email').setValue(this.usuarioActual['email']);
+      this.usuario.get('dni').setValue(this.usuarioActual['nif']);*/
+      /*let fd: any = new FormData();
       fd.append('alias', this.usuarioActual['alias']);
       fd.append('dni', this.usuarioActual['nif']);
       fd.append('nombre_usuario', this.usuarioActual['nombre']);
       fd.append('telefono', this.usuarioActual['telefono']);
       fd.append('email', this.usuarioActual['email']);
       fd.append('password', this.usuarioActual['password']);
-      fd.append('rol', this.usuarioActual['rol']);
+      fd.append('rol', this.usuarioActual['rol']);*/
     }
+
+
     
 
-    // Formulario 3
-    this.usuario = this.fb.group({
-      nombreCompleto: ['', Validators.required],
-      telefono: ['', Validators.required],
-      email: ['', Validators.required],
-      dni: ['', Validators.required],
-    });
+
+    
+      
+    
+
+    
   }
 }

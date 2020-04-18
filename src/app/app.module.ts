@@ -26,6 +26,7 @@ import { MatNativeDateModule } from '@angular/material/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { IgxCarouselModule } from 'igniteui-angular';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
+import { MatCheckboxModule } from '@angular/material/checkbox';
 
 //Componentes añadidos
 import { HomeComponent } from './home/home.component';
@@ -93,9 +94,11 @@ export const DD_MM_YYYY_Format = {
     MatNativeDateModule,
     FlexLayoutModule,
     IgxCarouselModule,
-    MatMomentDateModule
+    MatMomentDateModule,
+    MatCheckboxModule
   ],
-  providers: [MatDatepickerModule,
+  providers: [
+    MatDatepickerModule,
   ],
   bootstrap: [AppComponent]
 })

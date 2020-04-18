@@ -3,16 +3,15 @@
     <div class="col-12 mt-5">
         <mat-horizontal-stepper [linear]="true" #stepper>
 
-            <!-- Fechas y horarios -->
             <mat-step [stepControl]="fechas">
                 <form [formGroup]="fechas">
                     
                     <!-- Texto/Nombre del step -->
                     <ng-template matStepLabel>Calendario</ng-template>
-
+            
                     <!-- Icono del step -->
                     <ng-template matStepperIcon="edit"><mat-icon>search</mat-icon></ng-template>
-
+            
                     <!-- Contenido del step -->
                     <div class="row justify-content-between bg-success">
                         <div class="col-md-4 bg-warning">
@@ -21,17 +20,17 @@
                                 <input matInput formControlName="fechaEntrada" [matDatepicker]="fechas1" required>
                                 <mat-datepicker-toggle matSuffix [for]="fechas1"></mat-datepicker-toggle>
                                 <mat-datepicker touchUi #fechas1></mat-datepicker>
-                              </mat-form-field>
+                            </mat-form-field>
                         </div>
                         
-    
+            
                         <div class="col-md-4 bg-danger">
                             <mat-form-field>
                                 <mat-label>Fecha de salida</mat-label>
                                 <input matInput formControlName="fechaSalida" [matDatepicker]="fechas2" required>
                                 <mat-datepicker-toggle matSuffix [for]="fechas2"></mat-datepicker-toggle>
                                 <mat-datepicker touchUi #fechas2></mat-datepicker>
-                              </mat-form-field>
+                            </mat-form-field>
                         </div>
                         
                     </div>
@@ -41,17 +40,17 @@
                     </div>
                 </form>
             </mat-step>
-
+            
             <!-- Escoger alojamiento disponible -->
             <mat-step [stepControl]="alojamiento">
                 <form [formGroup]="alojamiento">
-
+            
                     <!-- Texto/Nombre del step -->
                     <ng-template matStepLabel>Alojamiento disponible</ng-template>
-
+            
                     <!-- Icono del step -->
                     <ng-template matStepperIcon="edit"><mat-icon>search</mat-icon></ng-template>
-
+            
                     <!-- Contenido del step -->
                     <div class="row justify-content-between bg-success">
                         <div class="col-md-4 bg-warning">
@@ -65,7 +64,7 @@
                             </mat-form-field>
                         </div>
                         
-    
+            
                         <div class="col-md-4 bg-warning">
                             <mat-form-field >
                             <mat-label >{{dato2}}</mat-label>
@@ -76,7 +75,7 @@
                               </mat-select>
                             </mat-form-field>
                         </div>
-
+            
                         <div class="col-md-4 bg-warning">
                             <mat-form-field >
                                 <mat-label>{{dato4}}</mat-label>
@@ -96,41 +95,33 @@
                 </form>
             </mat-step>
 
-            <!-- Datos personales para la reserva -->
-            <mat-step *ngIf="usuarioActual != null" [stepControl]="usuario" label="Datos personales">
-                <form [formGroup]="usuario">
+
+            <mat-step [stepControl]="serviciosExtras" label="Servicios extras" >
+                <form [formGroup]="serviciosExtras" class="mt-3">
                     <ng-template matStepperIcon="edit"><mat-icon>search</mat-icon></ng-template>
-                    
-                    <mat-form-field>
-                        <mat-label>Nombre y apellidos</mat-label>
-                        <input matInput placeholder="18-06-2020" formControlName="nombreCompleto" required>
-                    </mat-form-field>
 
-                    <mat-form-field>
-                        <mat-label>Teléfono</mat-label>
-                        <input matInput placeholder="25-06-2020" formControlName="telefono" required>
-                    </mat-form-field>
+                    <div class="row">
+                        <div class="col-md-6 float-left row" *ngFor="let servicio of servicios">
+                            <mat-checkbox class="col-5 mt-3" formControlName="servicio{{servicio['idServicio']}}" (change)='onChange(servicio)'>{{servicio['nombre']}}</mat-checkbox>                               
+                            <mat-form-field class="mt-0">
+                                <mat-label>Cantidad</mat-label>
+                                    <input matInput formControlName="num{{servicio['idServicio']}}" type="number">
+                            </mat-form-field>                  
+                        </div>
+                    </div>
 
-                    <mat-form-field>
-                        <mat-label>Correo electrónico</mat-label>
-                        <input matInput placeholder="25-06-2020" formControlName="email" required>
-                    </mat-form-field>
-
-                    <mat-form-field>
-                        <mat-label>DNI</mat-label>
-                        <input matInput placeholder="25-06-2020" formControlName="dni" required>
-                    </mat-form-field>
+                    {{serviciosExtras.value | json }}
 
                     <div>
                         <button mat-button matStepperPrevious>Atrás</button>
-                        <button class="float-right mt-3" mat-button matStepperNext>Siguiente</button>
+                        <button class="float-right mt-3" mat-button matStepperNext (click)="addServicios()">Siguiente</button>
                     </div>
                 </form>
             </mat-step>
 
-
             <mat-step>
                 <ng-template matStepLabel>Reservar</ng-template>
+                
                 <p>Acabaste</p>
                 <div>
                     <button class="mt-3" mat-button matStepperPrevious>Atrás</button>
@@ -140,5 +131,3 @@
         </mat-horizontal-stepper>
     </div>
 </div>
-
-<!--Para listar los alojamientos al buscarlos usar esto https://material.angular.io/components/card/examples-->
