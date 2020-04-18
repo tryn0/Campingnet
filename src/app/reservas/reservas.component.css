@@ -5,3 +5,13 @@
 .mat-form-field {
   margin-top: 16px;
 }
+
+.icon {
+  display: inline-block;
+  height: 30px;
+  margin-right: 14px;
+  padding-right: 10px;
+  text-align: center;
+  vertical-align: middle;
+  width: 1%;
+}

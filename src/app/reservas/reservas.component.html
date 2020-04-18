@@ -4,7 +4,7 @@
         <mat-horizontal-stepper [linear]="true" #stepper>
 
             <mat-step [stepControl]="fechas">
-                <form [formGroup]="fechas">
+                <form novalidate [formGroup]="fechas">
                     
                     <!-- Texto/Nombre del step -->
                     <ng-template matStepLabel>Calendario</ng-template>
@@ -13,8 +13,9 @@
                     <ng-template matStepperIcon="edit"><mat-icon>search</mat-icon></ng-template>
             
                     <!-- Contenido del step -->
-                    <div class="row justify-content-between bg-success">
-                        <div class="col-md-4 bg-warning">
+                    <div class="row justify-content-around">
+                        <!-- Calendario fecha de entrada -->
+                        <div class="col-md-5 text-center">
                             <mat-form-field>
                                 <mat-label>Fecha de entrada</mat-label>
                                 <input matInput formControlName="fechaEntrada" [matDatepicker]="fechas1" required>
@@ -23,17 +24,24 @@
                             </mat-form-field>
                         </div>
                         
-            
-                        <div class="col-md-4 bg-danger">
+                        <!-- Calendario fecha de salida -->
+                        <div class="col-md-5 text-center pb-4">
                             <mat-form-field>
                                 <mat-label>Fecha de salida</mat-label>
                                 <input matInput formControlName="fechaSalida" [matDatepicker]="fechas2" required>
                                 <mat-datepicker-toggle matSuffix [for]="fechas2"></mat-datepicker-toggle>
                                 <mat-datepicker touchUi #fechas2></mat-datepicker>
                             </mat-form-field>
+                            <br>
+                            <span style="color: red;" *ngIf="fechas.get('fechaSalida').hasError('fecha2Mayor')">La fecha de salida debe ser posterior a la de entrada.</span>
+                            
                         </div>
-                        
+            
                     </div>
+                    <br>
+                    <mat-icon class="icon float-left" style="cursor: pointer;" (click)="mostrarInfo1()">info</mat-icon><span *ngIf="info1 != false" class="float-left">La hora de entrada por defecto es a las 12:00 y la de salida a las 11:59. En casos especiales póngase en contacto con el camping.</span>
+                    <!--{{fechas.get('fechaSalida').errors | json}}-->
+            
                     <!-- Botonera del step -->
                     <div>
                         <button class="float-right mt-3" mat-button matStepperNext (click)="guardarFechas()">Siguiente</button>
@@ -43,7 +51,7 @@
             
             <!-- Escoger alojamiento disponible -->
             <mat-step [stepControl]="alojamiento">
-                <form [formGroup]="alojamiento">
+                <form novalidate [formGroup]="alojamiento">
             
                     <!-- Texto/Nombre del step -->
                     <ng-template matStepLabel>Alojamiento disponible</ng-template>
@@ -52,8 +60,9 @@
                     <ng-template matStepperIcon="edit"><mat-icon>search</mat-icon></ng-template>
             
                     <!-- Contenido del step -->
-                    <div class="row justify-content-between bg-success">
-                        <div class="col-md-4 bg-warning">
+                    <div class="row justify-content-between">
+                        <!-- Lista para escoger tipo de alojamiento -->
+                        <div class="col-md-4">
                             <mat-form-field >
                                 <mat-label>Tipo de alojamiento</mat-label>
                                 <mat-select formControlName="tipo" required>
@@ -64,8 +73,8 @@
                             </mat-form-field>
                         </div>
                         
-            
-                        <div class="col-md-4 bg-warning">
+                        <!-- Lista para escoger caracteristica 1 del alojamiento -->
+                        <div class="col-md-4">
                             <mat-form-field >
                             <mat-label >{{dato2}}</mat-label>
                             <mat-select formControlName="caracteristicaUnica1" required>
@@ -76,41 +85,89 @@
                             </mat-form-field>
                         </div>
             
-                        <div class="col-md-4 bg-warning">
+                        <!-- Lista para escoger caracteristica 2 del alojamiento -->
+                        <div class="col-md-4">
                             <mat-form-field >
                                 <mat-label>{{dato4}}</mat-label>
-                            <mat-select formControlName="caracteristicaUnica2" required>
-                                <mat-option *ngFor="let cara2 of arrayCaract2" [value]="cara2">
-                                    {{cara2[dato3]}}
-                                </mat-option>
-                              </mat-select>
+                                <mat-select formControlName="caracteristicaUnica2" required>
+                                    <mat-option *ngFor="let cara2 of arrayCaract2" [value]="cara2">
+                                        {{cara2[dato3]}}
+                                    </mat-option>
+                                </mat-select>
                             </mat-form-field>
                         </div>
-                        
                     </div>
+            
+                    <!-- Botnoera del step -->
                     <div>
                         <button class="mt-3" mat-button matStepperPrevious>Atrás</button>
                         <button class="float-right mt-3" mat-button matStepperNext>Siguiente</button>
                     </div>
                 </form>
             </mat-step>
+            
+            
+            <!-- Datos personales para la reserva -->
+            <!-- Si se tiene una sesión iniciada se rellena automáticamente -->
+            <!-- TENGO QUE PENSAR QUE HACER SINO TIENE SESION INICIADA, SE CREA USUARIO NUEVO O COMO????-->
+            <mat-step [stepControl]="usuario" label="Datos personales">
+                <form novalidate [formGroup]="usuario">
+                    <ng-template matStepperIcon="edit"><mat-icon>search</mat-icon></ng-template>
+                    <div class="row">
+                        <div class="col-md-6 text-center">
+                            <mat-form-field>
+                                <mat-label>Nombre y apellidos</mat-label>
+                                <input matInput placeholder="Juan Rodríguez Cazorla" formControlName="nombreCompleto" required>
+                            </mat-form-field>
+                        </div>
+                
+                        <div class="col-md-6 text-center">
+                            <mat-form-field>
+                                <mat-label>Teléfono</mat-label>
+                                <input matInput placeholder="612345678" formControlName="telefono" required>
+                            </mat-form-field>
+                        </div>
+                
+                        <div class="col-md-6 text-center">
+                            <mat-form-field>
+                                <mat-label>Correo electrónico</mat-label>
+                                <input matInput placeholder="correo@correo.es" formControlName="email" required>
+                            </mat-form-field>
+                        </div>
+                
+                        <div class="col-md-6 text-center">
+                            <mat-form-field>
+                                <mat-label>DNI</mat-label>
+                                <input matInput placeholder="12345678X" formControlName="dni" required>
+                            </mat-form-field>
+                        </div>
+                    </div>
+
+                    <div>
+                        <button class="mt-3" mat-button matStepperPrevious>Atrás</button>
+                        <button class="float-right mt-3" mat-button matStepperNext>Siguiente</button>
+                    </div>
+                </form>
+            </mat-step>            
 
 
+            <!-- Servicios extras -->
             <mat-step [stepControl]="serviciosExtras" label="Servicios extras" >
-                <form [formGroup]="serviciosExtras" class="mt-3">
+                <form novalidate [formGroup]="serviciosExtras" class="mt-3">
                     <ng-template matStepperIcon="edit"><mat-icon>search</mat-icon></ng-template>
 
                     <div class="row">
                         <div class="col-md-6 float-left row" *ngFor="let servicio of servicios">
-                            <mat-checkbox class="col-5 mt-3" formControlName="servicio{{servicio['idServicio']}}" (change)='onChange(servicio)'>{{servicio['nombre']}}</mat-checkbox>                               
-                            <mat-form-field class="mt-0">
+                            <mat-checkbox class="col-5 mt-3" formControlName="servicio{{servicio['idServicio']}}" (change)='onChange(servicio, $event)' [disabled]="servicio['idServicio'] == 1 && electricidad">{{servicio['nombre']}}</mat-checkbox>
+                    
+                            <mat-form-field class="mt-0" *ngIf="servicio['idServicio'] != 1">
                                 <mat-label>Cantidad</mat-label>
                                     <input matInput formControlName="num{{servicio['idServicio']}}" type="number">
-                            </mat-form-field>                  
+                            </mat-form-field>
+                            <!-- <span *ngIf="serviciosExtras.controls['num3'].hasError['noCantidad']">Por favor, indique una cantidad</span> -->       
                         </div>
                     </div>
-
-                    {{serviciosExtras.value | json }}
+                    
 
                     <div>
                         <button mat-button matStepperPrevious>Atrás</button>
