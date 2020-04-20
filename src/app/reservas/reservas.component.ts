@@ -5,6 +5,15 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { DateAdapter } from '@angular/material/core';
 import * as moment from 'moment';
 
+
+/**
+ * TODO: CONTROLAR EL TEMA DE HACER RESERVAS SIN TENER USUARIO CON SESION INICIADA (QUÉ SE GUARDA EN PASSWD Y ALIAS?)
+ * TODO: UNA VEZ HA ACABADO DE HACER LA RESERVA, CONSULTAR TODOS LOS DATOS A LA BASE DE DATOS, CALCULAR EL MULTIPLICATIVO POR EL TEMA DE LA TEMPORADA
+ * TODO: EL PRECIO POR EL AOJAMIENTO Y EL PRECIO POR LOS SERVICIOS EXTRAS
+ * TODO: LUEGO MULTIPLICAR EL MULTIPLICATIVO POR EL PRECIO DEL ALOJAMIENTO Y SUMARLE A ESTE TODOS LOS SERVICIOS EXTRAS
+ * TODO: MOSTRAR EL PRECIO DE CADA COSA Y ABAJO DE LTODO LA SUMA TOTAL, EN EL CASO DEL ALOJAMIENTO MOSTRARLO CON EL MULTIPLICATIVO DESGLOSADO
+ */
+
 @Component({
   selector: 'app-reservas',
   templateUrl: './reservas.component.html',
@@ -24,7 +33,7 @@ export class ReservasComponent implements OnInit {
   public alojamientosDisponibles: any;
   public info1: boolean = false;
   public fechaVal: boolean = false;
-
+  public fechaMenos7: boolean = null;
 
   // Variables del formulario 2
   public alojamiento: FormGroup;
@@ -51,22 +60,8 @@ export class ReservasComponent implements OnInit {
 
   constructor(private fb: FormBuilder, private http: HttpClient, private dateAdapter: DateAdapter<Date>) {
     this.dateAdapter.setLocale('es-ES');
-
-    
-
-    
-
-    
-    
   }
-  // FALTA:
 
-  // CONTROLAR EL TEMA DE HACER RESERVA SIN TENER SESIÓN INICIADA, QUÉ SE GUARDA EN PASSWORD Y ALIAS?
-
-  // UNA VEZ HA ACABADO DE HACER LA RESERVA, CONSULTAR TODOS LOS DATOS A LA BASE DE DATOS, CALCULAR EL MULTIPLICATIVO POR EL TEMA DE LA TEMPORADA
-  // EL PRECIO POR EL AOJAMIENTO Y EL PRECIO POR LOS SERVICIOS EXTRAS
-  // LUEGO MULTIPLICAR EL MULTIPLICATIVO POR EL PRECIO DEL ALOJAMIENTO Y SUMARLE A ESTE TODOS LOS SERVICIOS EXTRAS
-  // MOSTRAR EL PRECIO DE CADA COSA Y ABAJO DE LTODO LA SUMA TOTAL, EN EL CASO DEL ALOJAMIENTO MOSTRARLO CON EL MULTIPLICATIVO DESGLOSADO
 
   // Mostrar o escondes (toggle) el mensaje de info del formulario de las fechas
   mostrarInfo1(){
@@ -77,11 +72,13 @@ export class ReservasComponent implements OnInit {
     }
   }
 
-  guardarFechas(){ // Obtiene listado de alojamientos si las fechas introducidas están correctas
+  // Obtiene listado de alojamientos si las fechas introducidas están correctas
+  guardarFechas(){ 
     this.fechaVal = true;
     if(this.fechas.get('fechaEntrada').value != '' && this.fechas.get('fechaSalida').value != '' && !this.fechas.get('fechaEntrada').errors && !this.fechas.get('fechaSalida').errors){
+      console.log((this.fechas.get('fechaEntrada').value).month());
       this.tipos2 = [];
-      this.tipos22 = [];
+      this.tipos22 = [];      
 
       // Parámetros a enviar al archivo PHP
       let params2 = new HttpParams()
@@ -101,13 +98,15 @@ export class ReservasComponent implements OnInit {
     }
   }
 
-  getCaracteristica1(datos: string){ // Al escoger un tipo de alojamiento consulta en la BD la característica 1 de todos los alojamientos de ese tipo que estén disponibles entre las fechas indicadas al principio
+  // Al escoger un tipo de alojamiento consulta en la BD la característica 1 de todos los alojamientos de ese tipo que estén disponibles entre las fechas indicadas al principio
+  getCaracteristica1(datos: string){ 
     this.arrayCaract2 = [];
 
     // Parámetros a enviar al archivo PHP
     let params: any;
 
-    if(datos == 'Parcela'){ // Si escoge Parcela como alojamiento
+    // Si escoge Parcela como alojamiento
+    if(datos == 'Parcela'){ 
       this.tipos = 'parcela';
       this.electricidad = false;
       params = new HttpParams()
@@ -161,6 +160,19 @@ export class ReservasComponent implements OnInit {
     }, error => console.log(error));
   }
 
+  validacionFechaAlojamiento(){
+    return (): ValidationErrors => {
+      if(this.alojamiento.get('tipo').value == 'Bungalow'){
+        if(this.fechaMenos7 == true){
+          this.alojamiento.get('tipo').setErrors({menos7: true});
+        }else{
+          this.alojamiento.get('tipo').setErrors(null);
+        }
+      }
+      return;
+    };
+  }
+
   // Al escoger la característica 1 consulta en la BD todas las características 2 que hay disponibles para ese tipo de alojamientos con la característica 1 elegida
   getCaracteristica2(datos: string){
     let params2: any;
@@ -189,9 +201,8 @@ export class ReservasComponent implements OnInit {
     }, error => console.log(error));
   }
 
-
   // Función para validar las fechas, si la fecha de salida es posterior a la de entrada no dará error, en cambio si la fecha de salida es el mismo día de entrada o anterior dará error y te pedirá que cambies de fecha
-  validacionFechaSalida(){
+  validacionFecha(){
       return (): ValidationErrors => {
         if(this.fechas.get('fechaSalida').value != ''){
           this.fechas.get('fechaSalida').setErrors(null);
@@ -201,8 +212,21 @@ export class ReservasComponent implements OnInit {
           let diferencia = moment.duration(salida-entrada).days();
           if (diferencia <= 0) {
             this.fechas.get('fechaSalida').setErrors({fecha2Mayor: true});
-          } else {
+          }else if(diferencia > 0){
             this.fechas.get('fechaSalida').setErrors(null);
+          } 
+          if((this.fechas.get('fechaEntrada').value).month() == 6 || (this.fechas.get('fechaEntrada').value).month() == 7){
+            if(diferencia >= 0 && diferencia < 7){
+              this.fechaMenos7 = true;
+              if(this.alojamiento.get('tipo').value == 'Bungalow'){
+                this.alojamiento.get('tipo').setErrors({menos7: true});
+              }
+            }else if(diferencia >= 7){
+              this.fechaMenos7 = false;
+              this.alojamiento.get('tipo').setErrors(null);
+            }
+          }else{
+            this.alojamiento.get('tipo').setErrors(null);
           }
         }else{
           this.fechas.get('fechaSalida').setErrors({vacio: true});
@@ -215,7 +239,7 @@ export class ReservasComponent implements OnInit {
 
 
   // Al elegir un servicio extra, desbloquea el input de al lado para poder introducir la cantidad
-  onChange(a, e){
+  onChange(a){
     if(this.serviciosExtras.get('servicio'+a['idServicio']).value){
       this.serviciosExtras.get('num'+a['idServicio']).enable();
     }else{
@@ -224,6 +248,9 @@ export class ReservasComponent implements OnInit {
 
   }
 
+  /* Validación para el FormGroup de serviciosExtras,
+  comprueba si se ha marcado algún checkbox y si se ha introducido una cantidad 
+  en su correspondiente <input>, si no se ha escrito crea un error para que no pueda continuar el formulario*/
   validacionServicio(){
     return (): ValidationErrors => {
       Object.entries(this.serviciosExtras.value).forEach(entries => {
@@ -240,10 +267,21 @@ export class ReservasComponent implements OnInit {
     };
   }
 
-  // Función al acabar el último formulario antes del desglose
+  /**
+   * * Recopila información de todos los formularios y consulta a la base de datos la información necesaria
+   * * para crear un desglose de precios e información con sus precios
+   * TODO: Consultar el tema de temporada y añadir el multiplicativo a la reserva,
+   * TODO: para ello hay que pasar las fechas a moment(creo que ya lo están) y contar el nº de días entre la fecha de entrada hasta la primera que sea de otra temporada, 
+   * TODO: si la fecha de salida está antes, la reserva es de esa temporada, sino calcular los días con ese multiplicativo y luego los demas en la otra temporada.
+   */
   addServicios(){
+    /**
+     * ? Estos console.log() son solo para ver qué devuelve al final cuando acabas el formulario de la reserva
+     * 
+     * ! NO DEJAR CUANDO SE ENTREGUE EL CÓDIGO
+     */
 
-    /*Object.entries(this.serviciosExtras.controls).forEach(entries => {
+    Object.entries(this.serviciosExtras.controls).forEach(entries => {
       console.log(entries);
       
     });
@@ -263,7 +301,7 @@ export class ReservasComponent implements OnInit {
     console.log(this.usuario.get('nombreCompleto').value);
     console.log(this.usuario.get('telefono').value);
     console.log(this.usuario.get('email').value);
-    console.log(this.usuario.get('dni').value);*/
+    console.log(this.usuario.get('dni').value);
 
     console.log(' ');
     console.log('Servicios extras');
@@ -275,13 +313,11 @@ export class ReservasComponent implements OnInit {
     console.log(' ');
     console.log('Cantidad');
     this.servicios.forEach(element => {
-      //console.log((this.serviciosExtras.get('num'+element['idServicio']).value).length);
       if((this.serviciosExtras.get('num'+element['idServicio']).value).length != 0 && this.serviciosExtras.get('servicio'+element['idServicio']).value == true){
         console.log('num'+element['idServicio']+' con cantidad: '+this.serviciosExtras.get('num'+element['idServicio']).value);
       }
       
     });
-    //console.log(this.serviciosExtras.get('nombreCompleto').value);
 
     
   }
@@ -297,7 +333,7 @@ export class ReservasComponent implements OnInit {
       fechaEntrada: ['', [Validators.required]],
       fechaSalida: ['', [Validators.required]],
     });
-    this.fechas.setValidators(this.validacionFechaSalida());
+    this.fechas.setValidators(this.validacionFecha());
     
 
 
@@ -307,6 +343,7 @@ export class ReservasComponent implements OnInit {
       caracteristicaUnica1: ['', Validators.required],
       caracteristicaUnica2: ['', Validators.required],
     });
+    this.alojamiento.setValidators(this.validacionFechaAlojamiento());
   
 
     // Formulario 3 - Datos personales (usuario)
@@ -314,8 +351,9 @@ export class ReservasComponent implements OnInit {
       this.usuario = this.fb.group({
         nombreCompleto: [this.usuarioActual['nombre'], Validators.required],
         telefono: [this.usuarioActual['telefono'], [Validators.required, Validators.pattern('^[6-7][0-9]{8}$')]],
-        //FALLA email
-        //email: ['', [Validators.required, Validators.pattern("^(((\.)+)?[A-z0-9]+((\.)+)?)+@(((\.)+)?[A-z0-9]+((\.)+)?)+\.[A-z]+$")]],//Puede empezar por . o no, contener letras y numeros seguidos de punto o no, seguido por @ seguido por . o no letras y numeros y punto o no . letras
+        //! FALLA email
+        //! email: ['', [Validators.required, Validators.pattern("^(((\.)+)?[A-z0-9]+((\.)+)?)+@(((\.)+)?[A-z0-9]+((\.)+)?)+\.[A-z]+$")]],//Puede empezar por . o no, contener letras y numeros seguidos de punto o no, seguido por @ seguido por . o no letras y numeros y punto o no . letras
+        //? HACER ALGO PARA CONTROLAR EL EMAIL (PATTERN)
         email: [this.usuarioActual['email'], [Validators.required, Validators.pattern("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)$")]],
         dni: [this.usuarioActual['nif'], [Validators.required, Validators.pattern('^[0-9]{8,8}[A-Za-z]$')]],
       });
@@ -323,8 +361,9 @@ export class ReservasComponent implements OnInit {
       this.usuario = this.fb.group({
         nombreCompleto: ['', Validators.required],
         telefono: ['', [Validators.required, Validators.pattern('^[6-7][0-9]{8}$')]],
-        //FALLA email
-        //email: ['', [Validators.required, Validators.pattern("^(((\.)+)?[A-z0-9]+((\.)+)?)+@(((\.)+)?[A-z0-9]+((\.)+)?)+\.[A-z]+$")]],//Puede empezar por . o no, contener letras y numeros seguidos de punto o no, seguido por @ seguido por . o no letras y numeros y punto o no . letras
+        //! FALLA email
+        //! email: ['', [Validators.required, Validators.pattern("^(((\.)+)?[A-z0-9]+((\.)+)?)+@(((\.)+)?[A-z0-9]+((\.)+)?)+\.[A-z]+$")]],//Puede empezar por . o no, contener letras y numeros seguidos de punto o no, seguido por @ seguido por . o no letras y numeros y punto o no . letras
+        //? HACER ALGO PARA CONTROLAR EL EMAIL (PATTERN)
         email: ['', [Validators.required, Validators.pattern("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)$")]],
         dni: ['', [Validators.required, Validators.pattern('^[0-9]{8,8}[A-Za-z]$')]],
       });
@@ -349,6 +388,7 @@ export class ReservasComponent implements OnInit {
     }, error => console.log(error));
     this.serviciosExtras.setValidators(this.validacionServicio());
 
+    //! Borrar esto sino sirve de nada...
     if(this.usuarioActual != null){ // SIN UTILIDAD AUN
       //console.log(this.usuarioActual);
       /*this.usuario.get('nombreCompleto').setValue(this.usuarioActual['nombre']);
