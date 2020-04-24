@@ -27,6 +27,8 @@ import { FlexLayoutModule } from '@angular/flex-layout';
 import { IgxCarouselModule } from 'igniteui-angular';
 import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { MatCheckboxModule } from '@angular/material/checkbox';
+import { MatDialogModule } from '@angular/material/dialog';
+import { MaterialModule } from './material.module';
 
 //Componentes añadidos
 import { HomeComponent } from './home/home.component';
@@ -40,8 +42,10 @@ import { AlojamientoComponent } from './alojamiento/alojamiento.component';
 import { NoencontradoComponent } from './noencontrado/noencontrado.component';
 import { PaneldeControlComponent } from './panelde-control/panelde-control.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
+import { ReservasLoginComponent } from './reservas-login/reservas-login.component';
 
 
+/* Formato Fecha DataPicker */
 export const DD_MM_YYYY_Format = {
   parse: {
       dateInput: 'LL',
@@ -69,7 +73,8 @@ export const DD_MM_YYYY_Format = {
     AlojamientoComponent,
     NoencontradoComponent,
     PaneldeControlComponent,
-    DashboardComponent
+    DashboardComponent,
+    ReservasLoginComponent,
   ],
   imports: [
     BrowserModule,
@@ -95,12 +100,15 @@ export const DD_MM_YYYY_Format = {
     FlexLayoutModule,
     IgxCarouselModule,
     MatMomentDateModule,
-    MatCheckboxModule
+    MatCheckboxModule,
+    MatDialogModule,
+    MaterialModule
   ],
   providers: [
-    MatDatepickerModule,
+    MatDatepickerModule
   ],
-  bootstrap: [AppComponent]
+  bootstrap: [AppComponent],
+  entryComponents: [ReservasLoginComponent]
 })
 export class AppModule {
 }

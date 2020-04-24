@@ -1,6 +1,5 @@
 import { Component } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
-import { Router, ActivatedRoute,  } from "@angular/router";
 import { HttpClient } from '@angular/common/http';
 
 @Component({
@@ -19,11 +18,11 @@ export class AppComponent {
 
   public ip: string;
 
-  constructor(private http: HttpClient, private _snackBar: MatSnackBar, private router: Router, private ar: ActivatedRoute) {
+  constructor(private http: HttpClient, private _snackBar: MatSnackBar) {
 
     //Mensaje de información
     if(localStorage.getItem('mensaje') != '0'){
-      this.mensaje = this._snackBar.open('Le informamos que su información se guarda en su dispositivo.','No mostrar más.');
+      this.mensaje = this._snackBar.open('Le informamos que usamos cookies para mejorar el servicio.','No mostrar más.');
       //Cuando se acepta el mensaje
       this.mensaje.afterDismissed().subscribe(() => {
         localStorage.setItem('mensaje', '0');

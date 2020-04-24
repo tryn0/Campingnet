@@ -1,7 +1,7 @@
 <div class="container justify-content-center">
-    <h4 class="text-center">Hacer una reserva</h4>
+    <h4 class="text-center">Reservar</h4>
     <div class="col-12 mt-5">
-        <mat-horizontal-stepper [linear]="true" #stepper>
+        <mat-horizontal-stepper [linear]="false" #stepper>
 
             <mat-step [stepControl]="fechas">
                 <form novalidate [formGroup]="fechas">
@@ -107,50 +107,7 @@
                     </div>
                 </form>
             </mat-step>
-            
-            
-            <!-- Datos personales para la reserva -->
-            <!-- Si se tiene una sesión iniciada se rellena automáticamente -->
-            <!-- TENGO QUE PENSAR QUE HACER SINO TIENE SESION INICIADA, SE CREA USUARIO NUEVO O COMO????-->
-            <mat-step [stepControl]="usuario" label="Datos personales">
-                <form novalidate [formGroup]="usuario">
-                    <ng-template matStepperIcon="edit"><mat-icon>search</mat-icon></ng-template>
-                    <div class="row">
-                        <div class="col-md-6 text-center">
-                            <mat-form-field>
-                                <mat-label>Nombre y apellidos</mat-label>
-                                <input matInput placeholder="Juan Rodríguez Cazorla" formControlName="nombreCompleto" required>
-                            </mat-form-field>
-                        </div>
-                
-                        <div class="col-md-6 text-center">
-                            <mat-form-field>
-                                <mat-label>Teléfono</mat-label>
-                                <input matInput placeholder="612345678" formControlName="telefono" required>
-                            </mat-form-field>
-                        </div>
-                
-                        <div class="col-md-6 text-center">
-                            <mat-form-field>
-                                <mat-label>Correo electrónico</mat-label>
-                                <input matInput placeholder="correo@correo.es" formControlName="email" required>
-                            </mat-form-field>
-                        </div>
-                
-                        <div class="col-md-6 text-center">
-                            <mat-form-field>
-                                <mat-label>DNI</mat-label>
-                                <input matInput placeholder="12345678X" formControlName="dni" required>
-                            </mat-form-field>
-                        </div>
-                    </div>
-
-                    <div>
-                        <button class="mt-3" mat-button matStepperPrevious>Atrás</button>
-                        <button class="float-right mt-3" mat-button matStepperNext>Siguiente</button>
-                    </div>
-                </form>
-            </mat-step>            
+                    
 
 
             <!-- Servicios extras -->
@@ -178,15 +135,75 @@
                 </form>
             </mat-step>
 
+            <!-- Desglose de precios y demás -->
             <mat-step>
-                <ng-template matStepLabel>Reservar</ng-template>
+                <ng-template matStepLabel>Confirmar reserva</ng-template>
                 
                 <p>Acabaste</p>
                 <div>
                     <button class="mt-3" mat-button matStepperPrevious>Atrás</button>
-                    <button class="mt-3" mat-button (click)="stepper.reset()">Resetear</button>
+                    <button class="float-right mt-3" mat-button matStepperNext>Confirmar reserva</button>
                 </div>
-            </mat-step>
+                </mat-step>
+
+
+                <!-- Datos personales para la reserva -->
+                <!-- Si se tiene una sesión iniciada se rellena automáticamente -->
+                <!-- TENGO QUE PENSAR QUE HACER SINO TIENE SESION INICIADA, SE CREA USUARIO NUEVO O COMO????-->
+
+                <mat-step [stepControl]="usuario" label="Datos personales" *ngIf="usuarioActual != null; else usuarioExiste">
+                    <form novalidate [formGroup]="usuario">
+                        <ng-template matStepperIcon="edit">
+                            <mat-icon>search</mat-icon>
+                        </ng-template>
+                        <div class="row">
+                            <div class="col-md-6 text-center">
+                                <mat-form-field>
+                                    <mat-label>Nombre y apellidos</mat-label>
+                                    <input matInput placeholder="Juan Rodríguez Cazorla" formControlName="nombreCompleto" required [disabled]="usuarioActual != null">
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-md-6 text-center">
+                                <mat-form-field>
+                                    <mat-label>Teléfono</mat-label>
+                                    <input matInput placeholder="612345678" formControlName="telefono" required [disabled]="usuarioActual != null">
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-md-6 text-center">
+                                <mat-form-field>
+                                    <mat-label>Correo electrónico</mat-label>
+                                    <input matInput placeholder="correo@correo.es" formControlName="email" required [disabled]="usuarioActual != null">
+                                </mat-form-field>
+                            </div>
+
+                            <div class="col-md-6 text-center">
+                                <mat-form-field>
+                                    <mat-label>DNI</mat-label>
+                                    <input matInput placeholder="12345678X" formControlName="dni" required [disabled]="usuarioActual != null">
+                                </mat-form-field>
+                            </div>
+                        </div>
+
+                    <div>
+                      <button class="mt-3" mat-button matStepperPrevious>Atrás</button>
+                      <button class="float-right mt-3" mat-button matStepperNext>Siguiente</button>
+                    </div>
+                  </form>
+                </mat-step>
+
+
+            <ng-template #usuarioExiste>
+                <mat-step  label="Datos personales">
+                    <button mat-button (click)="logIn()">Iniciar sesión</button>
+                    
+                </mat-step>
+                <!--<button mat-button (click)="register()">Registrarse</button>-->
+            </ng-template>
+            
+
+
         </mat-horizontal-stepper>
     </div>
 </div>

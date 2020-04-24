@@ -1,13 +1,18 @@
-import { Component, OnInit } from '@angular/core';
+import { Component, OnInit, Inject } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl, ValidationErrors } from '@angular/forms';
 import { HttpClient, HttpParams } from '@angular/common/http';
-
 import { DateAdapter } from '@angular/material/core';
 import * as moment from 'moment';
+import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { ReservasLoginComponent } from '../reservas-login/reservas-login.component';
 
+
+interface DialogData {
+  email: string;
+}
 
 /**
- * TODO: CONTROLAR EL TEMA DE HACER RESERVAS SIN TENER USUARIO CON SESION INICIADA (QUÉ SE GUARDA EN PASSWD Y ALIAS?)
+ * TODO: PEDIR LOS DATOS PERSONALES AL FINAL DESPUES DEL DESGLOSE, DAR 2 OPCIONES, LOGUEARSE Y GUARDAR LA RESERVA, O REGISTRARSE Y GUARDAR LA RESERVA
  * TODO: UNA VEZ HA ACABADO DE HACER LA RESERVA, CONSULTAR TODOS LOS DATOS A LA BASE DE DATOS, CALCULAR EL MULTIPLICATIVO POR EL TEMA DE LA TEMPORADA
  * TODO: EL PRECIO POR EL AOJAMIENTO Y EL PRECIO POR LOS SERVICIOS EXTRAS
  * TODO: LUEGO MULTIPLICAR EL MULTIPLICATIVO POR EL PRECIO DEL ALOJAMIENTO Y SUMARLE A ESTE TODOS LOS SERVICIOS EXTRAS
@@ -56,9 +61,11 @@ export class ReservasComponent implements OnInit {
   public serviciosExtras: FormGroup;
   public servicios: any = [];
   public electricidad: boolean = null;
+
+  public email: string;
   
 
-  constructor(private fb: FormBuilder, private http: HttpClient, private dateAdapter: DateAdapter<Date>) {
+  constructor(private fb: FormBuilder, private http: HttpClient, private dateAdapter: DateAdapter<Date>, public dialog: MatDialog) {
     this.dateAdapter.setLocale('es-ES');
   }
 
@@ -76,13 +83,12 @@ export class ReservasComponent implements OnInit {
   guardarFechas(){ 
     this.fechaVal = true;
     if(this.fechas.get('fechaEntrada').value != '' && this.fechas.get('fechaSalida').value != '' && !this.fechas.get('fechaEntrada').errors && !this.fechas.get('fechaSalida').errors){
-      console.log((this.fechas.get('fechaEntrada').value).month());
       this.tipos2 = [];
       this.tipos22 = [];      
 
       // Parámetros a enviar al archivo PHP
       let params2 = new HttpParams()
-      .set('opcion', '2');
+      .set('opcion', '1');
 
       // Petición POST para obtener todos los tipos de alojamieto, FORMULARIO 1, Tipo de alojamiento
       this.http.post('http://localhost/reserva.php', params2).subscribe(data =>{
@@ -110,7 +116,7 @@ export class ReservasComponent implements OnInit {
       this.tipos = 'parcela';
       this.electricidad = false;
       params = new HttpParams()
-      .set('opcion', '3')
+      .set('opcion', '2')
       .set('entrada', this.dateAdapter.format(this.fechas.get('fechaEntrada').value,'YYYY/MM/DD'))
       .set('salida', this.dateAdapter.format(this.fechas.get('fechaSalida').value,'YYYY/MM/DD'));
       this.dato4 = 'Dimension';
@@ -119,7 +125,7 @@ export class ReservasComponent implements OnInit {
       this.tipos = 'bungalow';
       this.electricidad = true;
       params = new HttpParams()
-      .set('opcion', '5')
+      .set('opcion', '4')
       .set('entrada', this.dateAdapter.format(this.fechas.get('fechaEntrada').value,'YYYY/MM/DD'))
       .set('salida', this.dateAdapter.format(this.fechas.get('fechaSalida').value,'YYYY/MM/DD'));
       this.dato4 = 'Máximo de personas';
@@ -179,13 +185,13 @@ export class ReservasComponent implements OnInit {
 
     if(this.tipos == 'parcela'){
       params2 = new HttpParams()
-      .set('opcion', '4')
+      .set('opcion', '3')
       .set('entrada', this.dateAdapter.format(this.fechas.get('fechaEntrada').value,'YYYY/MM/DD'))
       .set('salida', this.dateAdapter.format(this.fechas.get('fechaSalida').value,'YYYY/MM/DD'))
       .set('sombra', datos['sombra']);
     }else{
       params2 = new HttpParams()
-      .set('opcion', '6')
+      .set('opcion', '5')
       .set('entrada', this.dateAdapter.format(this.fechas.get('fechaEntrada').value,'YYYY/MM/DD'))
       .set('salida', this.dateAdapter.format(this.fechas.get('fechaSalida').value,'YYYY/MM/DD'))
       .set('habitaciones', datos['habitaciones']);
@@ -281,12 +287,12 @@ export class ReservasComponent implements OnInit {
      * ! NO DEJAR CUANDO SE ENTREGUE EL CÓDIGO
      */
 
-    Object.entries(this.serviciosExtras.controls).forEach(entries => {
+    /*Object.entries(this.serviciosExtras.controls).forEach(entries => {
       console.log(entries);
       
-    });
+    });*/
 
-    console.log('Datos fechas');
+    /*console.log('Datos fechas');
     console.log(this.fechas.get('fechaEntrada').value);
     console.log(this.fechas.get('fechaSalida').value);
 
@@ -317,9 +323,47 @@ export class ReservasComponent implements OnInit {
         console.log('num'+element['idServicio']+' con cantidad: '+this.serviciosExtras.get('num'+element['idServicio']).value);
       }
       
-    });
+    });*/
+
+    //console.log(this.usuarioActual);
+
+    let params = new HttpParams()
+    .set('opcion', '7')
+    .set('fechaEntrada', this.fechas.get('fechaEntrada').value)
+    .set('fechaSalida', this.fechas.get('fechaSalida').value)
+    .set('alojamiento', this.alojamiento.get('tipo').value)
+    .set('caract1', this.alojamiento.get('caracteristicaUnica1').value)// * Esto en reserva.php sale como un string con forma de array ARREGLAR
+    .set('caract2', this.alojamiento.get('caracteristicaUnica2').value)// * Esto en reserva.php sale como un string con forma de array ARREGLAR
+    .set('nombreUsuario', this.usuario.get('nombreCompleto').value)
+    .set('telefono', this.usuario.get('telefono').value)
+    .set('email', this.usuario.get('email').value)
+    .set('dni', this.usuario.get('dni').value);
+    if(this.usuarioActual != null){
+      params.set('alias', this.usuarioActual['alias']);
+    }else{
+      params.set('alias', this.usuario.get('nombreCompleto').value+this.usuario.get('dni').value);
+      params.set('password', '0');
+    }
+
+    console.log(params);
+
+    this.http.post('http://localhost/reserva.php', params).subscribe(data =>{
+      if(data != null){ // Si recibe algún alojamiento
+        console.log(data);
+      }
+    }, error => console.log(error));
 
     
+  }
+
+  logIn(){
+    const dialogRef = this.dialog.open(ReservasLoginComponent, {
+      data: {}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.email = result;
+    });
   }
 
 
@@ -352,11 +396,16 @@ export class ReservasComponent implements OnInit {
         nombreCompleto: [this.usuarioActual['nombre'], Validators.required],
         telefono: [this.usuarioActual['telefono'], [Validators.required, Validators.pattern('^[6-7][0-9]{8}$')]],
         //! FALLA email
-        //! email: ['', [Validators.required, Validators.pattern("^(((\.)+)?[A-z0-9]+((\.)+)?)+@(((\.)+)?[A-z0-9]+((\.)+)?)+\.[A-z]+$")]],//Puede empezar por . o no, contener letras y numeros seguidos de punto o no, seguido por @ seguido por . o no letras y numeros y punto o no . letras
+        // email: ['', [Validators.required, Validators.pattern("^(((\.)+)?[A-z0-9]+((\.)+)?)+@(((\.)+)?[A-z0-9]+((\.)+)?)+\.[A-z]+$")]],//Puede empezar por . o no, contener letras y numeros seguidos de punto o no, seguido por @ seguido por . o no letras y numeros y punto o no . letras
         //? HACER ALGO PARA CONTROLAR EL EMAIL (PATTERN)
         email: [this.usuarioActual['email'], [Validators.required, Validators.pattern("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)$")]],
         dni: [this.usuarioActual['nif'], [Validators.required, Validators.pattern('^[0-9]{8,8}[A-Za-z]$')]],
       });
+      this.usuario.get('nombreCompleto').disable();
+      this.usuario.get('telefono').disable();
+      this.usuario.get('email').disable();
+      this.usuario.get('dni').disable();
+
     }else{
       this.usuario = this.fb.group({
         nombreCompleto: ['', Validators.required],
@@ -375,7 +424,7 @@ export class ReservasComponent implements OnInit {
     this.serviciosExtras = this.fb.group({});
 
     let params = new HttpParams()
-    .set('opcion', '7');
+    .set('opcion', '6');
     // Petición POST para obtener todos los servicios
     this.http.post('http://localhost/reserva.php', params).subscribe(data => {
       if (data != null) { // Si recibe algún alojamiento
@@ -405,14 +454,5 @@ export class ReservasComponent implements OnInit {
       fd.append('rol', this.usuarioActual['rol']);*/
     }
 
-
-    
-
-
-    
-      
-    
-
-    
   }
 }
