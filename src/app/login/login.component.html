@@ -6,27 +6,27 @@
             <div class="mt-2">
                 <div>
                     <div>
-                        <label class="col-12">Correo electrónico</label>
-                    </div>
-                    <div>
-                        <input class="col-12" formControlName="email" type="email">
+                        <label class="col-12 mb-0">Correo electrónico</label>
+                        <input class="col-12 mt-0" formControlName="email" type="email">
                     </div>
                     <span *ngIf="login.get('email').touched && login.get('email').hasError('required')"> El correo electrónico es obligatorio.</span>
                 </div>
-                <div>
+
+                <div class="mt-2">
                     <div>
-                        <label class="col-12">Contraseña</label>
-                    </div>
-                    <div>
-                        <input class="col-12" formControlName="password" type="password">
+                        <label class="col-12 mb-0">Contraseña</label>
+                        <input class="col-12 mt-0" formControlName="password" type="password">
                     </div>
                     <span *ngIf="login.get('password').touched && login.get('password').hasError('required')"> La contraseña es obligatoria.</span>
+
                 </div>
             </div>
+
             <div *ngIf="comprobado == 'false'" class="text-center">
                 <span style="color: red;">No existe usuario con ese correo y/o contraseña.</span>
             </div>
             <br>
+
             <button mat-raised-button color="primary" (click)="LogIn()" class="float-right">Iniciar sesión</button>
             <button mat-raised-button color="primary" (click)="volver()">Volver</button>
         </form>
