@@ -1,14 +1,15 @@
-import { Component, OnInit, Inject } from '@angular/core';
+import { Component, OnInit, Inject, ɵConsole } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl, ValidationErrors } from '@angular/forms';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { DateAdapter } from '@angular/material/core';
 import * as moment from 'moment';
-import { MatDialog, MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
+import { MatDialog } from '@angular/material/dialog';
 import { ReservasLoginComponent } from '../reservas-login/reservas-login.component';
+import { Usuario } from '../usuario/usuario';
 
 
 interface DialogData {
-  email: string;
+  email: any;
 }
 
 /**
@@ -39,6 +40,7 @@ export class ReservasComponent implements OnInit {
   public info1: boolean = false;
   public fechaVal: boolean = false;
   public fechaMenos7: boolean = null;
+  public multiplicador: number;
 
   // Variables del formulario 2
   public alojamiento: FormGroup;
@@ -51,18 +53,23 @@ export class ReservasComponent implements OnInit {
   public dato3: string;
   public dato4: string = 'Dimensión o Número maximo de personas';
   public arrayCaract2: any = [];
-  
 
   // Variables del formulario 3
-  public usuario: FormGroup;
-
-
-  // Variables del formulario 4
   public serviciosExtras: FormGroup;
   public servicios: any = [];
   public electricidad: boolean = null;
+  public checkado: boolean = false;
 
-  public email: string;
+  // Variables del formulario 4
+  public usuario: FormGroup;
+  public loginReserva: boolean = null;
+
+  public email: any;
+
+  public valor1: any = '';
+  public valor2: any = '';
+
+  public persona: Usuario;
   
 
   constructor(private fb: FormBuilder, private http: HttpClient, private dateAdapter: DateAdapter<Date>, public dialog: MatDialog) {
@@ -101,11 +108,167 @@ export class ReservasComponent implements OnInit {
           }
         }
       }, error => console.log(error));
+
+      let params3 = new HttpParams()
+      .set('opcion', '8')
+      .set('entrada', (this.fechas.get('fechaEntrada').value).format('YYYY-MM-DD'))
+      .set('salida', (this.fechas.get('fechaSalida').value).format('YYYY-MM-DD'));
+
+      // Para los multiplicativos de las fechas
+      this.http.post('http://localhost/reserva.php', params3).subscribe(data =>{
+        if(data != null){ // Si recibe algún alojamiento
+          console.log(data);
+
+          // Total de días
+          let diff = Math.floor((new Date(this.fechas.get('fechaSalida').value).getTime() - new Date(this.fechas.get('fechaEntrada').value).getTime())/86400000)+1;
+
+          if(data != 0){
+            let data2: any = data;
+            //console.log((this.fechas.get('fechaEntrada').value).format('YYYY-MM-DD'));
+            //console.log((this.fechas.get('fechaSalida').value).format('YYYY-MM-DD'));
+
+            //console.log('Días de la reserva: '+diff);
+            //console.log(data2);
+
+            // Seteo de la variable calculo usada para el multiplicador
+            let calculo: number = 0;
+
+            // Cálculo de días en cada temporada
+            for (let i = 0; i < data2.length; i++) { // Por cada temporada...
+              const element = data2[i];
+              //console.log(element);
+
+              // Seteo de las fechas de la temporada
+              let inicioTemporada = moment(element['fecha_entrada']);
+              let finTemporada = moment(element['fecha_salida']);
+
+              // Seteo de las fechas de la reserva
+              let entrada = this.fechas.get('fechaEntrada').value;
+              let salida = this.fechas.get('fechaSalida').value;
+
+              // Seteo predefinido de los días entre la fecha de entrada de la reserva y la fecha de inicio de la temporada
+              let diasAntes = Math.floor((new Date(element['fecha_entrada']).getTime() - new Date(entrada).getTime())/86400000);
+          
+              if(inicioTemporada > entrada){ // Si entra al camping antes de la temporada y...
+          
+                if(i != 0){ // Si el índice del for no es igual a 0
+                  diasAntes = Math.floor((new Date(element['fecha_entrada']).getTime() - new Date(data[i-1]['fecha_salida']).getTime())/86400000);
+                }              
+
+                if(finTemporada >= salida){ // sale del camping antes de que acabe la temporada
+                  let total = Math.abs(salida.diff(inicioTemporada, 'days'))+1;
+                  
+                  //console.log('Entra al camping '+diasAntes+' dias antes de que empiece la temporada '+element['nombre_temporada']+', está '+total+' días en la temporada '+element['nombre_temporada']);
+                  calculo += diasAntes*1+total*element['multiplicador'];
+                  calculo = calculo/diff;
+
+                  // Seteo del multiplicador a la variable del principio, para guardarla luego en la BD
+                  this.multiplicador = parseFloat(calculo.toFixed(2));
+                  console.log('Por lo que su multiplicativo será: ('+diasAntes+'*1+'+total+'*'+element['multiplicador']+')/'+diff+' = '+ calculo.toFixed(2));
+          
+                }else{ // sale del camping después de que acabe la temporada
+                  
+                  let total = Math.abs(finTemporada.diff(inicioTemporada, 'days'))+1;
+                  let dias = Math.abs(salida.diff(finTemporada, 'days'));
+                  if(data2.length < 2){ // Si hay solo 1 temporada (a parte de la temporada media)
+                    //console.log('Entra al camping '+diasAntes+' dias antes de la temporada '+element['nombre_temporada']+' pasa '+total+' días en la temporada '+element['nombre_temporada']+' y sale '+dias+' dias despues de que acabe la temporada');
+
+                    calculo = (diasAntes*1+total*element['multiplicador']+dias*1)/diff;
+
+                    // Seteo del multiplicador a la variable del principio, para guardarla luego en la BD
+                    this.multiplicador = parseFloat(calculo.toFixed(2));
+
+                    console.log('Por lo que su multiplicativo será: ('+diasAntes+'*1+'+total+'*'+element['multiplicador']+'+'+dias+'*1)/'+diff+' = '+ calculo.toFixed(2));
+                  }else{ // Si hay más de 1 temporada (cambios de temporada, a parte de la temporada media)
+                    let dias2Temp: any;
+                    if(data2[i+1] != null){ // Si existe otra temporada por delante
+                      dias2Temp = Math.floor((new Date(data2[i+1]['fecha_entrada']).getTime() - new Date(element['fecha_salida']).getTime())/86400000);
+                    }else{ // Si no existe otra temporada por delante
+                      dias2Temp = Math.floor((new Date(salida).getTime() - new Date(element['fecha_salida']).getTime())/86400000);
+                    }
+                    //console.log('Está '+diasAntes+' días antes en el camping, pasa '+total+' días de la temporada '+element['nombre_temporada']+ ' y está '+dias2Temp+' en temp media');
+
+                    // Multiplicador
+                    calculo += diasAntes*1+total*element['multiplicador'];
+                    console.log('Por lo que su multiplicativo será: ('+diasAntes+'*1+'+total+'*'+element['multiplicador']+') = '+calculo);
+                  }
+          
+                }
+                
+              }else if(inicioTemporada <= entrada){ // Si entra al camping el mismo día o después del inicio de la temporada
+
+                let dias: any;
+                if(finTemporada >= salida){ // sale del camping antes de que acabe la temporada y...
+                  dias = Math.floor((new Date(salida).getTime() - new Date(entrada).getTime())/86400000)+1;
+
+                  //console.log('Entra al camping el día '+(this.fechas.get('fechaEntrada').value).format('YYYY-MM-DD')+' y sale el día '+(this.fechas.get('fechaSalida').value).format('YYYY-MM-DD')+' un total de '+dias+' días en la temporada '+element['nombre_temporada']);
+                  calculo = (dias*element['multiplicador'])/diff
+
+                  // Seteo del multiplicador a la variable del principio, para guardarla luego en la BD
+                  this.multiplicador = parseFloat(calculo.toFixed(2));
+                  console.log('Lo cual su multiplicador es: ('+dias+'*'+element['multiplicador']+')/'+diff+' = '+calculo.toFixed(2));
+                }else{ // sale del camping después de que acabe la temporada
+                  dias = Math.floor((new Date(element['fecha_salida']).getTime() - new Date(entrada).getTime())/86400000)+1;
+                  if(data2.length < 2){ // Si hay solo 1 temporada (a parte de la temporada media), sale en temporada media
+                    let diasSalida = Math.floor((new Date(salida).getTime() - new Date(element['fecha_salida']).getTime())/86400000)+1;
+                    calculo = (dias*element['multiplicador']+diasSalida*1)/diff;
+                    this.multiplicador = parseFloat(calculo.toFixed(2));
+                    //console.log(calculo.toFixed(2));
+                    console.log('Entro durante la temporada '+element['nombre_temporada']+' y estuvo '+dias+' en dicha temporada, luego estuvo '+diasSalida+' en temporada media');
+                  }else{
+                    //console.log('Ha entrado durante la temporada y ha estado '+dias+' días en la temporada '+element['nombre_temporada']);
+                    calculo += dias*element['multiplicador'];
+                  }                 
+          
+                }
+                
+              }
+            }
+
+          }else{ // Si lo que devuelve reserva.php es 0, significa que las fechas no están en ninguna temporada, lo que significa que todos los días de la estancia son en temporada media
+            // Seteo del multiplicador a la variable del principio, para guardarla luego en la BD
+            this.multiplicador = (diff*1)/diff;
+            console.log('Pasa '+diff+' días en temporada media por lo que el multiplicativo de la reserva es: '+diff+'*1/'+diff+' = '+this.multiplicador);
+          }
+        }
+      }, error => console.log(error));
     }
   }
 
   // Al escoger un tipo de alojamiento consulta en la BD la característica 1 de todos los alojamientos de ese tipo que estén disponibles entre las fechas indicadas al principio
   getCaracteristica1(datos: string){ 
+
+    // Cada vez que se cambie el tipo de alojamiento que ponga a null los demás campos, para que no permita crear un error, cuando eliges los datos de un tipo de alojamiento y luego cambias el tipo de alojamiento,
+    // los datos del anterior alojamiento se quedan guardados y permite seguir con los datos del nuevo alojamiento en blanco,
+    // pero en la parte backend guardaba los datos del anterior alojamiento y podría dar un error en la reserva a la hora de hacerla.
+    if(this.alojamiento.get('tipo').value != null){
+
+      // Formulario de alojamiento
+      this.alojamiento.patchValue({'caracteristicaUnica1': null, 'caracteristicaUnica2': null, 'numPersonas': null});
+      this.alojamiento.setErrors({'caracteristicaUnica1' : null, 'caracteristicaUnica2' : null});
+
+      // Formulario serviciosExtras, cada vez que se elija un tipo de alojamiento los servicios extras se resetean, si es servicioX se pone false (unchecked), si es numX se pone a null y se deshabilita por defecto (el input se borra y está disable)
+      Object.entries(this.serviciosExtras.controls).forEach(entries => {
+        //console.log(entries[0].slice(0,-1));
+        if(entries[0].slice(0,-1) == 'servicio'){
+          this.serviciosExtras.get([entries[0]]).setValue(false);
+        }else if(entries[0].slice(0,-1) == 'num'){
+          this.serviciosExtras.get([entries[0]]).setValue(null);
+          this.serviciosExtras.get([entries[0]]).disable();
+        }
+        
+
+      });
+      
+      //console.log(this.serviciosExtras);
+
+
+      /**
+       * TODO: Poner a null los inputs y los checkboxs
+       */
+    }
+    
+
     this.arrayCaract2 = [];
 
     // Parámetros a enviar al archivo PHP
@@ -166,13 +329,22 @@ export class ReservasComponent implements OnInit {
     }, error => console.log(error));
   }
 
-  validacionFechaAlojamiento(){
+  validacionAlojamiento(){
     return (): ValidationErrors => {
       if(this.alojamiento.get('tipo').value == 'Bungalow'){
+        this.alojamiento.get('numPersonas').setErrors(null);
         if(this.fechaMenos7 == true){
           this.alojamiento.get('tipo').setErrors({menos7: true});
         }else{
           this.alojamiento.get('tipo').setErrors(null);
+        }
+      }else{
+        if(this.alojamiento.get('numPersonas').value){
+          if(this.alojamiento.get('numPersonas').value > 12 || this.alojamiento.get('numPersonas').value < 1){
+            this.alojamiento.get('numPersonas').setErrors({'personas': true});
+          }
+        }else{
+          this.alojamiento.get('numPersonas').setErrors({'personas': true});
         }
       }
       return;
@@ -213,21 +385,19 @@ export class ReservasComponent implements OnInit {
         if(this.fechas.get('fechaSalida').value != ''){
           this.fechas.get('fechaSalida').setErrors(null);
           this.fechaVal = false;
-          let entrada: any = moment(this.fechas.get('fechaEntrada').value);
-          let salida: any = moment(this.fechas.get('fechaSalida').value);
-          let diferencia = moment.duration(salida-entrada).days();
-          if (diferencia <= 0) {
+          let diff = Math.floor((new Date(this.fechas.get('fechaSalida').value).getTime() - new Date(this.fechas.get('fechaEntrada').value).getTime())/86400000);
+          if (diff <= 0) {
             this.fechas.get('fechaSalida').setErrors({fecha2Mayor: true});
-          }else if(diferencia > 0){
+          }else if(diff > 0){
             this.fechas.get('fechaSalida').setErrors(null);
           } 
           if((this.fechas.get('fechaEntrada').value).month() == 6 || (this.fechas.get('fechaEntrada').value).month() == 7){
-            if(diferencia >= 0 && diferencia < 7){
+            if(diff >= 0 && diff < 7){
               this.fechaMenos7 = true;
               if(this.alojamiento.get('tipo').value == 'Bungalow'){
                 this.alojamiento.get('tipo').setErrors({menos7: true});
               }
-            }else if(diferencia >= 7){
+            }else if(diff >= 7){
               this.fechaMenos7 = false;
               this.alojamiento.get('tipo').setErrors(null);
             }
@@ -261,13 +431,12 @@ export class ReservasComponent implements OnInit {
     return (): ValidationErrors => {
       Object.entries(this.serviciosExtras.value).forEach(entries => {
         if(entries[0].slice(0,3) == 'num' && entries[0] != 'num1'){
-          if(entries[1] == ''){
+          if(entries[1] == '' || entries[1] == null){
             this.serviciosExtras.get(entries[0]).setErrors({'noCantidad': true});
           }else{
             this.serviciosExtras.get(entries[0]).setErrors(null);
           }
         }
-        
       });
       return;
     };
@@ -295,6 +464,7 @@ export class ReservasComponent implements OnInit {
     /*console.log('Datos fechas');
     console.log(this.fechas.get('fechaEntrada').value);
     console.log(this.fechas.get('fechaSalida').value);
+    console.log(this.multiplicador);
 
     console.log(' ');
     console.log('Datos alojamiento');
@@ -304,10 +474,10 @@ export class ReservasComponent implements OnInit {
 
     console.log(' ');
     console.log('Datos usuario');
-    console.log(this.usuario.get('nombreCompleto').value);
-    console.log(this.usuario.get('telefono').value);
-    console.log(this.usuario.get('email').value);
-    console.log(this.usuario.get('dni').value);
+    console.log(this.persona['nombre']);
+    console.log(this.persona['telefono']);
+    console.log(this.persona['email']);
+    console.log(this.persona['nif']);
 
     console.log(' ');
     console.log('Servicios extras');
@@ -327,31 +497,7 @@ export class ReservasComponent implements OnInit {
 
     //console.log(this.usuarioActual);
 
-    let params = new HttpParams()
-    .set('opcion', '7')
-    .set('fechaEntrada', this.fechas.get('fechaEntrada').value)
-    .set('fechaSalida', this.fechas.get('fechaSalida').value)
-    .set('alojamiento', this.alojamiento.get('tipo').value)
-    .set('caract1', this.alojamiento.get('caracteristicaUnica1').value)// * Esto en reserva.php sale como un string con forma de array ARREGLAR
-    .set('caract2', this.alojamiento.get('caracteristicaUnica2').value)// * Esto en reserva.php sale como un string con forma de array ARREGLAR
-    .set('nombreUsuario', this.usuario.get('nombreCompleto').value)
-    .set('telefono', this.usuario.get('telefono').value)
-    .set('email', this.usuario.get('email').value)
-    .set('dni', this.usuario.get('dni').value);
-    if(this.usuarioActual != null){
-      params.set('alias', this.usuarioActual['alias']);
-    }else{
-      params.set('alias', this.usuario.get('nombreCompleto').value+this.usuario.get('dni').value);
-      params.set('password', '0');
-    }
 
-    console.log(params);
-
-    this.http.post('http://localhost/reserva.php', params).subscribe(data =>{
-      if(data != null){ // Si recibe algún alojamiento
-        console.log(data);
-      }
-    }, error => console.log(error));
 
     
   }
@@ -363,7 +509,101 @@ export class ReservasComponent implements OnInit {
 
     dialogRef.afterClosed().subscribe(result => {
       this.email = result;
+      if(this.email == 'Error'){
+        this.loginReserva = false;
+      }else if(this.email != undefined && this.email['id']){
+        this.loginReserva = true;
+        console.log(this.email);
+
+        let valor: any;
+        if(this.alojamiento.get('tipo').value == "Bungalow"){
+          valor = '0';
+        }else{
+          if(this.serviciosExtras.get('num2').value != null){
+            valor =  (parseInt(this.serviciosExtras.get('num2').value)+2).toString();
+          }else{
+            valor = '0';
+          }
+        }
+
+        let params = new HttpParams()
+        .set('opcion', '7')
+        .set('fechaEntrada', this.fechas.get('fechaEntrada').value)
+        .set('fechaSalida', this.fechas.get('fechaSalida').value)
+        .set('alojamiento', this.alojamiento.get('tipo').value)
+        .set('caract1',this.valor1)// * Esto en reserva.php sale como un string con forma de array ARREGLAR
+        .set('caract2', this.valor2)// * Esto en reserva.php sale como un string con forma de array ARREGLAR
+        .set('personasExtras', valor)
+        .set('multiplicativo', this.multiplicador.toString())
+        .set('nombreUsuario', this.email.nombre)
+        .set('telefono', this.email.telefono.toString())
+        .set('email', this.email.email)
+        .set('dni', this.email.nif)
+        .set('alias', this.email.alias);        
+
+        console.log(params);
+        console.log(this.serviciosExtras.get('num2').value);
+
+        // AQUI INSERTAR EL CODIGO PARA HACER LA RESERVA EN PHP CON EL EMAIL DEL USUARIO Y LOS DATOS DEL DESGLOSE
+
+
+      }
+      
     });
+  }
+
+  reserva(){
+      this.valor1 = Object.values(this.alojamiento.get('caracteristicaUnica1').value)[0];
+
+        let params2: any;
+        if(this.persona != null){
+
+          let valor: string;
+          if(this.serviciosExtras.get('num2').value != null){
+            valor = this.serviciosExtras.get('num2').value;
+          }else{
+            valor = '0';
+          }
+
+          let numPersonas: string;
+          if(this.alojamiento.get('tipo').value == 'Bungalow'){
+            
+            numPersonas = this.alojamiento.get('caracteristicaUnica2').value['maximo_personas'];
+          }else{
+            numPersonas = this.alojamiento.get('numPersonas').value;
+          }
+          
+
+
+          params2 = new HttpParams()
+          .set('opcion', '7')
+          .set('fechaEntrada', this.fechas.get('fechaEntrada').value)
+          .set('fechaSalida', this.fechas.get('fechaSalida').value)
+          .set('alojamiento', this.alojamiento.get('tipo').value)
+          .set('caract1',this.valor1)// * Esto en reserva.php sale como un string con forma de array ARREGLAR
+          .set('caract2', this.valor2)// * Esto en reserva.php sale como un string con forma de array ARREGLAR
+          .set('personasExtra', valor.toString())
+          .set('multiplicativo', this.multiplicador.toString())
+          .set('nombreUsuario', this.persona['nombre'])
+          .set('telefono', this.persona['telefono'].toString())
+          .set('email', this.persona['email'])
+          .set('dni', this.persona['nif'])
+          .set('alias', this.persona['alias'])
+          .set('numPersonas', numPersonas.toString());
+          
+        }
+        
+        console.log(params2);
+
+        /**
+         * TODO: Hacer que envie el tema de los datos a reserva.php
+         */
+
+        /*this.http.post('http://localhost/reserva.php', params2).subscribe(data =>{
+          if(data != null){ // Si recibe algún alojamiento
+            console.log(data);
+          }
+        }, error => console.log(error));*/
   }
 
 
@@ -386,32 +626,21 @@ export class ReservasComponent implements OnInit {
       tipo: ['', Validators.required],
       caracteristicaUnica1: ['', Validators.required],
       caracteristicaUnica2: ['', Validators.required],
+      numPersonas: ['', Validators.required]
     });
-    this.alojamiento.setValidators(this.validacionFechaAlojamiento());
+    this.alojamiento.setValidators(this.validacionAlojamiento());
   
 
     // Formulario 3 - Datos personales (usuario)
     if(this.usuarioActual != null){
-      this.usuario = this.fb.group({
-        nombreCompleto: [this.usuarioActual['nombre'], Validators.required],
-        telefono: [this.usuarioActual['telefono'], [Validators.required, Validators.pattern('^[6-7][0-9]{8}$')]],
-        //! FALLA email
-        // email: ['', [Validators.required, Validators.pattern("^(((\.)+)?[A-z0-9]+((\.)+)?)+@(((\.)+)?[A-z0-9]+((\.)+)?)+\.[A-z]+$")]],//Puede empezar por . o no, contener letras y numeros seguidos de punto o no, seguido por @ seguido por . o no letras y numeros y punto o no . letras
-        //? HACER ALGO PARA CONTROLAR EL EMAIL (PATTERN)
-        email: [this.usuarioActual['email'], [Validators.required, Validators.pattern("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)$")]],
-        dni: [this.usuarioActual['nif'], [Validators.required, Validators.pattern('^[0-9]{8,8}[A-Za-z]$')]],
-      });
-      this.usuario.get('nombreCompleto').disable();
-      this.usuario.get('telefono').disable();
-      this.usuario.get('email').disable();
-      this.usuario.get('dni').disable();
+      this.persona = new Usuario(this.usuarioActual['id'], this.usuarioActual['email'], this.usuarioActual['nif'], this.usuarioActual['nombre'], this.usuarioActual['rol'], this.usuarioActual['telefono'], this.usuarioActual['alias']);
 
     }else{
       this.usuario = this.fb.group({
         nombreCompleto: ['', Validators.required],
         telefono: ['', [Validators.required, Validators.pattern('^[6-7][0-9]{8}$')]],
         //! FALLA email
-        //! email: ['', [Validators.required, Validators.pattern("^(((\.)+)?[A-z0-9]+((\.)+)?)+@(((\.)+)?[A-z0-9]+((\.)+)?)+\.[A-z]+$")]],//Puede empezar por . o no, contener letras y numeros seguidos de punto o no, seguido por @ seguido por . o no letras y numeros y punto o no . letras
+        // email: ['', [Validators.required, Validators.pattern("^(((\.)+)?[A-z0-9]+((\.)+)?)+@(((\.)+)?[A-z0-9]+((\.)+)?)+\.[A-z]+$")]],//Puede empezar por . o no, contener letras y numeros seguidos de punto o no, seguido por @ seguido por . o no letras y numeros y punto o no . letras
         //? HACER ALGO PARA CONTROLAR EL EMAIL (PATTERN)
         email: ['', [Validators.required, Validators.pattern("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)$")]],
         dni: ['', [Validators.required, Validators.pattern('^[0-9]{8,8}[A-Za-z]$')]],
@@ -437,22 +666,6 @@ export class ReservasComponent implements OnInit {
     }, error => console.log(error));
     this.serviciosExtras.setValidators(this.validacionServicio());
 
-    //! Borrar esto sino sirve de nada...
-    if(this.usuarioActual != null){ // SIN UTILIDAD AUN
-      //console.log(this.usuarioActual);
-      /*this.usuario.get('nombreCompleto').setValue(this.usuarioActual['nombre']);
-      this.usuario.get('telefono').setValue(this.usuarioActual['telefono']);
-      this.usuario.get('email').setValue(this.usuarioActual['email']);
-      this.usuario.get('dni').setValue(this.usuarioActual['nif']);*/
-      /*let fd: any = new FormData();
-      fd.append('alias', this.usuarioActual['alias']);
-      fd.append('dni', this.usuarioActual['nif']);
-      fd.append('nombre_usuario', this.usuarioActual['nombre']);
-      fd.append('telefono', this.usuarioActual['telefono']);
-      fd.append('email', this.usuarioActual['email']);
-      fd.append('password', this.usuarioActual['password']);
-      fd.append('rol', this.usuarioActual['rol']);*/
-    }
 
   }
 }
