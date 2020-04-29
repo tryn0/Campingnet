@@ -1,6 +1,7 @@
 import { Component, OnInit } from '@angular/core';
 import { ActivatedRoute, Router } from '@angular/router';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { Alojamiento } from "./alojamiento";
 
 @Component({
@@ -9,6 +10,8 @@ import { Alojamiento } from "./alojamiento";
   styleUrls: ['./alojamiento.component.css']
 })
 export class AlojamientoComponent implements OnInit {
+
+  public usuarioActual: any;
 
   public alojamiento: string = null;
 
@@ -28,7 +31,14 @@ export class AlojamientoComponent implements OnInit {
   public bungalows: Alojamiento;
   public parcelas: Alojamiento;
 
-  constructor(private router: ActivatedRoute, private http: HttpClient, private route: Router) {
+  public bungalow: Alojamiento;
+  public parcela: Alojamiento;
+
+  // Reseñas
+  public reseñas: any;
+  public resenia: FormGroup;
+
+  constructor(private router: ActivatedRoute, private http: HttpClient, public fb: FormBuilder, private route: Router) {
     
     if(this.router.snapshot.url.length == 1 && this.router.snapshot.url[0].path == 'alojamiento'){ // Si la url solo tiene 1 parámetro y es alojamiento que muestre una página para vefr parcelas o bungalows (para asegurarme de que va bien)
       this.situacion = 0;
@@ -69,6 +79,7 @@ export class AlojamientoComponent implements OnInit {
       .set('alojamiento', this.alojamiento)
       .set('numero', '0');
 
+
       this.http.post<string>('http://localhost/alojamientos.php', params).subscribe(data =>{ // Inicia el archivo alojamientos.php y busca en la BD los alojamientos con tipo según el 2º parámetro
         if(data != null){ // Si encuentra alojamientos...
           this.alojamientos = data;
@@ -76,9 +87,11 @@ export class AlojamientoComponent implements OnInit {
             // Bungalows
             for (let i = 0; i < this.alojamientos.length; i++) {
               this.bungalows = null;
-              const element = this.alojamientos[i];
+              const element = this.alojamientos[0];
               this.bungalows = new Alojamiento(element.idAlojamiento, element.tipo, element.numeroAlojamiento, null, null, element.habitaciones, element.maximo_personas);
               this.arrayBungalows.push(this.bungalows);
+
+
             }
           }else if(this.alojamiento == 'parcelas'){
             // Parcelas
@@ -105,29 +118,53 @@ export class AlojamientoComponent implements OnInit {
       .set('numero', this.router.snapshot.params.numero);
 
       this.http.post<string>('http://localhost/alojamientos.php', params).subscribe(data =>{ // Inicia el archivo alojamientos.php y busca en la BD los alojamientos con tipo según el 2º parámetro
-        if(data != null){ // Si encuentra alojamientos...
-          this.alojamientos = data[0];
-          if(this.alojamientos != 0){ // Si la consulta no devuelve 0 
-            if(this.alojamiento == 'bungalows'){
-              // Bungalows
-              this.errorExiste = null;
-              this.bungalows = null;
-              const element = this.alojamientos;
-              this.bungalows = new Alojamiento(element.idAlojamiento, element.tipo, element.numeroAlojamiento, null, null, element.habitaciones, element.maximo_personas);
-              this.arrayBungalows.push(this.bungalows);
-            }else if(this.alojamiento == 'parcelas'){
-              // Parcelas
-              this.errorExiste = null;
-              this.parcelas = null;
-              const element = this.alojamientos;
-              this.parcelas = new Alojamiento(element.idAlojamiento, element.tipo, element.numeroAlojamiento, element.sombra, element.dimension, null, null);
-              this.arrayParcelas.push(this.parcelas);
-            }
-          }else{
+        if(data != null){ // Si encuentra algo
+          if(data == '0'){ // Si devuelve 0, error
             this.errorExiste = true;
+          }else{ // si no...
+            this.alojamientos = data[0];
+            if(this.alojamientos != 0){ // Si la consulta no devuelve 0 
+              if(this.alojamiento == 'bungalows'){
+                // Bungalows
+                this.errorExiste = null;
+                const element = this.alojamientos;
+                this.bungalow = new Alojamiento(element.idAlojamiento, element.tipo, element.numeroAlojamiento, null, null, element.habitaciones, element.maximo_personas);
+                //this.arrayBungalows.push(this.bungalow);
+
+              }else if(this.alojamiento == 'parcelas'){
+                // Parcelas
+                this.errorExiste = null;
+                const element = this.alojamientos;
+                this.parcela = new Alojamiento(element.idAlojamiento, element.tipo, element.numeroAlojamiento, element.sombra, element.dimension, null, null);
+                //this.arrayParcelas.push(this.parcela);
+              }
+            }else{
+              this.errorExiste = true;
+            }
           }
         }
       }, error => console.log(error));
+
+       // Parámetros a enviar al archivo PHP
+       let paramResenias = new HttpParams()
+       .set('numero', this.router.snapshot.params.numero);
+       
+       /**
+        * TODO: Es post de aqui abajo devuelve todas las reseñas del alojamiento, pero devuelve los datos sin el nombre de usuario, 
+        */
+        this.http.post('http://localhost/resenias.php', paramResenias).subscribe(data =>{ // Recopilar reseñas
+          if(data != null){ // Si existen reseñas...
+            this.reseñas = data;
+            for (let i = 0; i < this.reseñas.length; i++) {
+              const element = this.reseñas[i];
+
+              if(element['anonimo'] == '0'){
+                // si es anonimo no mostrarlo
+              }
+              
+            }
+          }
+        }, error => console.log(error));
 
 
     }else{ // Si la url es /alojamiento/ y el 2º parámetro no existe que se redirija a /inicio
@@ -139,6 +176,20 @@ export class AlojamientoComponent implements OnInit {
     history.back();
   }
 
+  anonimo(e){}
+
+  enviarResenia(){}
+
   ngOnInit(): void {
+
+    // Comprobar que hay una sesion de usuario
+    this.usuarioActual = JSON.parse(localStorage.getItem('usuarioActual'));
+
+    this.resenia = this.fb.group({
+      anonimo: ['',  Validators.required],
+      mensaje: ['', Validators.required],
+      puntuacion: ['', Validators.required]
+    });
+
   }
 }

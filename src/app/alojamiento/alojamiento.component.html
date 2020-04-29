@@ -123,68 +123,213 @@
 
     <!-- Si viene con URL con parametros alojamiento/(bungalows o parcelas)/numeroAlojamiento -->
     <div *ngIf='situacion == 2'>
+
         <div *ngIf="alojamiento == 'bungalows'">
-            <h3 class="mt-5 text-center">Bungalows</h3>
-            <div class="container-lg">
-                <div class="mt-2 mb-5">
-                    <div class="row">
-                        <mat-card *ngFor='let bungalow of arrayBungalows' class="mb-3 col-md-5 col-lg-3 ml-md-5">
-                            <mat-card-header>
-                            <div mat-card-avatar class="avatar"></div>
-                            <mat-card-title>Bungalow nº{{bungalow.numeroAlojamiento}}</mat-card-title>
-                            <mat-card-subtitle>ID: {{bungalow.idAlojamiento}}</mat-card-subtitle>
-                            </mat-card-header>
-                            <img class="imagen-cuerpo-card" mat-card-image src="../../assets/images/alojamientos/bungalow1.jpg"
-                            alt="Foto de un bungalow">
-                            <mat-card-content>
-                            <p>
-                                Habitaciones: {{bungalow.habitaciones}} <br>
-                                Maximo depersonas: {{bungalow.maximo_personas}}<br>
-                            </p>
-                            </mat-card-content>
-                            <mat-card-actions>
-                                <button [routerLink]="['/alojamiento/bungalows/', bungalow.numeroAlojamiento]" mat-button>VER</button>
-                            <button class="float-right" mat-button>RESERVAR</button>
-                            </mat-card-actions>
-                        </mat-card>
+            <!-- Alojamiento -->
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-12">
+                        <div class="card mt-4">
+                            <!-- Imagen del alojamiento -->
+                            <img class="card-img-top img-fluid" src="../../assets/images/alojamientos/bungalow1.jpg" alt="Imagen del bungalow">
+                            <!-- Información del alojamiento -->
+                            <div class="card-body">
+                                <h4 class="card-title">Bungalow nº {{ bungalow.numeroAlojamiento }}</h4> <!-- Los datos de bungalows.X dan errores falsos en la consola del navegador, preguntar por qué y cómo arreglarlo -->
+                                <h5>Precio</h5>
+                                <p class="card-text">Número de habitaciones: {{ bungalow.habitaciones }}</p>
+                                <p class="card-text">Número máximo de personas: {{ bungalow.maximo_personas }}</p>
+                                <p>Exclusivo bungalow para disfrutar, tanto en verano como en invierno.</p>
+                                <span class="text-warning">Buscar sistema de puntuación de estrellas ★ ★ ★ ★ ☆ Aquí hacer una media de la puntuación dada por los usuarios, puntuacion del 1 al 5 por ejemplo, despues se hace una media y según el número que salga, ese número son carácteres ★, se le resta ese numero a 5 y lo que salga es el caracter ☆</span>
+                            </div>
+                        </div>
+
+                        <!-- Reseñas -->
+                        <div class="card card-outline-secondary mt-4">
+                            <div class="card-header">Reseñas</div>
+                            <!-- Reseña -->
+                            <div class="card-body"><!-- Aquí hacer un ngFor con las reseñas recogidas de la BD -->
+                                <!-- Información de la reseña, usuario/anónimo y puntuación dada-->
+                                <div class="col-12">
+                                    <span class="float-left">Usuario/Anónimo, a la izquierda del todo</span>
+                                    <span class="float-right">Puntuación dada, a la derecha del todo</span>
+                                </div>
+                                <!-- Texto de la reseña -->
+                                <p class="col-12 mt-5">
+                                    Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                                    Saepe, deleniti sapiente, et atque nulla, facilis enim perspiciatis ratione dignissimos quaerat placeat.
+                                    Perspiciatis eaque harum optio obcaecati libero ducimus tempora enim?
+                                </p>
+                                <hr> <!-- Si es la última reseña que no aparezca este hr -->
+
+                            </div>
+                        </div>
+
+                        <!-- Escribir reseña, si se está logueado -->
+                        <div class="card card-outline-secondary mt-4" *ngIf="usuarioActual != null">
+                            <div class="card-header">Dejar una reseña</div>
+
+                            <div class="card-body">
+                                <form [formGroup]="resenia" novalidate class="py-3 px-4">
+                                    <div class="col-md-12 row">
+
+                                        <!-- Nombre de usuario-->
+                                        <div class="col-md-5">
+                                            <label>Nombre: {{ usuarioActual.alias }}</label>
+                                        </div>
+                                        
+                                        <!-- Checkbox si ocultar nombre de usuario en la reseña -->
+                                        <div class="col-md-2">
+                                            <mat-checkbox formControlName="anonimo" (change)="anonimo($event)">Anónimo</mat-checkbox>
+                                        </div>
+                                        
+                                        <!-- Puntuación -->
+                                        <div class="col-md-5 ">
+                                            <h6  class="float-right">★ ★ ★ ★ ☆</h6>
+                                            <input class="float-right" formControlName="puntuacion" type="number" max="10" min="0">
+                                        </div>
+                                        
+                                    </div>
+
+                                    <!-- Texta area (mensaje/comentario) -->
+                                    <div class="col-md-12 row mt-4">
+                                        <mat-form-field class="col-md-12">
+                                            <mat-label>Comentario</mat-label>
+                                            <input matInput #mensaje maxlength="255" placeholder="Ej. Me encanta...">
+                                            <mat-hint align="start"><strong>No escriba información personal</strong> </mat-hint>
+                                            <mat-hint align="end">{{mensaje.value.length}} / 255</mat-hint>
+                                          </mat-form-field>
+                                    </div>
+
+                                    <div class="text-center">
+                                        <button mat-flat-button color="primary" class="mt-3" (click)="enviarResenia()">Enviar</button>
+                                    </div>
+                                    
+                                </form>
+                            </div>
+                        </div>
                     </div>
-                    <span class="float-right" style="cursor: pointer;" (click)="volver()"> Volver </span>
                 </div>
+                <span style="cursor: pointer;" (click)="volver()"> Volver </span>
             </div>
+
         </div>
 
-    <div *ngIf="alojamiento == 'parcelas'">
-        <h3 class="mt-5 text-center">Parcela {{this.numero}}</h3>
-        <div class="container-lg">
-            <div class="mt-2 mb-5">
-                <div class="row">
-                    <mat-card *ngFor='let parcela of arrayParcelas' class="mb-3 col-md-5 col-lg-3 ml-md-5">
-                        <mat-card-header>
-                        <div mat-card-avatar class="avatar"></div>
-                        <mat-card-title>Parcela nº{{parcela.numeroAlojamiento}}</mat-card-title>
-                        <mat-card-subtitle>ID: {{parcela.idAlojamiento}}</mat-card-subtitle>
-                        </mat-card-header>
-                        <img class="imagen-cuerpo-card" mat-card-image src="../../assets/images/alojamientos/parcela1.jpg"
-                        alt="Foto de una parcela">
-                        <mat-card-content>
-                        <p>
-                            Sombra: {{parcela.sombra}} <br>
-                            Dimensiones: {{parcela.dimension}}<br>
-                        </p>
-                        </mat-card-content>
-                        <mat-card-actions>
-                            <button [routerLink]="['/alojamiento/parcelas/', parcela.numeroAlojamiento]" mat-button>VER</button>
-                        <button class="float-right" mat-button>RESERVAR</button>
-                        </mat-card-actions>
-                    </mat-card>
+        <div *ngIf="alojamiento == 'parcelas'">
+            <!-- Alojamiento -->
+            <div class="container">
+                <div class="row justify-content-center">
+                    <div class="col-lg-12">
+                        <div class="card mt-4">
+                            <!-- Imagen del alojamiento -->
+                            <img class="card-img-top img-fluid" src="../../assets/images/alojamientos/parcela1.jpg" alt="Imagen de la parcela">
+                            <!-- Información del alojamiento -->
+                            <div class="card-body">
+                                <h4 class="card-title">Parcela nº {{ parcela.numeroAlojamiento }}</h4> <!-- Los datos de bungalows.X dan errores falsos en la consola del navegador, preguntar por qué y cómo arreglarlo -->
+                                <h5>Precio</h5>
+                                <p class="card-text">Sombra: {{ parcela.sombra }}</p>
+                                <p class="card-text">Dimensiones: {{ parcela.dimension }}</p>
+                                <p>Perfecta parcela para disfrutar, tanto en verano como en invierno, con caravana, autocaravana o tienda de camapaña.</p>
+                                <span class="text-warning">Buscar sistema de puntuación de estrellas ★ ★ ★ ★ ☆ Aquí hacer una media de la puntuación dada por los usuarios, puntuacion del 1 al 5 por ejemplo, despues se hace una media y según el número que salga, ese número son carácteres ★, se le resta ese numero a 5 y lo que salga es el caracter ☆</span>
+                            </div>
+                        </div>
+
+                        <!-- Reseñas -->
+                        <div class="card card-outline-secondary mt-4">
+                            <div class="card-header">Reseñas</div>
+                            <!-- Reseña -->
+                            <div class="card-body"><!-- Aquí hacer un ngFor con las reseñas recogidas de la BD -->
+                                <!-- Información de la reseña, usuario/anónimo y puntuación dada-->
+                                <div class="col-12">
+                                    <span class="float-left">Usuario/Anónimo, a la izquierda del todo</span>
+                                    <span class="float-right">Puntuación dada, a la derecha del todo</span>
+                                </div>
+                                <!-- Texto de la reseña -->
+                                <p class="col-12 mt-5">
+                                    Lorem ipsum, dolor sit amet consectetur adipisicing elit.
+                                    Saepe, deleniti sapiente, et atque nulla, facilis enim perspiciatis ratione dignissimos quaerat placeat.
+                                    Perspiciatis eaque harum optio obcaecati libero ducimus tempora enim?
+                                </p>
+                                <hr> <!-- Si es la última reseña que no aparezca este hr -->
+
+                            </div>
+                        </div>
+
+                        <!-- Escribir reseña, si se está logueado -->
+                        <div class="card card-outline-secondary mt-4" *ngIf="usuarioActual != null; else noUsuario">
+                            <div class="card-header">Dejar una reseña</div>
+
+                            <div class="card-body">
+                                <form [formGroup]="resenia" novalidate class="py-3 px-4">
+                                    <div class="col-md-12 row">
+
+                                        <!-- Nombre de usuario-->
+                                        <div class="col-md-5">
+                                            <label>Nombre: {{ usuarioActual.alias }}</label>
+                                        </div>
+                                        
+                                        <!-- Checkbox si ocultar nombre de usuario en la reseña -->
+                                        <div class="col-md-2">
+                                            <mat-checkbox formControlName="anonimo" (change)="anonimo($event)">Anónimo</mat-checkbox>
+                                        </div>
+                                        
+                                        <!-- Puntuación -->
+                                        <div class="col-md-5 ">
+                                            <h6  class="float-right">★ ★ ★ ★ ☆</h6>
+                                            <input class="float-right" formControlName="puntuacion" type="number" max="10" min="0">
+                                        </div>
+                                        
+                                    </div>
+
+                                    <!-- Texta area (mensaje/comentario) -->
+                                    <div class="col-md-12 row mt-4">
+                                        <mat-form-field class="col-md-12">
+                                            <mat-label>Comentario</mat-label>
+                                            <input matInput #mensaje maxlength="255" placeholder="Ej. Me encanta...">
+                                            <mat-hint align="start"><strong>No escriba información personal</strong> </mat-hint>
+                                            <mat-hint align="end">{{mensaje.value.length}} / 255</mat-hint>
+                                          </mat-form-field>
+                                    </div>
+
+                                    <div class="text-center">
+                                        <button mat-flat-button color="primary" class="mt-3" (click)="enviarResenia()">Enviar</button>
+                                    </div>
+                                    
+                                </form>
+                            </div>
+                        </div>
+                    </div>
                 </div>
-                <span class="float-right" style="cursor: pointer;" (click)="volver()"> Volver </span>
+                <span style="cursor: pointer;" (click)="volver()"> Volver </span>
             </div>
+
         </div>
-    </div>
     </div>
 </div>
 
+<ng-template #noUsuario>
+    <div class="card card-outline-secondary mt-4">
+        <div class="card-header">Dejar una reseña</div>
+
+        <div class="card-body text-center">
+            <p>Para dejar una reseña debes <a href="/login">iniciar sesión</a> o si aún no tienes una cuenta puedes registrarte <a href="/registrar">aquí</a></p>
+        </div>
+
+    </div>
+</ng-template>
+
 <ng-template #noExiste>
-    
+    <div class="container">
+        <div class="row" id="box-search">
+            <div class="thumbnail text-center">
+                <h1 class="mb-0" fxShow="true" fxHide.gt-xs="true">404</h1>
+                <span class="mt-0" fxShow="true" fxHide.gt-xs="true">No se pudo encontrar la página</span>
+                <img src="../../assets/images/404/error.png" alt="Imagen no se encontró página, imgaen de un detective con su perro sabueso." class="img-responsive">
+                <div class="caption" fxShow="true" fxHide.lt-sm="true">
+                    <h1>404</h1>
+                    <span id="m404">No se pudo encontrar la página</span>
+                </div>
+                <h4 class="float-center" style="cursor: pointer;" (click)="volver()"> Volver </h4>
+            </div>
+        </div>
+    </div>
 </ng-template>
