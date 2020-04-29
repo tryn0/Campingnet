@@ -24,6 +24,7 @@
       <a style="text-decoration: none; color: inherit;" href="/reservas"><button class="botonInicio" mat-button (click)="sidenav.close()"><mat-icon fxShow="true" fxHide.sm="true" class="icon">store</mat-icon>Reservar</button></a>
       <button class="botonInicio" mat-button [matMenuTriggerFor]="info"><mat-icon fxShow="true" fxHide.sm="true" class="icon">info</mat-icon>Información</button>
       <mat-menu #info="matMenu" class="text-center">
+        <button class="botonInicio" mat-button (click)="sidenav.close()" [routerLink]="'/alojamiento'"><mat-icon fxShow="true" fxHide.sm="true" class="icon">local_hotel</mat-icon>Alojamientos</button><br>
         <button class="botonInicio" mat-button (click)="sidenav.close()" [routerLink]="'/acerca'"><mat-icon fxShow="true" fxHide.sm="true" class="icon">business</mat-icon>Acerca</button><br>
         <button class="botonInicio" mat-button (click)="sidenav.close()" [routerLink]="'/contacto'"><mat-icon fxShow="true" fxHide.sm="true" class="icon">email</mat-icon>Contacto</button>
       </mat-menu>
@@ -86,6 +87,8 @@
           <button mat-button (click)="sidenav.toggle()" [routerLink]="'/'" class="text-center">Inicio</button>
           <br>
           <button mat-button (click)="sidenav.toggle()" [routerLink]="'/reservas'">Reservar</button>
+          <br>
+          <button mat-button (click)="sidenav.toggle()" [routerLink]="'/alojamiento'">Alojamientos</button>
           <br>
           <button mat-button (click)="sidenav.toggle()" [routerLink]="'/acerca'">Acerca</button>
           <br>
