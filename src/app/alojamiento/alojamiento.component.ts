@@ -31,12 +31,14 @@ export class AlojamientoComponent implements OnInit {
   public bungalows: Alojamiento;
   public parcelas: Alojamiento;
 
-  public bungalow: Alojamiento;
-  public parcela: Alojamiento;
+  /*public bungalow: Alojamiento;
+  public parcela: Alojamiento;*/
+  public alojamientoSeleccionado: Alojamiento;
 
   // Reseñas
   public reseñas: any;
   public resenia: FormGroup;
+  public anonimoCheck: boolean = false;
 
   constructor(private router: ActivatedRoute, private http: HttpClient, public fb: FormBuilder, private route: Router) {
     
@@ -118,31 +120,38 @@ export class AlojamientoComponent implements OnInit {
       .set('numero', this.router.snapshot.params.numero);
 
       this.http.post<string>('http://localhost/alojamientos.php', params).subscribe(data =>{ // Inicia el archivo alojamientos.php y busca en la BD los alojamientos con tipo según el 2º parámetro
+
         if(data != null){ // Si encuentra algo
           if(data == '0'){ // Si devuelve 0, error
+
             this.errorExiste = true;
+
           }else{ // si no...
+
             this.alojamientos = data[0];
             if(this.alojamientos != 0){ // Si la consulta no devuelve 0 
-              if(this.alojamiento == 'bungalows'){
-                // Bungalows
-                this.errorExiste = null;
-                const element = this.alojamientos;
-                this.bungalow = new Alojamiento(element.idAlojamiento, element.tipo, element.numeroAlojamiento, null, null, element.habitaciones, element.maximo_personas);
-                //this.arrayBungalows.push(this.bungalow);
 
-              }else if(this.alojamiento == 'parcelas'){
-                // Parcelas
-                this.errorExiste = null;
+              this.errorExiste = null;
+              if(this.alojamiento == 'bungalows' || this.alojamiento == 'parcelas'){ // Si el alojamiento es pacerla o bungalow
+                
                 const element = this.alojamientos;
-                this.parcela = new Alojamiento(element.idAlojamiento, element.tipo, element.numeroAlojamiento, element.sombra, element.dimension, null, null);
-                //this.arrayParcelas.push(this.parcela);
+                if(this.alojamiento == 'bungalows'){ // Si es bungalow creo un Alojamiento con los datos del bungalow
+                  this.alojamientoSeleccionado = new Alojamiento(element.idAlojamiento, element.tipo, element.numeroAlojamiento, null, null, element.habitaciones, element.maximo_personas);
+
+                }else{ // Si es parcela creo un Alojamiento con los datos de la parcela
+                  this.alojamientoSeleccionado = new Alojamiento(element.idAlojamiento, element.tipo, element.numeroAlojamiento, element.sombra, element.dimension, null, null);
+                }
+
               }
-            }else{
+
+            }else{ // Si no encuentra en la base de datos los datos de la URL (/alojamiento/bungalows/99) significa que no existe ese alojamiento
               this.errorExiste = true;
             }
+
           }
+
         }
+
       }, error => console.log(error));
 
        // Parámetros a enviar al archivo PHP
@@ -172,11 +181,11 @@ export class AlojamientoComponent implements OnInit {
     }
   }
 
-  volver(){ // Función para volver atrás en el historial
-    history.back();
-  }
+  anonimo(e){
 
-  anonimo(e){}
+    this.anonimoCheck = e.checked;
+    //console.log(this.anonimoCheck);
+  }
 
   enviarResenia(){}
 
