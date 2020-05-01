@@ -103,12 +103,14 @@
                             <mat-form-field *ngIf="alojamiento.get('tipo').value == 'Parcela'">
                                 <mat-label>Cantidad de personas</mat-label>
                                 <input matInput formControlName="numPersonas" type="number" required>
-                            </mat-form-field>
+                            </mat-form-field>                           
                         </div>
 
-                         {{ alojamiento.value | json }} 
+                         <!-- {{ alojamiento.value | json }} -->
                     </div>
             
+                    <small *ngIf="this.alojamiento.get('numPersonas').touched && this.alojamiento.get('numPersonas').hasError('personas')" style="color: red;">La cantidad de personas debe ser entre 1 y 12 por parcela.</small>
+
                     <!-- Botonera del step -->
                     <div>
                         <button class="mt-3" mat-button matStepperPrevious>Atrás</button>
@@ -124,22 +126,22 @@
                 <form novalidate [formGroup]="serviciosExtras" class="mt-3">
                     <ng-template matStepperIcon="edit"><mat-icon>search</mat-icon></ng-template>
 
+                    <!-- Controlar el tema de borrar-->
                     <div class="row">
                         <div class="col-md-6 float-left row" *ngFor="let servicio of servicios">
-                            <mat-checkbox class="col-5 mt-3"  formControlName="servicio{{servicio['idServicio']}}" (change)='onChange(servicio)' [disabled]="(servicio['idServicio'] == 1 || servicio['idServicio'] == 2) && electricidad">{{servicio['nombre']}}</mat-checkbox>
+                            <mat-checkbox *ngIf="servicio['idServicio'] != 2" class="col-5 mt-3"  formControlName="servicio{{servicio['idServicio']}}" (change)='onChange(servicio)' [disabled]="servicio['idServicio'] == 1 && electricidad">{{servicio['nombre']}}</mat-checkbox>
                     
                             <mat-form-field class="mt-0" *ngIf="servicio['idServicio'] != 1">
                                 <mat-label>Cantidad</mat-label>
                                     <input matInput formControlName="num{{servicio['idServicio']}}" type="number">
                             </mat-form-field>
-                            <!-- <span *ngIf="serviciosExtras.controls['num3'].hasError['noCantidad']">Por favor, indique una cantidad</span> -->       
+    
                         </div>
-
-                        <!-- {{ serviciosExtras.value | json }} -->
 
                     </div>
                     
-
+                    <mat-icon class="icon float-left" style="cursor: pointer;" (click)="mostrarInfo1()">info</mat-icon><span *ngIf="info1 != false" class="float-left">Como animales solo cuentan animales no aptos para llevar en jaulas, como perros, gatos, etc.</span>
+                    <br>
                     <div>
                         <button mat-button matStepperPrevious>Atrás</button>
                         <button class="float-right mt-3" mat-button matStepperNext (click)="addServicios()">Siguiente</button>
@@ -151,7 +153,38 @@
             <mat-step>
                 <ng-template matStepLabel >Confirmar reserva</ng-template>
                 
-                <p>Acabaste</p>
+                <p>AQUÍ VIENE EL DESGLOSE DE LA RESERVA.</p>
+
+                <!-- Fechas -->
+                <p>Fecha de entrada: {{fecha1}}</p>
+                <p>Fecha de salida: {{fecha2}}</p>
+
+                <!-- Información del alojamiento -->
+                <p>Alojamiento: {{alojamiento.get('tipo').value}}</p>
+
+                <p>Características del alojamiento:</p>
+                <div *ngIf="alojamiento.get('tipo').value == 'Bungalow'; else parcela">
+                    <p>Habitaciones: {{valor1}}</p>
+                    <p>Máximo de personas permitidas: {{valor2}}</p>
+                </div>
+
+                <ng-template #parcela>
+                    <p>Sombra: {{valor1}}</p>
+                    <p>Dimensiones de la parcela: {{valor2}}</p>
+                    <p>Número de personas: {{personas}}</p>
+                </ng-template>
+                
+                <!-- Servicios extras -->
+                <p *ngIf="personasExtras != null || extras[0]">Servicios extras:</p>
+                <p *ngIf="personasExtras != null">Personas extras: {{personasExtras}}</p>
+                <div *ngFor="let extra of extras">
+                    <p *ngIf="extra[1] == '1'; else extras">{{extra[0]}}</p>
+                    <ng-template #extras>
+                        {{extra[0]}}/es: {{extra[2]}}
+                    </ng-template>
+                </div>
+
+                <!-- Botonera -->
                 <div>
                     <button class="mt-3" mat-button matStepperPrevious>Atrás</button>
                     <button class="float-right mt-3" mat-button matStepperNext (click)="reserva()">Confirmar reserva</button>
