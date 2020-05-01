@@ -69,7 +69,8 @@ export class LoginComponent implements OnInit {
   ngOnInit(): void {
     // Si hay una sesión iniciada redirige a Inicio
     if(this.userdata != null){
-      this.router.navigate(['/']);
+      //this.router.navigate(['/']);
+      window.history.back();
     }
   }
 
