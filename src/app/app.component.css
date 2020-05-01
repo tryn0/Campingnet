@@ -3,12 +3,13 @@ html,body{
 }
 
 #bienvenida{
-    position: absolute; 
-    right: 72px;
+    float: right;
 }
 #bienvenida2{
-    position: absolute;
-    right: 118px;
+    float: right;
+}
+#ajustes{
+    cursor: pointer;
 }
 .botonInicio{
     padding: 7px 5px;
@@ -63,14 +64,5 @@ html,body{
     }
     button{
         font-size: 0.8vw;
-    }
-}
-
-@media only screen and (max-width: 959px) {
-    #bienvenida{
-        position: static;
-    }
-    #bienvenida2{
-        position: static;
     }
 }

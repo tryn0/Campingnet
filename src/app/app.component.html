@@ -38,17 +38,16 @@
       </div>
 
       <div fxShow="true" fxHide.lt-sm="true">
-        <div *ngIf="usuarioActual != null && usuarioActual.rol != 'cliente'; else noCliente">
-          <span id="bienvenida">Bienvenid@ {{usuarioActual.alias}}</span>
+        <div *ngIf="usuarioActual != null && usuarioActual.rol != 'cliente'; else noTrabajador">
+          <span id="bienvenida">Bienvenid@ {{usuarioActual.alias}}</span>          
           <br>
-          <small (click)="logOff()" style="cursor: pointer;"><mat-icon fxShow="true" fxHide.sm="true" class="logout">input</mat-icon>Cerrar sesión</small>
-
-          <!-- Si el usuario con sesión iniciada no es cliente (trabajador o admin) aparecerá la opción Ajustes, sino solo aparecerá Panel de control-->
-          <div style="display: inline-block;">&nbsp;
-            <small style="cursor: pointer;" mat-button [matMenuTriggerFor]="ajustes">Ajustes<mat-icon fxShow="true" fxHide.sm="true" class="icon">arrow_drop_down</mat-icon></small>&nbsp;
+          <!-- Si el usuario con sesión iniciada no es un trabajador (trabajador o administrador) aparecerá la opción Ajustes, sino solo aparecerá Panel de control -->
+          <div style="float: right;">&nbsp;
+            <small id="ajustes" mat-button [matMenuTriggerFor]="ajustes">Ajustes<mat-icon fxShow="true" fxHide.sm="true" class="icon">arrow_drop_down</mat-icon></small>&nbsp;
             <mat-menu #ajustes="matMenu" class="text-center">
               <button class="botonInicio" mat-button (click)="sidenav.close()" [routerLink]="'/controlpanel'"><mat-icon fxShow="true" fxHide.sm="true" class="icon">dashboard</mat-icon>Panel de control</button><br>
-              <button class="botonInicio" *ngIf="usuarioActual != null && usuarioActual.rol != 'cliente'" mat-button (click)="sidenav.close()" [routerLink]="'/dashboard'"><mat-icon fxShow="true" fxHide.sm="true" class="icon">supervisor_account</mat-icon>Administración</button> <!-- Dashboard ADMIN-->
+              <button class="botonInicio" mat-button (click)="sidenav.close()" [routerLink]="'/dashboard'" *ngIf="usuarioActual != null && usuarioActual.rol != 'cliente'" ><mat-icon fxShow="true" fxHide.sm="true" class="icon">supervisor_account</mat-icon>Administración</button> <!-- Dashboard TRABAJADOR-->
+              <button  class="botonInicio" mat-button (click)="logOff()"><mat-icon fxShow="true" fxHide.sm="true" class="icon">input</mat-icon>Cerrar sesión</button>
             </mat-menu>
           </div>
         </div>
@@ -57,14 +56,18 @@
 
   </mat-toolbar>
 
-  <!-- Si existe una sesión iniciada -->
-  <ng-template #noCliente>
+  <!-- Si existe una sesión iniciada y es cliente -->
+  <ng-template #noTrabajador>
     <div *ngIf="usuarioActual != null && usuarioActual.rol == 'cliente'">
       <span id="bienvenida2">Bienvenid@ {{usuarioActual.alias}}</span>
       <br>
-      <small (click)="logOff()" style="cursor: pointer;"><mat-icon fxShow="true" fxHide.sm="true" class="logout">input</mat-icon>Cerrar sesión</small>
-
-      <button mat-button (click)="sidenav.close()" [routerLink]="'/controlpanel'"><mat-icon fxShow="true" fxHide.sm="true" class="icon">dashboard</mat-icon>Panel de control</button>
+      <div style="float: right;">&nbsp;
+        <small id="ajustes" mat-button [matMenuTriggerFor]="ajustes">Ajustes<mat-icon fxShow="true" fxHide.sm="true" class="icon">arrow_drop_down</mat-icon></small>&nbsp;
+        <mat-menu #ajustes="matMenu" class="text-center">
+          <button class="botonInicio" mat-button (click)="sidenav.close()" [routerLink]="'/controlpanel'"><mat-icon fxShow="true" fxHide.sm="true" class="icon">dashboard</mat-icon>Panel de control</button><br>
+          <button  class="botonInicio" mat-button (click)="logOff()"><mat-icon fxShow="true" fxHide.sm="true" class="icon">input</mat-icon>Cerrar sesión</button>
+        </mat-menu>
+      </div>
     </div>
   </ng-template>
 
