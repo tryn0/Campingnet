@@ -173,7 +173,8 @@ export class RegistrarComponent implements OnInit {
 
   ngOnInit(): void {
     if(this.userdata != null){
-      this.router.navigate(['/']);
+      //this.router.navigate(['/']);
+      window.history.back();
     }
   }
 }
