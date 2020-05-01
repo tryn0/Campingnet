@@ -181,6 +181,10 @@ export class AlojamientoComponent implements OnInit {
     }
   }
 
+  volver(){ // Botón volver atrás
+    window.history.back();
+  }
+
   anonimo(e){
 
     this.anonimoCheck = e.checked;
