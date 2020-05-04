@@ -69,7 +69,7 @@ Este proyecto ha sido creado con:
 - [Angular CLI](https://github.com/angular/angular-cli) versión 9.1.4.  
 - [Angular Material](https://material.angular.io/) versión 9.2.1  
 - [Angular FlexLayout](https://github.com/angular/flex-layout) versión 9.0.0  
-- [Ignite UI Angular](https://github.com/angular/flex-layout) versión 9.0.7  
+- [Ignite UI Angular](https://github.com/angular/flex-layout) versión 9.0.12  
 - [Moment](https://momentjs.com/) versión 2.25.1
 
 ## Errores conocidos y sus soluciones
