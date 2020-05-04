@@ -3,7 +3,7 @@ Proyecto Integrado de 2º DAW
 
 ## ¿En qué consiste?  
 Aplicación web desarrollada en Angular para reservar alojamiento en un camping.  
-La vista de la app web tiene bootstrap y módulos de Angular (Flex-Layout, Angular Material, moment e Ignite-UI)
+La vista de la app web tiene bootstrap y módulos de Angular (Flex-Layout, Angular Material, moment e Ignite-UI)  
 La comunicación con la base de datos se hace a través de PHP.
 
 ## Creación del proyecto
