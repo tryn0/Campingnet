@@ -115,8 +115,12 @@ Por lo que decidí abrir el archivo /node_modules/moment/src/lib/locale/locales.
 ```
 './locale/'+name
 ```
-pero locales.js ya estaba en la carpeta locale, así que copié la línea, comenté la original y la copia le modifiqué:
+pero locales.js ya estaba en la carpeta locale, así que copié la línea, comenté la original y la copia la modifiqué:
 ```
 './'+name
 ```
 Y ya no me daba warning. Si en algún momento da algún error, borro la línea modificada y descomento la original.
+
+---
+
+Este proyecto no puede copiarse sin el consentimiento de su creado, Guillermo Pérez [tryn0](https://github.com/tryn0) &copy;tryn0 2020
