@@ -46,7 +46,7 @@ npm i moment --save
 Y con este último ya estarían todas las dependencias externas instaladas.
 
 ## Proceso de instalación
-Para el proceso de instalación o importación de este proyecto deberá tener instalado nodeJS y npm.
+Para el proceso de instalación o importación de este proyecto deberá tener instalado nodeJS y npm.  
 Una vez se tengan instalar Angular:
 ```
 npm install -g @angular/cli
@@ -78,16 +78,16 @@ A lo largo del desarrollo del proyecto han surgido varios errores, los explicar�
 ### Errores con nodeJS, npm o el paquete de Angular (npm)
 En Windows no da ningún problema, ya que se descarga todo desde la web oficial y no da problemas.
 
-En la máquina de AWS de Ubuntu Server he tenido muchos problemas a la hora de instalar nodeJS, npm y Angular (a través de npm).
-Para instalarlo todo correctamente, desinstalar todos estos paquetes si se tiene alguno instalado.
-Instalar nodeJS y npm siguiendo [este tutorial](https://ubunlog.com/nodejs-npm-instalacion-ubuntu-20-04-18-04/) solo hasta la parte de instalación a través de Snap.
-Luego instalar Angular con [este tutorial](https://ubunlog.com/angular-instala-framework-ubuntu/) solo la parte de Instalar CLI Angular en Ubuntu.
+En la máquina de AWS de Ubuntu Server he tenido muchos problemas a la hora de instalar nodeJS, npm y Angular (a través de npm).  
+Para instalarlo todo correctamente, desinstalar todos estos paquetes si se tiene alguno instalado.  
+Instalar nodeJS y npm siguiendo [este tutorial](https://ubunlog.com/nodejs-npm-instalacion-ubuntu-20-04-18-04/) solo hasta la parte de instalación a través de Snap.  
+Luego instalar Angular con [este tutorial](https://ubunlog.com/angular-instala-framework-ubuntu/) solo la parte de Instalar CLI Angular en Ubuntu.  
 
 Y se tendría instalado limpia y correctamente todo lo necesario.
 
 ### Memoria insuficiente en máquina AWS
-Al usar cuentas de estudiantes de AWS tenemos un límite de $$$, por lo que usamos todo free tie.
-Y el mayor error de todos es que la máquina de AWS solo tiene ~980Mb de memoria RAM, nada en esta época.
+Al usar cuentas de estudiantes de AWS tenemos un límite de $$$, por lo que usamos todo free tie.  
+Y el mayor error de todos es que la máquina de AWS solo tiene ~980Mb de memoria RAM, nada en esta época.  
 Lo cual hace imposible el tema de compilación y lanzamiento de la app.
 
 Al indagar por internet encontré la solución perfecta, crear un archivo swap, para usar memoria interna como memoria de intercambio (memoria RAM).
@@ -100,7 +100,7 @@ Ejecutar:
 free -h
 ```
 
-Devovlerá la memoria RAM libre, por ejemplo 700Mb, pues se usará 685 por ejemplo.
+Devovlerá la memoria RAM libre, por ejemplo 700Mb, pues se usará 685 por ejemplo.  
 Una vez se tenga en cuenta la cantidad de RAM libre, se lanzará la app ejecutando:
 ```
 node --max-old-space-size=2685 ./node_modules/@angular/cli/bin/ng serve
@@ -109,8 +109,8 @@ node --max-old-space-size=2685 ./node_modules/@angular/cli/bin/ng serve
 Donde max-old-space-size se le dice la cantidad de memoria a usar, como se puede apreciar se usó algo menos de memoria RAM libre, para que no use el 100% y los 2Gb del swapfile.
 
 ### Warning del módulo moment
-A la hora de compilar y lanzar la app emepezó a lanzar un warning indicando que no podía resolver './locale/' en un fichero en concreto, locales.js.
-Busqué en internet y no encontré una solución en concreto y el error llevaba ya varias versiones sin un fix que lo arreglara.
+A la hora de compilar y lanzar la app emepezó a lanzar un warning indicando que no podía resolver './locale/' en un fichero en concreto, locales.js.  
+Busqué en internet y no encontré una solución en concreto y el error llevaba ya varias versiones sin un fix que lo arreglara.  
 Por lo que decidí abrir el archivo /node_modules/moment/src/lib/locale/locales.js y buscar con CTRL+F ./locale y encontré una línea en la que por lo visto usa los módulo de la carpeta locale,
 ```
 './locale/'+name
