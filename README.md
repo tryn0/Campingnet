@@ -123,5 +123,5 @@ Y ya no me daba warning. Si en algún momento da algún error, borro la línea m
 
 ---
 
-Este proyecto no puede copiarse y/o usarse sin el consentimiento de su creador, Guillermo Pérez [tryn0](https://github.com/tryn0)  
+Este proyecto no puede copiarse y/o usarse sin el consentimiento de su creador, [tryn0](https://github.com/tryn0)  
 &copy;tryn0 2020
