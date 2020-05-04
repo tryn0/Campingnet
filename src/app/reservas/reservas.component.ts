@@ -2,7 +2,7 @@ import { Component, OnInit, Inject, ɵConsole } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl, ValidationErrors } from '@angular/forms';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { DateAdapter } from '@angular/material/core';
-import * as moment from 'moment';
+import * as moment from 'moment/moment';
 import { MatDialog } from '@angular/material/dialog';
 import { ReservasLoginComponent } from '../reservas-login/reservas-login.component';
 import { Usuario } from '../usuario/usuario';
@@ -616,10 +616,10 @@ export class ReservasComponent implements OnInit {
   }
 
   reserva(){
-        let params2: any;
-        if(this.persona != null){
-
-          let perExtras: string;
+    if(this.usuarioActual != null){
+      let params2: any;
+      if(this.persona != null){
+        let perExtras: string;
         let personas: string;
         if(this.alojamiento.get('tipo').value == "Bungalow"){
           perExtras = '0';
@@ -631,7 +631,7 @@ export class ReservasComponent implements OnInit {
           }
         }
 
-        let params2 = new HttpParams()
+        params2 = new HttpParams()
         .set('opcion', '7')
         .set('fechaEntrada', this.fechas.get('fechaEntrada').value)
         .set('fechaSalida', this.fechas.get('fechaSalida').value)
@@ -660,6 +660,7 @@ export class ReservasComponent implements OnInit {
             console.log(data);
           }
         }, error => console.log(error));*/
+    }
   }
 
   ngOnInit(): void {
@@ -713,7 +714,6 @@ export class ReservasComponent implements OnInit {
     this.http.post('http://localhost/reserva.php', params).subscribe(data => {
       if (data != null) { // Si recibe algún alojamiento
         this.servicios = data;
-        console.log(data);
         for (let i = 0; i < this.servicios.length; i++) {
           this.serviciosExtras.addControl('servicio'+this.servicios[i]['idServicio'], new FormControl(false,[]));
           this.serviciosExtras.addControl('num'+this.servicios[i]['idServicio'], new FormControl({value: '', disabled: true},[]));
