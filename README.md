@@ -4,12 +4,9 @@ Proyecto Integrado de 2º DAW
 ## ¿En qué consiste?  
 Explicación de en qué consiste
 
-## Creación o importación del proyecto
+## Creación del proyecto
 Para crear/importar el proyecto seguí estos pasos:  
-+ Abrí una terminal NodeJS y ejecuté:
-```
-ng new nombre-app
-```  
++ Abrí una terminal NodeJS y ejecuté: 
 ```
 ng new Campingnet
 ```  
@@ -27,64 +24,96 @@ ng add @angular/material
   - **? Set up global Angular Material typography styles? No**  
   - **? Set up browser animations for Angular Material? Yes**
 
-Y ya tendríamos todo lo necesario para que el proyecto se pueda importar sin necesidad de descargar la carpeta node_modules (gran tamaño, ignorada gracias a .gitignore)  
 
-Se agregó Flex Layout (Responsive):
+Se agregó Flex Layout:
 ```
 npm i -s @angular/flex-layout @angular/cdk
 ```  
 
-Y por último Ignite UI (Carrusel):
+Ignite UI (Carrusel):
 ```
 ng add igniteui-angular
 ```
 Elegir presionando Enter las opciones predeterminadas.  
 
-
-Luego copiar la carpeta src/ en la carpeta del proyecto (Campingnet) y desde un terminal ejecutar:
-```
-ng serve
-```
-Con este comando conseguiremos que se compile todo el proyecto, seguidamente se desplegará, por defecto en la IP de la máquina en el puerto 4200. Por ejemplo localhost:4200
-
-Para seleccionar fecha:
-```
-npm i @angular/material-moment-adapter ESTE NO (CREO)
-```
-O
+Para seleccionar fecha use el módulo moment:
 ```
 npm i moment --save
 ```
 
+Y con este último ya estaría el tema de dependencias.
+
+## Proceso de instalación
+Para el proceso de instalación o importación de este proyecto deberá tener instalado nodeJS y npm.
+Una vez se tengan instalar Angular:
+```
+npm install -g @angular/cli
+```
+
+Clonar el repositorio donde se quiera tener el proyecto. En la raíz del proyecto ejecutar a través de una terminal:
+```
+npm install
+```
+Este comando instalará todas las dependencias del proyecto en la carpeta node_modules.
+
 ## Despliegue de la web app
-Se ejecuta el siguiente comando en la consola de comandos de NodeJS en la carpeta del proyecto:
+Una vez se hayan instalado las dependencias, se compila y lanza la app ejecutando en la raíz del proyecto a través de una terminal:
 ```
 ng serve
-```  
+```
 Navegar a la URL `http://localhost:4200/` y aparecerá la web app recargada automáticamente.
 ## Herramientas usadas
 This project was generated with:  
-- [Angular CLI](https://github.com/angular/angular-cli) version 9.1.0.  
-- [Angular Material](https://material.angular.io/) version 9.2.0  
-- [Angular FlexLayout](https://github.com/angular/flex-layout) version 9.0.0  
-- [Ignite UI Angular](https://github.com/angular/flex-layout) version 9.0.7  
+- [Angular CLI](https://github.com/angular/angular-cli) versión 9.1.0.  
+- [Angular Material](https://material.angular.io/) versión 9.2.0  
+- [Angular FlexLayout](https://github.com/angular/flex-layout) versión 9.0.0  
+- [Ignite UI Angular](https://github.com/angular/flex-layout) versión 9.0.7  
+- [Moment](https://momentjs.com/) versión 2.25.1
 
-## Code scaffolding
+## Errores conocidos y sus soluciones
+A lo largo del desarrollo del proyecto han surgido varios errores, los explicaré aquí junto a las soluciones que me han servido.
 
-Run `ng generate component component-name` to generate a new component. You can also use `ng generate directive|pipe|service|class|guard|interface|enum|module`.
+### Errores con nodeJS, npm o el paquete de Angular (npm)
+En Windows no da ningún problema, ya que se descarga todo desde la web oficial y no da problemas.
 
-## Build
+En la máquina de AWS de Ubuntu Server he tenido muchos problemas a la hora de instalar nodeJS, npm y Angular (a través de npm).
+Para instalarlo todo correctamente, desinstalar todos estos paquetes si se tiene alguno instalado.
+Instalar nodeJS y npm siguiendo [este tutorial](https://ubunlog.com/nodejs-npm-instalacion-ubuntu-20-04-18-04/) solo hasta la parte de instalación a través de Snap.
+Luego instalar Angular con [este tutorial](https://ubunlog.com/angular-instala-framework-ubuntu/) solo la parte de Instalar CLI Angular en Ubuntu.
 
-Run `ng build` to build the project. The build artifacts will be stored in the `dist/` directory. Use the `--prod` flag for a production build.
+Y se tendría instalado limpia y correctamente todo lo necesario.
 
-## Running unit tests
+### Memoria insuficiente en máquina AWS
+Al usar cuentas de estudiantes de AWS tenemos un límite de $$$, por lo que usamos todo free tie.
+Y el mayor error de todos es que la máquina de AWS solo tiene ~980Mb de memoria RAM, nada en esta época.
+Lo cual hace imposible el tema de compilación y lanzamiento de la app.
 
-Run `ng test` to execute the unit tests via [Karma](https://karma-runner.github.io).
+Al indagar por internet encontré la solución perfecta, crear un archivo swap, para usar memoria interna como memoria de intercambio (memoria RAM).
+Para ello a la hora de crear la máquina AWS elegí 15Gb de espacio, en vez de los 8Gb por defecto (creo que hasta 100Gb no hay probelmas con el tema free).
+[Tutorial](https://www.digitalocean.com/community/tutorials/how-to-add-swap-space-on-ubuntu-18-04) para el swapfile. A la hora de seguir este tutorial, yo solo creé un swap file de 2Gb, con esto es suficiente y no es un gran impacto en la memoria interna.
 
-## Running end-to-end tests
+Una vez creado el swapfile y sin problema alguno para compilar y lanzar la app se deberá seguir estos pasos:
+Ejecutar:
+```
+free -h
+```
 
-Run `ng e2e` to execute the end-to-end tests via [Protractor](http://www.protractortest.org/).
+Devovlerá la memoria RAM libre, por ejemplo 700Mb, pues se usará 685 por ejemplo.
+Una vez se tenga en cuenta la cantidad de RAM libre, se lanzará la app ejecutando:
+```
+node --max-old-space-size=2685 ./node_modules/@angular/cli/bin/ng serve
+```
 
-## Further help
+Donde max-old-space-size se le dice la cantidad de memoria a usar, como se puede apreciar se usó algo menos de memoria RAM libre, para que no use el 100% y los 2Gb del swapfile.
 
-To get more help on the Angular CLI use `ng help` or go check out the [Angular CLI README](https://github.com/angular/angular-cli/blob/master/README.md).
+### Warning del módulo moment
+A la hora de compilar y lanzar la app emepezó a lanzar un warning indicando que no podía resolver './locale/' en un fichero en concreto, locales.js.
+Busqué en internet y no encontré una solución en concreto y el error llevaba ya varias versiones sin un fix que lo arreglara.
+Por lo que decidí abrir el archivo /node_modules/moment/src/lib/locale/locales.js y buscar con CTRL+F ./locale y encontré una línea en la que por lo visto usa los módulo de la carpeta locale,
+```
+'./locale/'+name
+```
+pero locales.js ya estaba en la carpeta locale, así que copié la línea, comenté la original y la copia le modifiqué:
+```'./'+name
+```
+Y ya no me daba warning. Si en algún momento da algún error, borro la línea modificada y descomento la original.
