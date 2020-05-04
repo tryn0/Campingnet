@@ -94,7 +94,7 @@ Al indagar por internet encontré la solución perfecta, crear un archivo swap, 
 Para ello a la hora de crear la máquina AWS elegí 15Gb de espacio, en vez de los 8Gb por defecto (creo que hasta 100Gb no hay probelmas con el tema free).
 [Tutorial](https://www.digitalocean.com/community/tutorials/how-to-add-swap-space-on-ubuntu-18-04) para el swapfile. A la hora de seguir este tutorial, yo solo creé un swap file de 2Gb, con esto es suficiente y no es un gran impacto en la memoria interna.
 
-Una vez creado el swapfile y sin problema alguno para compilar y lanzar la app se deberá seguir estos pasos:
+Una vez creado el swapfile y sin problema alguno para compilar y lanzar la app se deberá seguir estos pasos:  
 Ejecutar:
 ```
 free -h
