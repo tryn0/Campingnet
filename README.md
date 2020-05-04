@@ -38,12 +38,12 @@ ng add igniteui-angular
 ```
 Elegir presionando Enter las opciones predeterminadas.  
 
-Para seleccionar fecha use el módulo moment:
+Para seleccionar fecha uso el módulo moment:
 ```
 npm i moment --save
 ```
 
-Y con este último ya estaría el tema de dependencias.
+Y con este último ya estarían todas las dependencias externas instaladas.
 
 ## Proceso de instalación
 Para el proceso de instalación o importación de este proyecto deberá tener instalado nodeJS y npm.
