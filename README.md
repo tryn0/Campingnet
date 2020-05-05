@@ -43,6 +43,12 @@ Para seleccionar fecha uso el módulo moment:
 npm i moment --save
 ```
 
+Para la encriptación y decriptación de datos:
+```
+npm install crypto-js
+```
+[Mini tutorial de cómo implementarlo en el proyecto](https://stackoverflow.com/questions/53478860/how-to-encrypt-and-decrypt-in-angular-6?noredirect=1&lq=1)
+
 Y con este último ya estarían todas las dependencias externas instaladas.
 
 ## Proceso de instalación
@@ -71,6 +77,8 @@ Este proyecto ha sido creado con:
 - [Angular FlexLayout](https://github.com/angular/flex-layout) versión 9.0.0  
 - [Ignite UI Angular](https://github.com/angular/flex-layout) versión 9.0.12  
 - [Moment](https://momentjs.com/) versión 2.25.1
+- [CryptoJS](https://github.com/brix/crypto-js) versión 4.0.0
+
 
 ## Errores conocidos y sus soluciones
 A lo largo del desarrollo del proyecto han surgido varios errores, los explicaré aquí junto a las soluciones que me han servido.
@@ -121,6 +129,20 @@ pero locales.js ya estaba en la carpeta locale, así que copié la línea, comen
 ```
 Y ya no me daba warning. Si en algún momento da algún error, borro la línea modificada y descomento la original.
 
+### Warning del módulo crypto-js
+Cuando compilas y lanzas la app salta un warning parecido al de justo arriba, no puede resolver crypto. Para ello abre el archivo /node_modules/crypto-js/core.js y encuentra la función con sobre la línea 40, con esta descripción:  
+```
+// Native crypto import via require (NodeJS)
+```
+Cambiar:  
+```
+crypto = require('crypto');
+```
+por
+```
+crypto = require('crypto-js');
+```
+Yo copié la línea, y modifiqué la copia comentando la original, por si en un futuro diese problemas.
 ---
 
 Este proyecto no puede copiarse y/o usarse sin el consentimiento de su creador, [tryn0](https://github.com/tryn0)  
