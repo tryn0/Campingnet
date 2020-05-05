@@ -4,6 +4,8 @@ import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { Usuario } from '../usuario/usuario';
 import { Router } from "@angular/router";
 
+import { encriptar, desencriptar } from '../crypto-storage';
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -55,7 +57,13 @@ export class LoginComponent implements OnInit {
     if(this.existe != null){
       // Si el usuario está en la BD (coincide email y pass) creo usuario y lo guardo localmente para mantener sesión iniciada
       this.usuario = new Usuario(this.existe.idUsuario, this.existe.email, this.existe.nif_usuario, this.existe.nombre_usuario, this.existe.rol, this.existe.telefono, this.existe.alias_usuario);
-      localStorage.setItem('usuarioActual',JSON.stringify(this.usuario));
+
+      this.http.get("http://localhost/crypto.php").subscribe(data =>{
+        if(data != null){
+          let key = data as string;
+          localStorage.setItem('usuarioActual',encriptar(this.usuario, key));
+        }
+      });
       // Redirijo a la misma página pero como tendrá sesión iniciada aparecerá el elemento de carga y al acabar redigirá a Inicio
       this.router.navigate(['/login']);
       window.location.reload();

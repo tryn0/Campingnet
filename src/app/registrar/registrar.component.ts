@@ -5,6 +5,7 @@ import { Usuario } from '../usuario/usuario';
 import { Router } from "@angular/router";
 
 import { MustMatch } from '../must-match.validator';
+import { encriptar, desencriptar } from '../crypto-storage';
 
 @Component({
   selector: 'app-registrar',
@@ -12,6 +13,8 @@ import { MustMatch } from '../must-match.validator';
   styleUrls: ['./registrar.component.css']
 })
 export class RegistrarComponent implements OnInit {
+
+  public key: string;
 
   public userdata: string;
 
@@ -42,8 +45,6 @@ export class RegistrarComponent implements OnInit {
 
   constructor(private http: HttpClient, public fb: FormBuilder, private router: Router) {
 
-    
-    this.userdata = localStorage.getItem('usuarioActual');
 
     this.registro = this.fb.group({
       alias: ['', [Validators.required, Validators.maxLength(25)]],
@@ -128,14 +129,13 @@ export class RegistrarComponent implements OnInit {
 
                       // Creacion del usuario, sino hace falta eliminar esta parte, aunque lo tengo para mostrar el nombre de Bienvenida y crear la sesión de sesion iniciada
                       this.usuario = new Usuario(data[0].idUsuario, this.registro.get('email').value, dniUser, nombreUser, 'cliente', this.registro.get('telefono').value, this.registro.get('alias').value);
-                      console.log(this.usuario);
 
                       this.registrado = 'true';
                       this.errorEmail = null;
                       this.errorDni = null;
                       this.errorAlias = null;
 
-                      localStorage.setItem('usuarioActual', JSON.stringify(this.usuario));
+                      localStorage.setItem('usuarioActual', encriptar(this.usuario, this.key));
                       this.router.navigate(['/registrar']);
                       window.location.reload();
   
@@ -171,7 +171,19 @@ export class RegistrarComponent implements OnInit {
     }
   }
 
+  
   ngOnInit(): void {
+
+    this.http.get("http://localhost/crypto.php").subscribe(data => {
+      if (data != null) {
+        this.key = data as string;
+        this.userdata = desencriptar(localStorage.getItem('usuarioActual'), this.key);
+      }
+    });
+
+    
+
+
     if(this.userdata != null){
       //this.router.navigate(['/']);
       window.history.back();
