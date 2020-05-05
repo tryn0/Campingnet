@@ -1,9 +1,10 @@
-import { Component } from '@angular/core';
+import { Component, ViewChild } from '@angular/core';
 import { MatSnackBar } from '@angular/material/snack-bar';
 import { HttpClient } from '@angular/common/http';
 import { Router, NavigationEnd } from '@angular/router';
 
 import { encriptar, desencriptar } from './crypto-storage';
+import { MatDrawer } from '@angular/material/sidenav';
 
 @Component({
   selector: 'app-root',
@@ -21,8 +22,13 @@ export class AppComponent {
   public mensaje: any;
 
   public ip: string;
+  
+  public menuMensaje: string = 'Cerrar menú';
+
+  @ViewChild('menu') drawer: MatDrawer;
 
   constructor(private http: HttpClient, private _snackBar: MatSnackBar, private route: Router) {
+    
 
     // Para obtener la IP
     this.http.get("http://api.ipify.org/?format=json").subscribe((res:any) =>{
@@ -50,7 +56,21 @@ export class AppComponent {
       }
     }); 
 
+
   }
+
+  
+  togle(){
+    if(this.drawer.opened){
+      this.drawer.close();
+      this.menuMensaje = 'Abrir menú';
+    }else{
+      this.drawer.open();
+      this.menuMensaje = 'Cerrar menú';
+    }
+
+  }
+
 
   logOff(){
     localStorage.removeItem("usuarioActual");

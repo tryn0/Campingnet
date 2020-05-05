@@ -186,10 +186,32 @@
 <ng-template #admin>
   <div style="width: 100%;">
 
+    <!-- Menú superior horizontal -->
+    <mat-toolbar color="accent">
+      <span (click)="togle()" style="cursor: pointer;">{{menuMensaje}}</span>
+    </mat-toolbar>
 
-    <p>Estas en dashboard</p>
-    <span [routerLink]="'/'" style="cursor: pointer;">Volver</span>
-      
+    <!-- Contenedor del menú y del cuerpo -->
+    <mat-drawer-container style="height: 100vh;">
+    
+
+      <!-- Menu lateral -->
+      <mat-drawer #menu style="width: 15%;" mode="side" opened>
+        Drawer
+      </mat-drawer>
+
+
+      <!-- Cuerpo de la web -->
+      <mat-drawer-content>
+        <div class="column">
+          Drawer content 1
+          <p>Estas en dashboard</p>
+          <span [routerLink]="'/'" style="cursor: pointer;">Volver</span>
+        </div>
+      </mat-drawer-content>
+
+
+    </mat-drawer-container>
 
       
   </div>
