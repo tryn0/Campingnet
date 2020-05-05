@@ -41,7 +41,6 @@ yarn-error.log
 testem.log
 /typings
 /base-datos
-/php
 
 # System Files
 .DS_Store
