@@ -15,13 +15,13 @@
     }
 
     function consulta($conn, $sql){
-        $resultado = mysqli_query($conn,$sql); // Hace la consulta
+        $resultado = mysqli_query($conn, $sql); // Hace la consulta
         $rows = array(); // Definiendo un array
         if ($resultado->num_rows > 0) { // Si la consulta devuelve resultado se guarda en el array
             while($row = $resultado->fetch_assoc()) {
                 $rows[] = $row;
             }
-            cerrar_conexion($conn); // Cierra conexión
+            cerrar_conexion($conn);
             return $rows;
         }else{ // Sino devuelve resultado
             return 0;
