@@ -19,6 +19,7 @@
                             <mat-form-field>
                                 <mat-label>Fecha de entrada</mat-label>
                                 <input matInput formControlName="fechaEntrada" [matDatepicker]="fechas1" required>
+                                <mat-hint align="start"><strong>Con hora de entrada 12:00</strong></mat-hint>
                                 <mat-datepicker-toggle matSuffix [for]="fechas1"></mat-datepicker-toggle>
                                 <mat-datepicker touchUi #fechas1></mat-datepicker>
                             </mat-form-field>
@@ -29,6 +30,7 @@
                             <mat-form-field>
                                 <mat-label>Fecha de salida</mat-label>
                                 <input matInput formControlName="fechaSalida" [matDatepicker]="fechas2" required>
+                                <mat-hint align="start"><strong>Con hora de salida máxima 11:59</strong></mat-hint>
                                 <mat-datepicker-toggle matSuffix [for]="fechas2"></mat-datepicker-toggle>
                                 <mat-datepicker touchUi #fechas2></mat-datepicker>
                             </mat-form-field>
@@ -98,11 +100,30 @@
                             </mat-form-field>
                         </div>
 
-                        <!-- Cantidad de personas en la reserva PENSAR SI ESTO DEBERÍA ESTAR AQUÍ PORQUE SINO PA QUE SIRVE PERSONAS EXTRAS? PORQUE PARA EL BUNGALOW NO-->
+                        <!-- Cantidad de personas +12 en la reserva -->
                         <div class="col-md-4">
                             <mat-form-field *ngIf="alojamiento.get('tipo').value == 'Parcela'">
-                                <mat-label>Cantidad de personas</mat-label>
+                                <mat-label>Personas adultas +12</mat-label>
                                 <input matInput formControlName="numPersonas" type="number" required>
+                                <mat-hint align="start"><strong>Personas mayores de 12 años</strong></mat-hint>
+                            </mat-form-field>                           
+                        </div>
+
+                        <!-- Cantidad de personas -12 en la reserva -->
+                        <div class="col-md-4">
+                            <mat-form-field *ngIf="alojamiento.get('tipo').value == 'Parcela'">
+                                <mat-label>Personas menor de 12</mat-label>
+                                <input matInput formControlName="numPersonasMenor" type="number" required>
+                                <mat-hint align="start"><strong>Personas menores de 12 años</strong></mat-hint>
+                            </mat-form-field>                           
+                        </div>
+
+                        <!-- Cantidad de personas +65 en la reserva -->
+                        <div class="col-md-4">
+                            <mat-form-field *ngIf="alojamiento.get('tipo').value == 'Parcela'">
+                                <mat-label>Personas mayores +65</mat-label>
+                                <input matInput formControlName="numPersonasMayor" type="number" required>
+                                <mat-hint align="start"><strong>Personas mayores de 65 años</strong></mat-hint>
                             </mat-form-field>                           
                         </div>
 
@@ -175,8 +196,10 @@
                 </ng-template>
                 
                 <!-- Servicios extras -->
-                <p *ngIf="personasExtras != null || extras[0]">Servicios extras:</p>
-                <p *ngIf="personasExtras != null">Personas extras: {{personasExtras}}</p>
+                <p *ngIf="personasExtras != null || personasExtrasMenor != null || personasExtrasMayor != null || extras[0]">Servicios extras:</p>
+                <p *ngIf="personasExtras != null">Personas extras mayores de 12 años: {{personasExtras}}</p>
+                <p *ngIf="personasExtrasMenor != null">Personas extras menores de 12 años: {{personasExtrasMenor}}</p>
+                <p *ngIf="personasExtrasMayor != null">Personas extras mayores de 65 años: {{personasExtrasMayor}}</p>
                 <div *ngFor="let extra of extras">
                     <p *ngIf="extra[1] == '1'; else extras">{{extra[0]}}</p>
                     <ng-template #extras>
@@ -197,9 +220,13 @@
                 <!-- TENGO QUE PENSAR QUE HACER SINO TIENE SESION INICIADA, SE CREA USUARIO NUEVO O COMO????-->
 
                 <mat-step  label="Datos personales" *ngIf="usuarioActual == null; else usuarioExiste">
-                    <p>No has iniciado sesión. Para realizar una reserva necesitas estar logueado. Si tienes cuenta inicia sesión. Si aún no tienes regístrate.</p>
+                    <p>No has iniciado sesión. Para realizar una reserva necesitas estar logueado. Si tienes cuenta inicia sesión. Si aún no tiene regístrese.</p>
                     <p *ngIf="loginReserva == false" style="color: red;">Por favor reintente iniciar sesión, comprueba el correo electrónico y la contraseña.</p>
+
+                    <!-- Cada uno de los botones llevará a un popup modal con un formulario logIn a uno con 2 campos, y sigIn a uno con 7 campos -->
+                    <!-- Tienen el mismo fin, si el formulario es OK, confirma reserva, lleva a una página que indica que todo OK y el idReserva, si NO ok, indica un mensaje con el error -->
                     <button mat-button (click)="logIn()">Iniciar sesión</button>
+                    <button mat-button (click)="signIn()" class="float-right">Registrarse</button>
                     
                 </mat-step>
 

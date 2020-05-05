@@ -7,6 +7,8 @@ import { MatDialog } from '@angular/material/dialog';
 import { ReservasLoginComponent } from '../reservas-login/reservas-login.component';
 import { Usuario } from '../usuario/usuario';
 
+import { encriptar, desencriptar } from '../crypto-storage';
+
 
 interface DialogData {
   email: any;
@@ -61,6 +63,8 @@ export class ReservasComponent implements OnInit {
   public electricidad: boolean = null;
   public checkado: boolean = false;
   public personasExtras: number;
+  public personasExtrasMenor: number;
+  public personasExtrasMayor: number;
   public extras: any = [];
 
   // Variables del formulario 4
@@ -251,7 +255,7 @@ export class ReservasComponent implements OnInit {
     if(this.alojamiento.get('tipo').value != null){
 
       // Formulario de alojamiento
-      this.alojamiento.patchValue({'caracteristicaUnica1': null, 'caracteristicaUnica2': null, 'numPersonas': null});
+      this.alojamiento.patchValue({'caracteristicaUnica1': null, 'caracteristicaUnica2': null, 'numPersonas': null, 'numPersonasMenor':null, 'numPersonasMayor': null});
       this.alojamiento.setErrors({'caracteristicaUnica1' : null, 'caracteristicaUnica2' : null});
 
       // Formulario serviciosExtras, cada vez que se elija un tipo de alojamiento los servicios extras se resetean, si es servicioX se pone false (unchecked), si es numX se pone a null y se deshabilita por defecto (el input se borra y está disable)
@@ -340,6 +344,8 @@ export class ReservasComponent implements OnInit {
     return (): ValidationErrors => {
       if(this.alojamiento.get('tipo').value == 'Bungalow'){
         this.alojamiento.get('numPersonas').setErrors(null);
+        this.alojamiento.get('numPersonasMenor').setErrors(null);
+        this.alojamiento.get('numPersonasMayor').setErrors(null);
         if(this.fechaMenos7 == true){
           this.alojamiento.get('tipo').setErrors({menos7: true});
         }else{
@@ -349,6 +355,16 @@ export class ReservasComponent implements OnInit {
         if(this.alojamiento.get('numPersonas').value){
           if(this.alojamiento.get('numPersonas').value > 12 || this.alojamiento.get('numPersonas').value < 1){
             this.alojamiento.get('numPersonas').setErrors({'personas': true});
+          }
+          if(this.alojamiento.get('numPersonasMenor').value < 0){
+            this.alojamiento.get('numPersonasMenor').setErrors({'personasMenor': true});
+          }else{
+            this.alojamiento.get('numPersonasMenor').setErrors(null);
+          }
+          if(this.alojamiento.get('numPersonasMayor').value < 0){
+            this.alojamiento.get('numPersonasMayor').setErrors({'personasMayor': true});
+          }else{
+            this.alojamiento.get('numPersonasMayor').setErrors(null);
           }
         }else{
           this.alojamiento.get('numPersonas').setErrors({'personas': true});
@@ -534,6 +550,19 @@ export class ReservasComponent implements OnInit {
         this.personas =  this.alojamiento.get('numPersonas').value;
         this.personasExtras = null;
       }
+
+      if(this.alojamiento.get('numPersonasMenor').value > 0){
+        this.personasExtrasMenor = this.alojamiento.get('numPersonasMenor').value;
+      }else if(this.alojamiento.get('numPersonasMenor').value == null){
+        this.personasExtrasMenor = null;
+      }
+
+      if(this.alojamiento.get('numPersonasMayor').value > 0){
+        this.personasExtrasMayor = this.alojamiento.get('numPersonasMayor').value;
+      }else if(this.alojamiento.get('numPersonasMayor').value == null){
+        this.personasExtrasMayor = null;
+      }
+
     }
 
 
@@ -559,7 +588,83 @@ export class ReservasComponent implements OnInit {
     
   }
 
-  logIn(){
+  reserva(){ // Si confirma la reserva, y tiene una sesión iniciada
+    if(this.usuarioActual != null){
+
+      let params2: any;
+      let persExtrasMenor: number;
+      let persExtrasMayor: number;
+      let totalPersonas: number;
+
+      if(this.persona != null){
+        // Igualar a 0 las variables para que no de errores al paasarlas por HttpParams
+        let persExtras = this.personasExtras;
+        if(this.personasExtrasMenor == null){
+          persExtrasMenor = 0;
+        }else{
+          persExtrasMenor = this.personasExtrasMenor;
+        }
+        
+        if(this.personasExtrasMayor == null){
+          persExtrasMayor = 0;
+        }else{
+          persExtrasMayor = this.personasExtrasMayor;
+        }
+        
+
+        if(this.alojamiento.get('tipo').value == 'Bungalow'){
+          persExtras = 0;
+          totalPersonas = this.valor2;
+        }else{
+          totalPersonas = this.personas+persExtras+persExtrasMenor+persExtrasMayor;
+        }
+
+          params2 = new HttpParams()
+          .set('opcion', '7')
+          // Fechas
+          .set('fechaEntrada', this.fechas.get('fechaEntrada').value)
+          .set('fechaSalida', this.fechas.get('fechaSalida').value)
+
+          // Alojamiento
+          .set('alojamiento', this.alojamiento.get('tipo').value)
+          .set('caract1',this.valor1)// * Esto en reserva.php sale como un string con forma de array ARREGLAR
+          .set('caract2', this.valor2)// * Esto en reserva.php sale como un string con forma de array ARREGLAR
+
+          // Servicios extras
+          .set('personasExtras', persExtras.toString())
+          .set('personasExtrasMenor', persExtrasMenor.toString())
+          .set('personasExtrasMayor', persExtrasMayor.toString())
+
+          // Datos del usuario para sacar idUsuario e introducirlo en la tabla reserva
+          .set('nombreUsuario', this.usuarioActual['nombre'])
+          .set('telefono', this.usuarioActual['telefono'])
+          .set('email', this.usuarioActual['email'])
+          .set('dni', this.usuarioActual['nif'])
+          .set('alias', this.usuarioActual['alias'])
+
+          // detalles de la reserva
+          .set('numPersonas', totalPersonas.toString()) // Entre 12 y 64
+          .set('multiplicativo', this.multiplicador.toString());
+          
+          console.log(params2);
+
+          /**
+           * TODO: Hacer que envie el tema de los datos a reserva.php
+           */
+
+          /*this.http.post('http://localhost/reserva.php', params2).subscribe(data =>{
+            if(data != null){ // Si recibe algún alojamiento
+              console.log(data);
+            }
+          }, error => console.log(error));*/
+        }
+    }
+  }
+
+  /**
+   * TODO: ESTE FUNCIONA!!!!! SOLO FALTA ENVIAR DATOS AL PHP Y HACER LA RESERVA PERO SI SE HACE EN EL ARCHIVO PHP PARA LOS USUARIOS QUE YA ESTEN REGISTRADOS SERVIRÍA PARA LOS QUE SE LOGUEAN Y PARA LOS QUE SE REGISTRAN
+   */
+  logIn(){ // Si confirma la reserva, NO tiene una sesión iniciada y tiene una cuenta creada
     const dialogRef = this.dialog.open(ReservasLoginComponent, {
       data: {}
     });
@@ -572,101 +677,91 @@ export class ReservasComponent implements OnInit {
         this.loginReserva = true;
         console.log(this.email);
 
-        let perExtras: string;
-        let personas: string;
-        if(this.alojamiento.get('tipo').value == "Bungalow"){
-          perExtras = '0';
+        //console.log(this.loginReserva);
+        
+        let params2: any;
+        let persExtrasMenor: number;
+        let persExtrasMayor: number;
+        let totalPersonas: number;
+        if(this.email != null){
+          // Igualar a 0 las variables para que no de errores al paasarlas por HttpParams
+        let persExtras = this.personasExtras;
+        if(this.personasExtrasMenor == null){
+          persExtrasMenor = 0;
         }else{
-          if(this.alojamiento.get('numPersonas').value > 2){
-            personas = this.alojamiento.get('numPersonas').value;
-            perExtras =  (parseInt(personas)-2).toString();
-          }else{
-            perExtras = '0';
-          }
+          persExtrasMenor = this.personasExtrasMenor;
+        }
+        
+        if(this.personasExtrasMayor == null){
+          persExtrasMayor = 0;
+        }else{
+          persExtrasMayor = this.personasExtrasMayor;
+        }
+        
+
+        if(this.alojamiento.get('tipo').value == 'Bungalow'){
+          persExtras = 0;
+          totalPersonas = this.valor2;
+        }else{
+          totalPersonas = this.personas+persExtras+persExtrasMenor+persExtrasMayor;
         }
 
-        /**
-         * TODO: Comprobar que introduce todos los datos correctamente https://trello.com/b/4xofW6oE
-         */
-        let params = new HttpParams()
-        .set('opcion', '7')
-        .set('fechaEntrada', this.fechas.get('fechaEntrada').value)
-        .set('fechaSalida', this.fechas.get('fechaSalida').value)
-        .set('alojamiento', this.alojamiento.get('tipo').value)
-        .set('caract1',this.valor1)// * Esto en reserva.php sale como un string con forma de array ARREGLAR
-        .set('caract2', this.valor2)// * Esto en reserva.php sale como un string con forma de array ARREGLAR
-        .set('numPersonas', personas)
-        .set('personasExtras', perExtras)
-        .set('multiplicativo', this.multiplicador.toString())
-        .set('nombreUsuario', this.email.nombre)
-        .set('telefono', this.email.telefono.toString())
-        .set('email', this.email.email)
-        .set('dni', this.email.nif)
-        .set('alias', this.email.alias);        
+          params2 = new HttpParams()
+          .set('opcion', '7')
+          // Fechas
+          .set('fechaEntrada', this.fechas.get('fechaEntrada').value)
+          .set('fechaSalida', this.fechas.get('fechaSalida').value)
 
-        console.log(params);
-        console.log(this.serviciosExtras.get('num2').value);
+          // Alojamiento
+          .set('alojamiento', this.alojamiento.get('tipo').value)
+          .set('caract1',this.valor1)// * Esto en reserva.php sale como un string con forma de array ARREGLAR
+          .set('caract2', this.valor2)// * Esto en reserva.php sale como un string con forma de array ARREGLAR
 
-        // AQUI INSERTAR EL CODIGO PARA HACER LA RESERVA EN PHP CON EL EMAIL DEL USUARIO Y LOS DATOS DEL DESGLOSE
+          // Servicios extras
+          .set('personasExtras', persExtras.toString())
+          .set('personasExtrasMenor', persExtrasMenor.toString())
+          .set('personasExtrasMayor', persExtrasMayor.toString())
 
+          // Datos del usuario para sacar idUsuario e introducirlo en la tabla reserva
+          .set('nombreUsuario', this.email['nombre'])
+          .set('telefono', this.email['telefono'])
+          .set('email', this.email['email'])
+          .set('dni', this.email['nif'])
+          .set('alias', this.email['alias'])
 
+          // detalles de la reserva
+          .set('numPersonas', totalPersonas.toString()) // Entre 12 y 64
+          .set('multiplicativo', this.multiplicador.toString());
+          
+          console.log(params2);
+
+          /**
+           * TODO: Hacer que envie el tema de los datos a reserva.php
+           */
+
+          /*this.http.post('http://localhost/reserva.php', params2).subscribe(data =>{
+            if(data != null){ // Si recibe algún alojamiento
+              console.log(data);
+            }
+          }, error => console.log(error));*/
+        }
       }
-      
     });
   }
 
-  reserva(){
-    if(this.usuarioActual != null){
-      let params2: any;
-      if(this.persona != null){
-        let perExtras: string;
-        let personas: string;
-        if(this.alojamiento.get('tipo').value == "Bungalow"){
-          perExtras = '0';
-        }else{
-          if(this.serviciosExtras.get('num2').value != null){
-            perExtras =  (parseInt(this.serviciosExtras.get('num2').value)+2).toString();
-          }else{
-            perExtras = '0';
-          }
-        }
+  signIn(){// Si confirma la reserva, NO tiene una sesión iniciada y NO tiene una cuenta creada
 
-        params2 = new HttpParams()
-        .set('opcion', '7')
-        .set('fechaEntrada', this.fechas.get('fechaEntrada').value)
-        .set('fechaSalida', this.fechas.get('fechaSalida').value)
-        .set('alojamiento', this.alojamiento.get('tipo').value)
-        .set('caract1',this.valor1)// * Esto en reserva.php sale como un string con forma de array ARREGLAR
-        .set('caract2', this.valor2)// * Esto en reserva.php sale como un string con forma de array ARREGLAR
-        .set('numPersonas', personas)
-        .set('personasExtras', perExtras)
-        .set('multiplicativo', this.multiplicador.toString())
-        .set('nombreUsuario', this.email.nombre)
-        .set('telefono', this.email.telefono.toString())
-        .set('email', this.email.email)
-        .set('dni', this.email.nif)
-        .set('alias', this.email.alias);  
-          
-        }
-        
-        console.log(params2);
-
-        /**
-         * TODO: Hacer que envie el tema de los datos a reserva.php
-         */
-
-        /*this.http.post('http://localhost/reserva.php', params2).subscribe(data =>{
-          if(data != null){ // Si recibe algún alojamiento
-            console.log(data);
-          }
-        }, error => console.log(error));*/
-    }
   }
 
   ngOnInit(): void {
 
     // Compruebo si hay un usuario con sesión iniciada
-    this.usuarioActual = JSON.parse(localStorage.getItem('usuarioActual'));
+    this.http.get("http://localhost/crypto.php").subscribe(data =>{
+      if(data != null){
+        let key = data as string;
+        this.usuarioActual = desencriptar(localStorage.getItem('usuarioActual'), key);
+      }
+    });
 
     // Formulario 1 - Fechas entrada y salida
     this.fechas = this.fb.group({
@@ -682,7 +777,9 @@ export class ReservasComponent implements OnInit {
       tipo: ['', Validators.required],
       caracteristicaUnica1: ['', Validators.required],
       caracteristicaUnica2: ['', Validators.required],
-      numPersonas: ['', Validators.required]
+      numPersonas: ['', Validators.required],
+      numPersonasMenor: ['', Validators.required],
+      numPersonasMayor: ['', Validators.required],
     });
     this.alojamiento.setValidators(this.validacionAlojamiento());
   
