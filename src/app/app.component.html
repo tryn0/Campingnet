@@ -1,4 +1,4 @@
-<div style="width: 100%;">
+<div style="width: 100%;" *ngIf="dashboard != true; else admin">
 
   <!--Cabecera/menú-->
   <mat-toolbar color="primary" >
@@ -106,7 +106,7 @@
     </mat-sidenav>
 
     <!--Cuerpo donde cargan todas las páginas-->
-    <mat-sidenav-content fxFlexFill id="main">
+    <mat-sidenav-content fxFlexFill>
       <router-outlet></router-outlet>
 
       <!--Footer-->
@@ -182,3 +182,15 @@
   </mat-sidenav-container>
 
 </div>
+
+<ng-template #admin>
+  <div style="width: 100%;">
+
+
+    <p>Estas en dashboard</p>
+    <span [routerLink]="'/'" style="cursor: pointer;">Volver</span>
+      
+
+      
+  </div>
+</ng-template>
