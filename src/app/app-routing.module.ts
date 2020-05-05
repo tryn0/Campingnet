@@ -1,7 +1,7 @@
 import { NgModule } from '@angular/core';
 import { Routes, RouterModule } from '@angular/router';
 
-//Componentes añadidos
+// Componentes añadidos
 import { HomeComponent } from './home/home.component';
 import { ReservasComponent } from './reservas/reservas.component';
 import { AboutComponent } from './about/about.component';
@@ -14,7 +14,7 @@ import { PaneldeControlComponent } from './panelde-control/panelde-control.compo
 import { DashboardComponent } from './dashboard/dashboard.component';
 
 
-//Rutas de la URL
+// Rutas de la URL
 const routes: Routes = [
   { path: '', component: HomeComponent},
   { path: 'inicio', component: HomeComponent },

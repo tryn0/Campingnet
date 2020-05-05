@@ -1,7 +1,11 @@
-import { Component, OnInit } from '@angular/core';
-import { ActivatedRoute, Router } from '@angular/router';
-import { HttpClient } from '@angular/common/http';
+import { Component, OnInit, ViewChild } from '@angular/core';
+import { Router } from '@angular/router';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Usuario } from '../usuario/usuario';
+import { MatDrawer } from '@angular/material/sidenav';
+import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+
+import { encriptar, desencriptar } from '../crypto-storage';
 
 @Component({
   selector: 'app-dashboard',
@@ -10,35 +14,108 @@ import { Usuario } from '../usuario/usuario';
 })
 export class DashboardComponent implements OnInit {
 
+  title = 'Administración';
+
+  public trabajador: boolean = false;
+
+  public menuMensaje: string = 'Menú';
+
+  @ViewChild('menu') drawer: MatDrawer;
+
+  public pantalla: boolean = false;
+
+  public reservasHoy: number = 0;
+
+  public reservasHoySalidas: number = 0;
+
+  public revisarResenias: number = 0;
+
   public usuarioActual: Usuario;
 
-  constructor(private router: ActivatedRoute, private http: HttpClient, private route: Router) {
+  public reservasList: any = [];
+
+  constructor( private http: HttpClient, private route: Router, breakpointObserver: BreakpointObserver) {
     //console.log(this.router.snapshot.url[0].path);
+    breakpointObserver.observe([
+      Breakpoints.HandsetLandscape,
+      Breakpoints.HandsetPortrait
+    ]).subscribe(res => {
+      const md = breakpointObserver.isMatched('(max-width: 770px)')
+      this.pantalla = md;
+    })
   }
 
-  /**
-   * TODO: Crear una vista como login para permitir iniciar sesión y si inicia sesión refrescar esta página y compruebe el rol.
-   * TODO: Si el rol es cliente redirigir a inicio. Si el rol no es cliente permitir ver el dashboard en todo momento. Esto se hace con una variable boolean, si es true ver el dashboard, sino pues redirige a inicio.
-   */
+  togle(){ // Texto de cerrar abrir menú y la acción de abrir cerrar menú
+    if(this.drawer.opened){
+      this.drawer.close();
+    }else{
+      this.drawer.open();
+    }
+
+  }
+
+  logOff(){ // Cerrar sesión
+    localStorage.removeItem("usuarioActual");
+    window.location.reload();
+  }
+
+
   ngOnInit(): void {
 
-    // Comprobación de que exista una sesion iniciada
-
-    this.usuarioActual = JSON.parse(localStorage.getItem('usuarioActual'));
-
-    // Si no existe una sesión de usuario dar oportunidad de loguearse
-    if(this.usuarioActual == null){
-      // Permitir loguearse y cuando inicie sesión refrescar la página, para que vuelva a entrar a este bloque y compruebe si es o no trabajador.
-
-    }else if(this.usuarioActual['rol'] != 'cliente'){ // Si existe una sesion de usuario y no es cliente (osea es trabajador o admin)
-
-      console.log(this.usuarioActual);
-      // Poner variable a true para que pueda acceder al dashboard
-
-    }else{ // Si no es admin o trabajador, redirigir al inicio
-      //this.route.navigate(['/']);
-    }
     
+
+    if(localStorage.getItem('usuarioActual') != null){
+      this.usuarioActual = desencriptar(localStorage.getItem('usuarioActual'));
+      if(this.usuarioActual['rol'] == 'cliente'){
+        window.location.href = 'http://localhost:4200/';
+      }else{
+        this.trabajador = true;
+      }
+    }else{
+      window.location.href = 'http://localhost:4200/';
+    }
+
+    // Entradas
+    let entrada = new HttpParams()
+    .set('opcion', '1');
+
+    this.http.post<any>("http://localhost/dashboard.php", entrada).subscribe(data =>{ // Obtener key de crypto.php
+      if(data != null){
+        this.reservasHoy = data[0]['COUNT(*)'];
+      }
+    });
+    
+    // Salidas
+    let salida = new HttpParams()
+    .set('opcion', '2');
+
+    this.http.post<any>("http://localhost/dashboard.php", salida).subscribe(data =>{ // Obtener key de crypto.php
+      if(data != null){
+        this.reservasHoySalidas = data[0]['COUNT(*)'];
+      }
+    });
+
+    // Reseñas por revisar
+    let resenias = new HttpParams()
+    .set('opcion', '3');
+
+    this.http.post<any>("http://localhost/dashboard.php", resenias).subscribe(data =>{ // Obtener key de crypto.php
+      if(data != null){
+        this.revisarResenias = data[0]['COUNT(*)'];
+      }
+    });
+
+    // últimas 10 reservas
+    let reservas = new HttpParams()
+    .set('opcion', '4');
+
+    this.http.post<any>("http://localhost/dashboard.php", reservas).subscribe(data =>{ // Obtener key de crypto.php
+      if(data != null){
+        this.reservasList = data;
+      }
+    });
+    
+
   }
 
 }

@@ -1,0 +1,56 @@
+html,body{
+    margin: 0;
+}
+#bienvenida{
+    float: right;
+}
+#bienvenida2{
+    float: right;
+}
+#ajustes{
+    cursor: pointer;
+}
+.botonInicio{
+    padding: 7px 5px;
+}
+.icon {
+    display: inline-block;
+    height: 30px;
+    margin-right: 14px;
+    padding-right: 5px;
+    text-align: center;
+    vertical-align: middle;
+    width: 15%;
+}
+
+.cp {
+    display: inline-block;
+    height: 30px;
+    margin-right: -6px;
+    padding-right: 5px;
+    text-align: center;
+    vertical-align: middle;
+    width: 15%;
+}
+
+.logout {
+    display: inline-block;
+    height: 30px;
+    margin-right: -6px;
+    padding-right: 5px;
+    text-align: center;
+    vertical-align: middle;
+    width: 15%;
+}
+
+.bottom{
+    display: inline-block;
+    height: 30px;
+    margin: 0 auto;
+    padding-right: 5px;
+    text-align: center;
+    vertical-align: middle;
+}
+.puntero{
+    cursor: pointer;
+}
