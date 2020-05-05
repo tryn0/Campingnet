@@ -117,6 +117,7 @@ node --max-old-space-size=2685 ./node_modules/@angular/cli/bin/ng serve
 Donde max-old-space-size se le dice la cantidad de memoria a usar, como se puede apreciar se usó algo menos de memoria RAM libre, para que no use el 100% y los 2Gb del swapfile.
 
 ### Warning del módulo moment
+Este módulo sirve para la elección de fechas y su manejo.  
 A la hora de compilar y lanzar la app empezó a lanzar un warning indicando que no podía resolver './locale/' en el fichero locales.js.  
 Busqué en internet y no encontré una solución en concreto y el error llevaba ya varias versiones sin un fix que lo arreglara.  
 Por lo que decidí abrir el archivo /node_modules/moment/src/lib/locale/locales.js y buscar con CTRL+F ./locale y encontré una línea en la que por lo visto usa los módulo de la carpeta locale,
@@ -130,6 +131,7 @@ pero locales.js ya estaba en la carpeta locale, así que copié la línea, comen
 Y ya no me daba warning. Si en algún momento da algún error, borro la línea modificada y descomento la original.
 
 ### Warning del módulo crypto-js
+Este módulo sirve para encriptar con una key la información de localStorage, para que no pueda verse, o ser intento de robo, phising, etc.  
 Cuando compilas y lanzas la app salta un warning parecido al de justo arriba, no puede resolver crypto. Para ello abre el archivo /node_modules/crypto-js/core.js y encuentra la función con sobre la línea 40, con esta descripción:  
 ```
 // Native crypto import via require (NodeJS)
@@ -142,7 +144,8 @@ por
 ```
 crypto = require('crypto-js');
 ```
-Yo copié la línea, y modifiqué la copia comentando la original, por si en un futuro diese problemas.
+Yo copié la línea, y modifiqué la copia comentando la original, por si en un futuro diese problemas.  
+
 ---
 
 Este proyecto no puede copiarse y/o usarse sin el consentimiento de su creador, [tryn0](https://github.com/tryn0)  
