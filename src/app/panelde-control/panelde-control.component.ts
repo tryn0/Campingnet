@@ -5,6 +5,7 @@ import { HttpClient } from '@angular/common/http';
 import { Usuario } from '../usuario/usuario';
 
 import { MustMatch } from '../must-match.validator';
+import {encriptar, desencriptar } from '../crypto-storage';
 
 @Component({
   selector: 'app-panelde-control',
@@ -42,8 +43,7 @@ export class PaneldeControlComponent implements OnInit {
 
   constructor(public fb: FormBuilder, private router: Router, private http: HttpClient) {
 
-    this.usuarioActual = JSON.parse(localStorage.getItem('usuarioActual'));
-    //console.log(this.usuarioActual);
+    this.usuarioActual = desencriptar(localStorage.getItem('usuarioActual'));
 
     this.cp = this.fb.group({
       telefono: ['', [Validators.required, Validators.pattern('^[6-7][0-9]{8}$')]],
@@ -158,7 +158,7 @@ export class PaneldeControlComponent implements OnInit {
             this.usuario = new Usuario(data[0].idUsuario, data[0].email, data[0].dni, data[0].nombre_usuario, data[0].rol, data[0].telefono, data[0].alias_usuario);
 
             // Actualización de la sesión con los datos actualizados del usuario 
-            localStorage.setItem('usuarioActual', JSON.stringify(this.usuario));
+            localStorage.setItem('usuarioActual', encriptar(this.usuario));
             this.modificado = true;
 
           }else{

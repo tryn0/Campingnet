@@ -756,12 +756,7 @@ export class ReservasComponent implements OnInit {
   ngOnInit(): void {
 
     // Compruebo si hay un usuario con sesión iniciada
-    this.http.get("http://localhost/crypto.php").subscribe(data =>{
-      if(data != null){
-        let key = data as string;
-        this.usuarioActual = desencriptar(localStorage.getItem('usuarioActual'), key);
-      }
-    });
+    this.usuarioActual = desencriptar(localStorage.getItem('usuarioActual'));
 
     // Formulario 1 - Fechas entrada y salida
     this.fechas = this.fb.group({

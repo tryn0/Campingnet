@@ -14,8 +14,6 @@ import { encriptar, desencriptar } from '../crypto-storage';
 })
 export class RegistrarComponent implements OnInit {
 
-  public key: string;
-
   public userdata: string;
 
   public registro: FormGroup;
@@ -135,7 +133,7 @@ export class RegistrarComponent implements OnInit {
                       this.errorDni = null;
                       this.errorAlias = null;
 
-                      localStorage.setItem('usuarioActual', encriptar(this.usuario, this.key));
+                      localStorage.setItem('usuarioActual', encriptar(this.usuario));
                       this.router.navigate(['/registrar']);
                       window.location.reload();
   
@@ -173,16 +171,7 @@ export class RegistrarComponent implements OnInit {
 
   
   ngOnInit(): void {
-
-    this.http.get("http://localhost/crypto.php").subscribe(data => {
-      if (data != null) {
-        this.key = data as string;
-        this.userdata = desencriptar(localStorage.getItem('usuarioActual'), this.key);
-      }
-    });
-
-    
-
+    this.userdata = desencriptar(localStorage.getItem('usuarioActual'));
 
     if(this.userdata != null){
       //this.router.navigate(['/']);

@@ -1,1 +1,168 @@
-<p>dashboard works!</p>
+<div *ngIf="trabajador == true; else noTrabajador">
+
+    <!-- Menú superior horizontal -->
+    <mat-toolbar color="accent">
+      <span (click)="togle()" class="puntero">{{menuMensaje}}</span>
+
+      <span style="flex: 1 1 auto;"></span>
+      <div style="float: right;">&nbsp;
+        <small id="ajustes" mat-button [matMenuTriggerFor]="ajustes">Ajustes<mat-icon fxShow="true" fxHide.sm="true" class="icon">arrow_drop_down</mat-icon></small>&nbsp;
+        <mat-menu #ajustes="matMenu" class="text-center">
+          <button class="botonInicio" mat-button [routerLink]="'/controlpanel'"><mat-icon fxShow="true" fxHide.sm="true" class="icon">dashboard</mat-icon>Panel de control</button><br>
+          <button class="botonInicio" mat-button [routerLink]="'/dashboard'" *ngIf="usuarioActual != null && usuarioActual.rol != 'cliente'" ><mat-icon fxShow="true" fxHide.sm="true" class="icon">supervisor_account</mat-icon>Administración</button><br> <!-- Dashboard TRABAJADOR-->
+          <button class="botonInicio" mat-button (click)="logOff()"><mat-icon fxShow="true" fxHide.sm="true" class="icon">input</mat-icon>Cerrar sesión</button>
+        </mat-menu>
+      </div>
+    </mat-toolbar>
+  
+    <!-- Contenedor del menú y del cuerpo -->
+    <mat-drawer-container style="height: 100vh;">
+    
+  
+      <!-- Menu lateral -->
+      <mat-drawer *ngIf="pantalla; else pantallaPeque" style="width: 100vw;" #menu id="menu-lateral" mode="over">
+        <div class="container">
+            <div class="column">
+                <p class="text-center menu-titulo">Menú de la administración</p>
+                <p class="text-center menu-titulo">Bienvenido/a {{usuarioActual?.alias}}</p>
+                <br>
+                <p [routerLink]="'/dashboard'" class="puntero">Inicio</p>
+                <hr>
+                <p [routerLink]="'/'" class="puntero">Ver reserva/s</p>
+                <hr>
+                <p [routerLink]="'/'" class="puntero">Ver reseñas</p>
+                <hr>
+                <p [routerLink]="'/'" class="puntero">Reseñas sin aprobar</p>
+                <hr>
+                <p [routerLink]="'/'" class="puntero">Ver usuarios</p>
+                <hr>
+                <p [routerLink]="'/'" class="puntero">Ver servicios extras</p>
+                <hr>
+                <p [routerLink]="'/'" class="puntero">Volver a la web</p>
+                <hr>
+                <div *ngIf="usuarioActual?.rol == 'admin'">
+                   <br>
+                    <p [routerLink]="'/'" class="puntero">Ajustes</p> 
+                </div>
+                
+            </div>
+        </div>
+      </mat-drawer>
+
+
+      <!-- Menú lateral pantalla pequeña -->
+      <ng-template #pantallaPeque>
+        <mat-drawer *ngIf="!pantalla" style="width: 25vw;" #menu id="menu-lateral" mode="side" opened>
+            <div class="container">
+                <div class="column">
+                    <p class="text-center">Menú de la administración</p>
+                    <p class="text-center">Bienvenido/a {{usuarioActual?.alias}}</p>
+                    <br>
+                    <p [routerLink]="'/dashboard'" class="puntero">Inicio</p>
+                    <hr>
+                    <p [routerLink]="'/'" class="puntero">Ver reserva/s</p>
+                    <hr>
+                    <p [routerLink]="'/'" class="puntero">Ver reseñas</p>
+                    <hr>
+                    <p [routerLink]="'/'" class="puntero">Reseñas sin aprobar</p>
+                    <hr>
+                    <p [routerLink]="'/'" class="puntero">Ver usuarios</p>
+                    <hr>
+                    <p [routerLink]="'/'" class="puntero">Ver servicios extras</p>
+                    <hr>
+                    <p [routerLink]="'/'" class="puntero">Volver a la web</p>
+                    <hr>
+                    <div *ngIf="usuarioActual?.rol == 'admin'">
+                       <br>
+                        <p [routerLink]="'/'" class="puntero">Ajustes</p> 
+                    </div>
+                    
+                </div>
+            </div>
+          </mat-drawer>
+      </ng-template>
+  
+  
+      <!-- Cuerpo de la web -->
+      <mat-drawer-content>
+        <div class="container col-10">
+            <div class="column">
+                <div>
+                    <h3 class="text-center">
+                        Administración
+                    </h3>
+                    <p class="text-center">Has entrado como {{usuarioActual?.rol}}</p> 
+                </div>
+                
+                <br>
+
+                <div class="row justify-content-center">
+
+                    <div class="row d-flex justify-content-between text-center">
+                        <div class="col-12 col-sm-3 mt-3 mb-3 rounded border border-dark" >
+                            <p class="my-auto py-5">
+                                Hoy hay {{reservasHoy}} reserva/s pendientes de entrar al camping
+                            </p>
+                            
+                        </div>
+                        <div class="col-12 col-sm-3 mt-3 mb-3 rounded border border-dark" >
+                            <p class="my-auto py-5">
+                                Hoy hay {{reservasHoySalidas}} reserva/s pendientes de salir al camping
+                            </p>
+                        </div>
+                        <div class="col-12 col-sm-3 mt-3 mb-3 rounded border border-dark" >
+                            <p class="my-auto py-5">
+                                {{revisarResenias}} reseña/s por revisar
+                            </p>
+                        </div>
+                    </div>
+
+                </div>
+                
+            </div>
+            
+            <!-- Tabla con las últimas 10 reservas -->
+            <div class="container">
+                <table class="table mt-5">
+                    <thead class="thead-dark">
+                        <tr>
+                            <th class="text-center" scope="col">#</th>
+                            <th class="text-center" scope="col">ID Reserva</th>
+                            <th class="text-center" scope="col">Fecha de entrada</th>
+                            <th class="text-center" scope="col">ID Usuario</th>
+                            <th class="text-center" scope="col">Nº Personas</th>
+                        </tr>
+                        <tr *ngFor="let reservas of reservasList; index as i">
+                            <th scope="row" class="text-center">{{i+1}}</th>
+                            <td class="text-center">{{reservas.idReserva}}</td>
+                            <td class="text-center">{{reservas.fecha_entrada}}</td>
+                            <td class="text-center">{{reservas.idUsuario}}</td>
+                            <td class="text-center">{{reservas.num_personas}}</td>
+                        </tr>
+                    </thead>
+                </table>
+            </div>
+
+            <p [routerLink]="'/'" class="puntero">Volver</p>
+          
+        </div>
+      </mat-drawer-content>
+  
+    </mat-drawer-container>
+  
+  </div>
+
+  <!-- Página cargando para cuando se entra al dashboard mientras carga el rol del trabajador, si es cliente no ve nada del dashboard y regresa al inicio, si es trabajador entra al dashboard -->
+  <ng-template #noTrabajador>
+      <div class="container">
+          <div class="row justify-content-center">
+            <div style="position: relative; top: 50vh;">
+                <mat-spinner></mat-spinner>
+            </div>
+        
+            </div>
+      </div>
+      
+      
+      
+  </ng-template>

@@ -7,7 +7,7 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from "@angular/forms";
 
-//Componentes para Angular
+// Componentes para Angular
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
 import { MatCardModule } from '@angular/material/card';
@@ -29,6 +29,7 @@ import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MaterialModule } from './material.module';
+import { LayoutModule } from '@angular/cdk/layout';
 
 //Componentes añadidos
 import { HomeComponent } from './home/home.component';
@@ -102,7 +103,8 @@ export const DD_MM_YYYY_Format = {
     MatMomentDateModule,
     MatCheckboxModule,
     MatDialogModule,
-    MaterialModule
+    MaterialModule,
+    LayoutModule
   ],
   providers: [
     MatDatepickerModule
