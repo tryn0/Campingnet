@@ -598,7 +598,11 @@ export class ReservasComponent implements OnInit {
 
       if(this.persona != null){
         // Igualar a 0 las variables para que no de errores al paasarlas por HttpParams
-        let persExtras = this.personasExtras;
+        let persExtras: number = 0;
+        if(this.personasExtras > 0){
+          persExtras = this.personasExtras;
+        }
+        
         if(this.personasExtrasMenor == null){
           persExtrasMenor = 0;
         }else{
@@ -685,26 +689,30 @@ export class ReservasComponent implements OnInit {
         let totalPersonas: number;
         if(this.email != null){
           // Igualar a 0 las variables para que no de errores al paasarlas por HttpParams
-        let persExtras = this.personasExtras;
-        if(this.personasExtrasMenor == null){
-          persExtrasMenor = 0;
-        }else{
-          persExtrasMenor = this.personasExtrasMenor;
-        }
         
-        if(this.personasExtrasMayor == null){
-          persExtrasMayor = 0;
-        }else{
-          persExtrasMayor = this.personasExtrasMayor;
-        }
-        
+          let persExtras: number = 0;
+          if(this.personasExtras > 0){
+            persExtras = this.personasExtras;
+          }
+          if(this.personasExtrasMenor == null){
+            persExtrasMenor = 0;
+          }else{
+            persExtrasMenor = this.personasExtrasMenor;
+          }
+          
+          if(this.personasExtrasMayor == null){
+            persExtrasMayor = 0;
+          }else{
+            persExtrasMayor = this.personasExtrasMayor;
+          }
+          
 
-        if(this.alojamiento.get('tipo').value == 'Bungalow'){
-          persExtras = 0;
-          totalPersonas = this.valor2;
-        }else{
-          totalPersonas = this.personas+persExtras+persExtrasMenor+persExtrasMayor;
-        }
+          if(this.alojamiento.get('tipo').value == 'Bungalow'){
+            persExtras = 0;
+            totalPersonas = this.valor2;
+          }else{
+            totalPersonas = this.personas+persExtras+persExtrasMenor+persExtrasMayor;
+          }
 
           params2 = new HttpParams()
           .set('opcion', '7')

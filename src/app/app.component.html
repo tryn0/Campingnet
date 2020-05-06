@@ -62,7 +62,7 @@
       <span id="bienvenida2">Bienvenid@ {{usuarioActual.alias}}</span>
       <br>
       <div style="float: right;">&nbsp;
-        <small id="ajustes" mat-button [matMenuTriggerFor]="ajustes">Ajustes<mat-icon fxShow="false" fxHide.sm="true" class="icon">arrow_drop_down</mat-icon></small>&nbsp;
+        <small id="ajustes" mat-button [matMenuTriggerFor]="ajustes">Ajustes<mat-icon fxShow="true" fxHide.sm="true" class="icon">arrow_drop_down</mat-icon></small>&nbsp;
         <mat-menu #ajustes="matMenu" class="text-center">
           <button class="botonInicio" mat-button (click)="sidenav.close()" [routerLink]="'/controlpanel'"><mat-icon fxShow="true" fxHide.sm="true" class="icon">dashboard</mat-icon>Panel de control</button><br>
           <button  class="botonInicio" mat-button (click)="logOff()"><mat-icon fxShow="true" fxHide.sm="true" class="icon">input</mat-icon>Cerrar sesión</button>

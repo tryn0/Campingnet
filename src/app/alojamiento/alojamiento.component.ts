@@ -42,7 +42,7 @@ export class AlojamientoComponent implements OnInit {
 
   constructor(private router: ActivatedRoute, private http: HttpClient, public fb: FormBuilder, private route: Router) {
     
-    if(this.router.snapshot.url.length == 1 && this.router.snapshot.url[0].path == 'alojamiento'){ // Si la url solo tiene 1 parámetro y es alojamiento que muestre una página para vefr parcelas o bungalows (para asegurarme de que va bien)
+    if(this.router.snapshot.url.length == 1 && this.router.snapshot.url[0].path == 'alojamiento'){ // Si la url solo tiene 1 parámetro y es alojamiento que muestre una página para ver parcelas o bungalows (para asegurarme de que va bien)
       this.situacion = 0;
 
       // Parámetros a enviar al archivo PHP
@@ -89,7 +89,7 @@ export class AlojamientoComponent implements OnInit {
             // Bungalows
             for (let i = 0; i < this.alojamientos.length; i++) {
               this.bungalows = null;
-              const element = this.alojamientos[0];
+              const element = this.alojamientos[i];
               this.bungalows = new Alojamiento(element.idAlojamiento, element.tipo, element.numeroAlojamiento, null, null, element.habitaciones, element.maximo_personas);
               this.arrayBungalows.push(this.bungalows);
 
