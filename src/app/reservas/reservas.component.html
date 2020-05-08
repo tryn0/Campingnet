@@ -2,7 +2,6 @@
     <h4 class="text-center">Reservar</h4>
     <div class="col-12 mt-5">
         <mat-horizontal-stepper [linear]="true" #stepper>
-
             <mat-step [stepControl]="fechas">
                 <form novalidate [formGroup]="fechas">
                     
@@ -36,9 +35,7 @@
                             </mat-form-field>
                             <br>
                             <span style="color: red;" *ngIf="fechas.get('fechaSalida').hasError('fecha2Mayor')">La fecha de salida debe ser posterior a la de entrada.</span>
-                            
                         </div>
-            
                     </div>
                     <br>
                     <mat-icon class="icon float-left" style="cursor: pointer;" (click)="mostrarInfo1()">info</mat-icon><span *ngIf="info1 != false" class="float-left">La hora de entrada por defecto es a las 12:00 y la de salida a las 11:59. En casos especiales póngase en contacto con el camping.</span>
@@ -108,11 +105,10 @@
                                 <mat-hint align="start"><strong>Personas mayores de 12 años</strong></mat-hint>
                             </mat-form-field>                           
                         </div>
-
                     </div>
 
                     <br>
-                    <mat-icon *ngIf="alojamiento.get('tipo').value == 'Parcela'" class="icon float-left" style="cursor: pointer;" (click)="mostrarInfo1()">info</mat-icon><span *ngIf="info1 != false && alojamiento.get('tipo').value == 'Parcela'" class="float-left">En el campo personas adultas +12 van todas aquellas personas que no tengan menos de 12 ni más de 65 años. Sí es así indíquelas servicios extras.</span>
+                    <mat-icon *ngIf="alojamiento.get('tipo').value == 'Parcela'" class="icon float-left" style="cursor: pointer;" (click)="mostrarInfo1()">info</mat-icon><span *ngIf="info1 != false && alojamiento.get('tipo').value == 'Parcela'" class="float-left">En el campo personas adultas +12 van todas aquellas personas que no tengan menos de 12 ni más de 65 años. Sí es así indíquelas en la sección de servicios extras.</span>
                     <!-- Botonera del step -->
                     <div>
                         <button class="mt-3" mat-button matStepperPrevious>Atrás</button>
@@ -121,8 +117,6 @@
                 </form>
             </mat-step>
                     
-
-
             <!-- Servicios extras -->
             <mat-step [stepControl]="serviciosExtras" label="Servicios extras" >
                 <form novalidate [formGroup]="serviciosExtras" class="mt-3">
@@ -132,7 +126,6 @@
                     <div class="row">
                         <div class="col-md-6 float-left row" *ngFor="let servicio of servicios">
                             <mat-checkbox class="col-5 mt-3" [checked]="servicio['idServicio'] == 2 && alojamiento.get('numPersonas').value > 2" formControlName="servicio{{servicio['idServicio']}}" (change)='onChange(servicio)' [disabled]="servicio['idServicio'] != 3 && electricidad">{{servicio['nombre']}}</mat-checkbox>
-                    
                             <mat-form-field class="mt-0" *ngIf="servicio['idServicio'] != 1">
                                 <mat-label>Cantidad</mat-label>
                                     <div *ngIf="servicio['idServicio'] == 2 && alojamiento.get('numPersonas').value > 2; else otro">
@@ -142,9 +135,7 @@
                                         <input matInput formControlName="num{{servicio['idServicio']}}" type="number">
                                     </ng-template>
                             </mat-form-field>
-    
                         </div>
-
                     </div>
 
                     <div *ngIf="alojamiento.get('tipo').value != 'Bungalow'">
@@ -157,7 +148,6 @@
                     
                     <mat-icon class="icon float-left" style="cursor: pointer;" (click)="mostrarInfo1()">info</mat-icon><span *ngIf="info1 != false" class="float-left">Como servicio extra de Animal solo cuentan animales como perros, gatos, etc.<br>La suma total de personas no puede superar 12.</span><br>
                     <br>
-                    {{serviciosExtras.value.noCantidad | json}}
                     <div>
                         <button mat-button matStepperPrevious>Atrás</button>
                         <button class="float-right mt-3" mat-button matStepperNext (click)="addServicios()">Siguiente</button>
@@ -168,10 +158,8 @@
             <!-- Desglose de precios y demás -->
             <mat-step>
                 <ng-template matStepLabel >Confirmar reserva</ng-template>
-
                 <div class="container">
                     <div class="row">
-
                         <div class="col-md-6">
                             <!-- Fechas -->
                             <p>Fecha de entrada: {{fecha1}}</p>
@@ -198,24 +186,18 @@
                         <div class="col-md-6" *ngIf="personasExtras != null || personasExtrasMenor != null || personasExtrasMayor != null || extras[0]">
                             <!-- Servicios extras -->
                             <p >Servicios extras:</p>
-                            
                             <div *ngFor="let extra of extras">
-                                
-                                    <div *ngFor="let precio of preciosServicios">
-                                        <div *ngIf="extra[1] == '1'; else extras">
-                                            <p *ngIf="precio[0]['idServicio'] == extra[1]">{{extra[0]}}, precio: {{precio[0]['precio']}}€</p>
-                                        </div>
-                                        <ng-template #extras>
-                                            <p *ngIf="precio[0]['idServicio'] == extra[1]">{{extra[0]}}/es: {{extra[2]}}, precio: {{precio[0]['precio']}}€</p>
-                                        </ng-template>
+                                <div *ngFor="let precio of preciosServicios">
+                                    <div *ngIf="extra[1] == '1'; else extras">
+                                        <p *ngIf="precio[0]['idServicio'] == extra[1]">{{extra[0]}}, precio: {{precio[0]['precio']}}€</p>
                                     </div>
-                                
+                                    <ng-template #extras>
+                                        <p *ngIf="precio[0]['idServicio'] == extra[1]">{{extra[0]}}/es: {{extra[2]}}, precio: {{precio[0]['precio']}}€</p>
+                                    </ng-template>
+                                </div>
                             </div>
-                            
                         </div>
-
                     </div>
-
                     <p class="float-left">Precio total alojamiento: {{precioAlojamientoFinal.toFixed(2)}}€</p>
                     <p class="float-right" *ngIf="preciosExtrasFinal != 0">Precio total servicios extras: {{preciosExtrasFinal}}€</p>
                     <br>
@@ -233,69 +215,17 @@
 
                 <!-- Datos personales para la reserva -->
                 <!-- Si se tiene una sesión iniciada se rellena automáticamente -->
-                <!-- TENGO QUE PENSAR QUE HACER SINO TIENE SESION INICIADA, SE CREA USUARIO NUEVO O COMO????-->
 
-                <mat-step  label="Datos personales" *ngIf="usuarioActual == null; else usuarioExiste">
+                <mat-step  label="Datos personales" *ngIf="usuarioActual == null">
                     <p>No has iniciado sesión. Para realizar una reserva necesitas estar logueado. Si tienes cuenta inicia sesión. Si aún no tiene regístrese.</p>
                     <p *ngIf="loginReserva == false" style="color: red;">Por favor reintente iniciar sesión, comprueba el correo electrónico y la contraseña.</p>
 
                     <!-- Cada uno de los botones llevará a un popup modal con un formulario logIn a uno con 2 campos, y sigIn a uno con 7 campos -->
-                    <!-- Tienen el mismo fin, si el formulario es OK, confirma reserva, lleva a una página que indica que todo OK y el idReserva, si NO ok, indica un mensaje con el error -->
+                    <!-- Tienen el mismo fin, si el formulario es OK, confirma reserva, lleva a una página que indica que todo OK y la reserva se realizó -->
                     <button mat-button (click)="logIn()">Iniciar sesión</button>
                     <button mat-button (click)="signIn()" class="float-right">Registrarse</button>
                     
                 </mat-step>
-
-
-
-            <ng-template #usuarioExiste>
-
-                <!-- SI YA EXISTE UNA SESIÓN DE USUARIO -->
-
-                <!--<mat-step [stepControl]="usuario" label="Datos personales" >
-                    <form novalidate [formGroup]="usuario">
-                        <ng-template matStepperIcon="edit">
-                            <mat-icon>search</mat-icon>
-                        </ng-template>
-                        <div class="row">
-                            <div class="col-md-6 text-center">
-                                <mat-form-field>
-                                    <mat-label>Nombre y apellidos</mat-label>
-                                    <input matInput formControlName="nombreCompleto" required [disabled]="usuarioActual != null">
-                                </mat-form-field>
-                            </div>
-
-                            <div class="col-md-6 text-center">
-                                <mat-form-field>
-                                    <mat-label>Teléfono</mat-label>
-                                    <input matInput formControlName="telefono" required [disabled]="usuarioActual != null">
-                                </mat-form-field>
-                            </div>
-
-                            <div class="col-md-6 text-center">
-                                <mat-form-field>
-                                    <mat-label>Correo electrónico</mat-label>
-                                    <input matInput formControlName="email" required [disabled]="usuarioActual != null">
-                                </mat-form-field>
-                            </div>
-
-                            <div class="col-md-6 text-center">
-                                <mat-form-field>
-                                    <mat-label>DNI</mat-label>
-                                    <input matInput formControlName="dni" required [disabled]="usuarioActual != null">
-                                </mat-form-field>
-                            </div>
-                        </div>
-
-                    <div>
-                      <button class="mt-3" mat-button matStepperPrevious>Atrás</button>
-                      <button class="float-right mt-3" mat-button matStepperNext>Siguiente</button>
-                    </div>
-                  </form>
-                </mat-step>-->
-                
-                <!--<button mat-button (click)="register()">Registrarse</button>-->
-            </ng-template>
 
         </mat-horizontal-stepper>
     </div>
@@ -306,7 +236,8 @@
         <h5 class="display-4">La reserva se ha completado.</h5>
         <p>Fecha de entrada al camping: <b>{{fecha1}}</b></p>
         <p>Hora de entrada al camping: <b>12:00</b></p>
-        <p style="cursor: pointer;" [routerLink]="'/'">Volver a inicio</p>
+        <br>
+        <a href="/inicio" style="text-decoration: none; color: inherit;">Volver a inicio</a>
     </div>
     
 </ng-template>

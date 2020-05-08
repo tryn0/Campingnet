@@ -5,6 +5,7 @@ import { DateAdapter } from '@angular/material/core';
 import * as moment from 'moment/moment';
 import { MatDialog } from '@angular/material/dialog';
 import { ReservasLoginComponent } from '../reservas-login/reservas-login.component';
+import { ReservasRegistrarComponent } from '../reservas-registrar/reservas-registrar.component';
 import { Usuario } from '../usuario/usuario';
 
 import { encriptar, desencriptar } from '../crypto-storage';
@@ -136,18 +137,12 @@ export class ReservasComponent implements OnInit {
       // Para los multiplicativos de las fechas
       this.http.post('http://localhost/reserva.php', params3).subscribe(data =>{
         if(data != null){ // Si recibe algún alojamiento
-          //console.log(data);
 
           // Total de días
           let diff = Math.floor((new Date(this.fechas.get('fechaSalida').value).getTime() - new Date(this.fechas.get('fechaEntrada').value).getTime())/86400000)+1;
 
           if(data != 0){
             let data2: any = data;
-            //console.log((this.fechas.get('fechaEntrada').value).format('YYYY-MM-DD'));
-            //console.log((this.fechas.get('fechaSalida').value).format('YYYY-MM-DD'));
-
-            //console.log('Días de la reserva: '+diff);
-            //console.log(data2);
 
             // Seteo de la variable calculo usada para el multiplicador
             let calculo: number = 0;
@@ -155,7 +150,6 @@ export class ReservasComponent implements OnInit {
             // Cálculo de días en cada temporada
             for (let i = 0; i < data2.length; i++) { // Por cada temporada...
               const element = data2[i];
-              //console.log(element);
 
               // Seteo de las fechas de la temporada
               let inicioTemporada = moment(element['fecha_entrada']);
@@ -311,11 +305,10 @@ export class ReservasComponent implements OnInit {
 
     }
 
-    //console.log(params)
+
     // Petición POST para obtener todos los tipos de alojamieto y sus características, FORMULARIO 1, Sombra o habitaciones
     this.http.post('http://localhost/reserva.php', params).subscribe(data =>{
       if(data != null){ // Si recibe algún alojamiento
-        console.log(data)
         Object.keys(data[0]).forEach(key => { // Para sacar las keys del array obtenido desde reserva.php
           this.dato1 = key; // Sin mayúscula
           this.dato2 = key[0].toUpperCase()+key.slice(1); // Primera letra mayúscula
@@ -352,8 +345,6 @@ export class ReservasComponent implements OnInit {
     return (): ValidationErrors => {
       if(this.alojamiento.get('tipo').value == 'Bungalow'){
         this.alojamiento.get('numPersonas').setErrors(null);
-        /*this.alojamiento.get('numPersonasMenor').setErrors(null);
-        this.alojamiento.get('numPersonasMayor').setErrors(null);*/
         if(this.fechaMenos7 == true){
           this.alojamiento.get('tipo').setErrors({menos7: true});
         }else{
@@ -411,22 +402,8 @@ export class ReservasComponent implements OnInit {
         this.personasExtras = null;
       }
 
-      /*if(this.alojamiento.get('numPersonasMenor').value > 0){
-        this.personasExtrasMenor = this.alojamiento.get('numPersonasMenor').value;
-      }else if(this.alojamiento.get('numPersonasMenor').value == null){
-        this.personasExtrasMenor = null;
-      }*/
-
-      /*if(this.alojamiento.get('numPersonasMayor').value > 0){
-        this.personasExtrasMayor = this.alojamiento.get('numPersonasMayor').value;
-      }else if(this.alojamiento.get('numPersonasMayor').value == null){
-        this.personasExtrasMayor = null;
-      }*/
-
     }else{
       this.personasExtras = null;
-      /*this.personasExtrasMenor = null;
-      this.personasExtrasMayor = null;*/
     }
 
     if (this.personasExtras > 0){
@@ -491,26 +468,29 @@ export class ReservasComponent implements OnInit {
       Object.entries(this.serviciosExtras.value).forEach(entries => {
         if(entries[0].slice(0,3) == 'num' && entries[0] != 'num1'){
 
+          if(entries[0] == 'num2' || entries[0] == 'num6' || entries[0] == 'num7'){
+            totalPersonasparcela2 += (entries[1] as number);
+            this.totalPersonasparcela = totalPersonasparcela2 + this.personas;
+          }
+          
           if(entries[1] == '' || entries[1] == null){ // Si el servicio elegido no está en blanco
  
             this.serviciosExtras.get(entries[0]).setErrors({'noCantidad': true});
           }else if(entries[1] <= 0 || entries[1] > 12) { // Si el servicio elegido no está entre 0 y 12
 
             this.serviciosExtras.get(entries[0]).setErrors({'muchaCantidad': true});
-          }else if((this.personas+totalPersonasparcela2) > 12) { // La suma de todas las personas
+          }else { // Toodo correcto
+            if((this.personas+totalPersonasparcela2) > 12) { // La suma de todas las personas
 
-            this.serviciosExtras.get(entries[0]).setErrors({'muchaGente': true});
-          }else{ // Toodo correcto
-
-            this.serviciosExtras.get(entries[0]).setErrors(null);
+              this.serviciosExtras.get(entries[0]).setErrors({'muchaGente': true});
+            }else{
+              this.serviciosExtras.get(entries[0]).setErrors(null);
+            }
           }
         }
 
         // Suma de todas las personas
-        if(entries[0] == 'num2' || entries[0] == 'num6' || entries[0] == 'num7'){
-          totalPersonasparcela2 += (entries[1] as number);
-          this.totalPersonasparcela = totalPersonasparcela2 + this.personas;
-        }
+        
 
       });
       return;
@@ -711,6 +691,30 @@ export class ReservasComponent implements OnInit {
 
   signIn(){// Si confirma la reserva, NO tiene una sesión iniciada y NO tiene una cuenta creada
 
+    const dialogRef = this.dialog.open(ReservasRegistrarComponent, {
+      data: {}
+    });
+
+    dialogRef.afterClosed().subscribe(result => {
+      this.email = result;
+      if(this.email == 'Error'){
+        this.loginReserva = false;
+      }else if(this.email != undefined && this.email['id']){
+        this.loginReserva = true;   
+        if(this.email != null){
+          // Igualar a 0 las variables para que no de errores al paasarlas por HttpParams
+
+          if (this.usuarioActual == null) {
+            if(localStorage.getItem('usuarioActual') != null){
+              this.usuarioActual = desencriptar(localStorage.getItem('usuarioActual'));
+              this.reserva();
+            }
+          }else{
+          }
+
+        }
+      }
+    });
   }
 
   ngOnInit(): void {
