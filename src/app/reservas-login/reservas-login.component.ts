@@ -4,6 +4,8 @@ import { FormBuilder, FormGroup, Validators, FormControl, ValidationErrors } fro
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Usuario } from '../usuario/usuario';
 
+import { encriptar, desencriptar } from '../crypto-storage';
+
 interface DialogData {
   email: string;
 }
@@ -38,10 +40,13 @@ export class ReservasLoginComponent implements OnInit {
     fd.append('password', this.login.get('password').value);
 
     this.http.post<any>('http://localhost/login-usuario.php', fd).subscribe(data =>{
-      if(data != null){ // Si encuentra el usuario y la pass coincide
+      if(data != 0){ // Si encuentra el usuario y la pass coincide
         this.existe = data[0];
+        console.log(data)
         this.usuario = new Usuario(this.existe.idUsuario, this.existe.email, this.existe.nif_usuario, this.existe.nombre_usuario, this.existe.rol, this.existe.telefono, this.existe.alias_usuario);
-        localStorage.setItem('usuarioActual',JSON.stringify(this.usuario));
+        
+        localStorage.setItem('usuarioActual',encriptar(this.usuario));
+
         this.dialogRef.close(this.usuario);
       }else{ // No se encuentra el usuario o la pass no coincide
         this.comprobado = false;

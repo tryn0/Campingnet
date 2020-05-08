@@ -1,4 +1,4 @@
-<div class="container justify-content-center">
+<div class="container justify-content-center" *ngIf="reservaHecha == false; else reservado">
     <h4 class="text-center">Reservar</h4>
     <div class="col-12 mt-5">
         <mat-horizontal-stepper [linear]="true" #stepper>
@@ -109,33 +109,14 @@
                             </mat-form-field>                           
                         </div>
 
-                        <!-- Cantidad de personas -12 en la reserva -->
-                        <div class="col-md-4">
-                            <mat-form-field *ngIf="alojamiento.get('tipo').value == 'Parcela'">
-                                <mat-label>Personas menor de 12</mat-label>
-                                <input matInput formControlName="numPersonasMenor" type="number" required>
-                                <mat-hint align="start"><strong>Personas menores de 12 años</strong></mat-hint>
-                            </mat-form-field>                           
-                        </div>
-
-                        <!-- Cantidad de personas +65 en la reserva -->
-                        <div class="col-md-4">
-                            <mat-form-field *ngIf="alojamiento.get('tipo').value == 'Parcela'">
-                                <mat-label>Personas mayores +65</mat-label>
-                                <input matInput formControlName="numPersonasMayor" type="number" required>
-                                <mat-hint align="start"><strong>Personas mayores de 65 años</strong></mat-hint>
-                            </mat-form-field>                           
-                        </div>
-
-                         <!-- {{ alojamiento.value | json }} -->
                     </div>
-            
-                    <small *ngIf="this.alojamiento.get('numPersonas').touched && this.alojamiento.get('numPersonas').hasError('personas')" style="color: red;">La cantidad de personas debe ser entre 1 y 12 por parcela.</small>
 
+                    <br>
+                    <mat-icon *ngIf="alojamiento.get('tipo').value == 'Parcela'" class="icon float-left" style="cursor: pointer;" (click)="mostrarInfo1()">info</mat-icon><span *ngIf="info1 != false && alojamiento.get('tipo').value == 'Parcela'" class="float-left">En el campo personas adultas +12 van todas aquellas personas que no tengan menos de 12 ni más de 65 años. Sí es así indíquelas servicios extras.</span>
                     <!-- Botonera del step -->
                     <div>
                         <button class="mt-3" mat-button matStepperPrevious>Atrás</button>
-                        <button class="float-right mt-3" mat-button matStepperNext>Siguiente</button>
+                        <button class="float-right mt-3" mat-button matStepperNext (click)="alojamientoElegido()">Siguiente</button>
                     </div>
                 </form>
             </mat-step>
@@ -150,19 +131,33 @@
                     <!-- Controlar el tema de borrar-->
                     <div class="row">
                         <div class="col-md-6 float-left row" *ngFor="let servicio of servicios">
-                            <mat-checkbox *ngIf="servicio['idServicio'] != 2" class="col-5 mt-3"  formControlName="servicio{{servicio['idServicio']}}" (change)='onChange(servicio)' [disabled]="servicio['idServicio'] == 1 && electricidad">{{servicio['nombre']}}</mat-checkbox>
+                            <mat-checkbox class="col-5 mt-3" [checked]="servicio['idServicio'] == 2 && alojamiento.get('numPersonas').value > 2" formControlName="servicio{{servicio['idServicio']}}" (change)='onChange(servicio)' [disabled]="servicio['idServicio'] != 3 && electricidad">{{servicio['nombre']}}</mat-checkbox>
                     
                             <mat-form-field class="mt-0" *ngIf="servicio['idServicio'] != 1">
                                 <mat-label>Cantidad</mat-label>
-                                    <input matInput formControlName="num{{servicio['idServicio']}}" type="number">
+                                    <div *ngIf="servicio['idServicio'] == 2 && alojamiento.get('numPersonas').value > 2; else otro">
+                                        <input matInput min="0" max="12" formControlName="num{{servicio['idServicio']}}" type="number" value="{{personasExtras}}">
+                                    </div>
+                                    <ng-template #otro>
+                                        <input matInput formControlName="num{{servicio['idServicio']}}" type="number">
+                                    </ng-template>
                             </mat-form-field>
     
                         </div>
 
                     </div>
+
+                    <div *ngIf="alojamiento.get('tipo').value != 'Bungalow'">
+                        <p *ngIf="(gentePermitida - totalPersonasparcela) >= 0; else menosGente">Personas disponibles {{gentePermitida - totalPersonasparcela}}</p>
+                    </div>
                     
-                    <mat-icon class="icon float-left" style="cursor: pointer;" (click)="mostrarInfo1()">info</mat-icon><span *ngIf="info1 != false" class="float-left">Como animales solo cuentan animales no aptos para llevar en jaulas, como perros, gatos, etc.</span>
+                    <ng-template #menosGente>
+                        <p>Superas el límite permitido de personas en la parcela</p>
+                    </ng-template>
+                    
+                    <mat-icon class="icon float-left" style="cursor: pointer;" (click)="mostrarInfo1()">info</mat-icon><span *ngIf="info1 != false" class="float-left">Como servicio extra de Animal solo cuentan animales como perros, gatos, etc.<br>La suma total de personas no puede superar 12.</span><br>
                     <br>
+                    {{serviciosExtras.value.noCantidad | json}}
                     <div>
                         <button mat-button matStepperPrevious>Atrás</button>
                         <button class="float-right mt-3" mat-button matStepperNext (click)="addServicios()">Siguiente</button>
@@ -173,38 +168,59 @@
             <!-- Desglose de precios y demás -->
             <mat-step>
                 <ng-template matStepLabel >Confirmar reserva</ng-template>
-                
-                <p>AQUÍ VIENE EL DESGLOSE DE LA RESERVA.</p>
 
-                <!-- Fechas -->
-                <p>Fecha de entrada: {{fecha1}}</p>
-                <p>Fecha de salida: {{fecha2}}</p>
+                <div class="container">
+                    <div class="row">
 
-                <!-- Información del alojamiento -->
-                <p>Alojamiento: {{alojamiento.get('tipo').value}}</p>
+                        <div class="col-md-6">
+                            <!-- Fechas -->
+                            <p>Fecha de entrada: {{fecha1}}</p>
+                            <p>Fecha de salida: {{fecha2}}</p>
+    
+                            <!-- Información del alojamiento -->
+                            <p>Alojamiento: {{alojamiento.get('tipo').value}}</p>
+                            <P>Multiplicativo por temporada: x{{multiplicador}}</P>
+    
+                            <p>Características del alojamiento:</p>
+                            <div *ngIf="alojamiento.get('tipo').value == 'Bungalow'; else parcela">
+                                <p>Habitaciones: {{valor1}}</p>
+                                <p>Máximo de personas permitidas: {{valor2}}</p>
+                            </div>
+    
+                            <ng-template #parcela>
+                                <p>Sombra: {{valor1}}</p>
+                                <p>Dimensiones de la parcela: {{valor2}}</p>
+                                <p>Número de personas: {{personas}}</p>
+                            </ng-template>
+                            <p>Precio del alojamiento: {{precioAlojamiento}}€</p>
+                        </div>
+    
+                        <div class="col-md-6" *ngIf="personasExtras != null || personasExtrasMenor != null || personasExtrasMayor != null || extras[0]">
+                            <!-- Servicios extras -->
+                            <p >Servicios extras:</p>
+                            
+                            <div *ngFor="let extra of extras">
+                                
+                                    <div *ngFor="let precio of preciosServicios">
+                                        <div *ngIf="extra[1] == '1'; else extras">
+                                            <p *ngIf="precio[0]['idServicio'] == extra[1]">{{extra[0]}}, precio: {{precio[0]['precio']}}€</p>
+                                        </div>
+                                        <ng-template #extras>
+                                            <p *ngIf="precio[0]['idServicio'] == extra[1]">{{extra[0]}}/es: {{extra[2]}}, precio: {{precio[0]['precio']}}€</p>
+                                        </ng-template>
+                                    </div>
+                                
+                            </div>
+                            
+                        </div>
 
-                <p>Características del alojamiento:</p>
-                <div *ngIf="alojamiento.get('tipo').value == 'Bungalow'; else parcela">
-                    <p>Habitaciones: {{valor1}}</p>
-                    <p>Máximo de personas permitidas: {{valor2}}</p>
-                </div>
+                    </div>
 
-                <ng-template #parcela>
-                    <p>Sombra: {{valor1}}</p>
-                    <p>Dimensiones de la parcela: {{valor2}}</p>
-                    <p>Número de personas: {{personas}}</p>
-                </ng-template>
-                
-                <!-- Servicios extras -->
-                <p *ngIf="personasExtras != null || personasExtrasMenor != null || personasExtrasMayor != null || extras[0]">Servicios extras:</p>
-                <p *ngIf="personasExtras != null">Personas extras mayores de 12 años: {{personasExtras}}</p>
-                <p *ngIf="personasExtrasMenor != null">Personas extras menores de 12 años: {{personasExtrasMenor}}</p>
-                <p *ngIf="personasExtrasMayor != null">Personas extras mayores de 65 años: {{personasExtrasMayor}}</p>
-                <div *ngFor="let extra of extras">
-                    <p *ngIf="extra[1] == '1'; else extras">{{extra[0]}}</p>
-                    <ng-template #extras>
-                        {{extra[0]}}/es: {{extra[2]}}
-                    </ng-template>
+                    <p class="float-left">Precio total alojamiento: {{precioAlojamientoFinal.toFixed(2)}}€</p>
+                    <p class="float-right" *ngIf="preciosExtrasFinal != 0">Precio total servicios extras: {{preciosExtrasFinal}}€</p>
+                    <br>
+                    <p class="text-center">Precio total de la reserva: {{(precioAlojamientoFinal+preciosExtrasFinal).toFixed(2)}}€</p>
+
                 </div>
 
                 <!-- Botonera -->
@@ -280,9 +296,17 @@
                 
                 <!--<button mat-button (click)="register()">Registrarse</button>-->
             </ng-template>
-            
-
 
         </mat-horizontal-stepper>
     </div>
 </div>
+
+<ng-template #reservado>
+    <div class="container text-center mt-5">
+        <h5 class="display-4">La reserva se ha completado.</h5>
+        <p>Fecha de entrada al camping: <b>{{fecha1}}</b></p>
+        <p>Hora de entrada al camping: <b>12:00</b></p>
+        <p style="cursor: pointer;" [routerLink]="'/'">Volver a inicio</p>
+    </div>
+    
+</ng-template>
