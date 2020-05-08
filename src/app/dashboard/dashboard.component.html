@@ -169,7 +169,8 @@
     
                                 <mat-card-header class="justify-content-end">
                                     <!-- FOTO del card <div mat-card-avatar></div> -->
-                                    <div class="col-9">
+
+                                    <div class="col-10" *ngIf="!pantalla; else pantallaResenias">
     
                                         <mat-card-title>ID de la reseña: {{resenia.idResenia}} </mat-card-title>
     
@@ -182,26 +183,51 @@
                                         </mat-card-subtitle>
     
                                     </div>
+
+                                    <ng-template #pantallaResenias>
+                                        <div class="col-12">
+                                            <mat-card-title>ID de la reseña: {{resenia.idResenia}} </mat-card-title>
     
-                                    <div class="column col-2">
-                                        <button mat-raised-button (click)="aprobado(resenia.idResenia, i, $event)" color="primary" class="col-12 float-right">Aprobar</button>
+                                            <mat-card-subtitle class="float-lg-left">
+                                                <span>Nombre de usuario: {{resenia.alias_usuario}}</span>
+                                            </mat-card-subtitle>
+        
+                                            <mat-card-subtitle class="float-left float-lg-right">
+                                                <span class="float-right">Alojamiento: {{resenia.idAlojamiento}}</span>
+                                            </mat-card-subtitle>
+                                        </div>
+                                    </ng-template>
+    
+                                    <div class="column col-2" *ngIf="!pantalla">
+                                        <button mat-raised-button (click)="aprobado(resenia.idResenia, i, $event)" color="primary" class="col-12 float-right px-2">Aprobar</button>
                                         <br>
                                         <br>
-                                        <button mat-raised-button (click)="denegado(resenia.idResenia, i, $event)" color="primary" class="col-12 float-right">Denegar</button>
+                                        <button mat-raised-button (click)="denegado(resenia.idResenia, i, $event)" color="primary" class="col-12 float-right px-2">Denegar</button>
                                     </div>
     
     
                                 </mat-card-header>
+
+                                    <div *ngIf="pantalla" class="column col-12">
+                                        <button mat-raised-button (click)="aprobado(resenia.idResenia, i, $event)" color="primary" class="col-12 float-right px-2">Aprobar</button>
+                                        <br>
+                                        <br>
+                                        <button mat-raised-button (click)="denegado(resenia.idResenia, i, $event)" color="primary" class="col-12 float-right px-2">Denegar</button>
+                                        <br><br>
+                                    </div>
+
                                 <mat-card-content>
-                                    <p>{{resenia.comentario}}</p>
+                                    <p>Puntuación: {{resenia.puntuacion}}</p>
+                                    <p class="mb-0">Comentario:</p>
+                                    <p class="mt-0">{{resenia.comentario}}</p>
                                 </mat-card-content>
     
                             </mat-card>
     
                         </div>
-                        <div class="card-footer pb-0 pt-3">
-                            <!--<jw-pagination [items]="items" (changePage)="onChangePage($event)"></jw-pagination>-->
-                        </div>
+                        <!--<div class="card-footer pb-0 pt-3">
+                            <jw-pagination [items]="items" (changePage)="onChangePage($event)"></jw-pagination>
+                        </div>-->
 
                     </ng-template>
                     
