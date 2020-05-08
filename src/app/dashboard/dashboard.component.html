@@ -28,21 +28,21 @@
                 <br>
                 <p [routerLink]="'/dashboard'" class="puntero">Inicio</p>
                 <hr>
-                <p [routerLink]="'/'" class="puntero">Ver reserva/s</p>
+                <p [routerLink]="'/dashboard/reservas'" class="puntero">Ver reserva/s</p>
                 <hr>
-                <p [routerLink]="'/'" class="puntero">Ver reseñas</p>
+                <p [routerLink]="'/dashboard/resenias'" class="puntero">Ver reseñas</p>
                 <hr>
-                <p [routerLink]="'/'" class="puntero">Reseñas sin aprobar</p>
+                <p [routerLink]="'/dashboard/revisar-resenias'" class="puntero">Reseñas sin aprobar</p>
                 <hr>
-                <p [routerLink]="'/'" class="puntero">Ver usuarios</p>
+                <p [routerLink]="'/dashboard/usuarios'" class="puntero">Ver usuarios</p>
                 <hr>
-                <p [routerLink]="'/'" class="puntero">Ver servicios extras</p>
+                <p [routerLink]="'/dashboard/servicios'" class="puntero">Ver servicios extras</p>
                 <hr>
-                <p [routerLink]="'/'" class="puntero">Volver a la web</p>
+                <p [routerLink]="'/inicio'" class="puntero">Volver a la web</p>
                 <hr>
                 <div *ngIf="usuarioActual?.rol == 'admin'">
                    <br>
-                    <p [routerLink]="'/'" class="puntero">Ajustes</p> 
+                    <p [routerLink]="'/dashboard/admin'" class="puntero">Ajustes</p> 
                 </div>
                 
             </div>
@@ -60,21 +60,21 @@
                     <br>
                     <p [routerLink]="'/dashboard'" class="puntero">Inicio</p>
                     <hr>
-                    <p [routerLink]="'/'" class="puntero">Ver reserva/s</p>
+                    <p [routerLink]="'/dashboard/reservas'" class="puntero">Ver reserva/s</p>
                     <hr>
-                    <p [routerLink]="'/'" class="puntero">Ver reseñas</p>
+                    <p [routerLink]="'/dashboard/resenias'" class="puntero">Ver reseñas</p>
                     <hr>
-                    <p [routerLink]="'/'" class="puntero">Reseñas sin aprobar</p>
+                    <p [routerLink]="'/dashboard/revisar-resenias'" class="puntero">Reseñas sin aprobar</p>
                     <hr>
-                    <p [routerLink]="'/'" class="puntero">Ver usuarios</p>
+                    <p [routerLink]="'/dashboard/usuarios'" class="puntero">Ver usuarios</p>
                     <hr>
-                    <p [routerLink]="'/'" class="puntero">Ver servicios extras</p>
+                    <p [routerLink]="'/dashboard/servicios'" class="puntero">Ver servicios extras</p>
                     <hr>
-                    <p [routerLink]="'/'" class="puntero">Volver a la web</p>
+                    <p [routerLink]="'/inicio'" class="puntero">Volver a la web</p>
                     <hr>
                     <div *ngIf="usuarioActual?.rol == 'admin'">
                        <br>
-                        <p [routerLink]="'/'" class="puntero">Ajustes</p> 
+                        <p [routerLink]="'/dashboard/admin'" class="puntero text-success">Ajustes</p> 
                     </div>
                     
                 </div>
@@ -85,13 +85,16 @@
   
       <!-- Cuerpo de la web -->
       <mat-drawer-content>
-        <div class="container col-10">
+
+        <!-- Si la URL es /dashboard -->
+        <div class="container col-10" *ngIf="dashboardInicio == true">
             <div class="column">
                 <div>
                     <h3 class="text-center">
                         Administración
                     </h3>
-                    <p class="text-center">Has entrado como {{usuarioActual?.rol}}</p> 
+                    <p class="text-center">Has entrado como <span *ngIf="usuarioActual?.rol == 'admin';else noAdmin" class="text-success">{{usuarioActual?.rol}}</span></p>
+                    <ng-template #noAdmin><span class="text-primary">{{usuarioActual?.rol}}</span></ng-template>
                 </div>
                 
                 <br>
@@ -103,17 +106,21 @@
                             <p class="my-auto py-5">
                                 Hoy hay {{reservasHoy}} reserva/s pendientes de entrar al camping
                             </p>
-                            
+                            <p class="puntero" [routerLink]="'/dashboard/entradas-hoy'">Ver</p>
                         </div>
+
                         <div class="col-12 col-sm-3 mt-3 mb-3 rounded border border-dark" >
                             <p class="my-auto py-5">
                                 Hoy hay {{reservasHoySalidas}} reserva/s pendientes de salir al camping
                             </p>
+                            <p class="puntero" [routerLink]="'/dashboard/salidas-hoy'">Ver</p>
                         </div>
+
                         <div class="col-12 col-sm-3 mt-3 mb-3 rounded border border-dark" >
                             <p class="my-auto py-5">
                                 {{revisarResenias}} reseña/s por revisar
                             </p>
+                            <p class="puntero" [routerLink]="'/dashboard/revisar-resenias'">Ver</p>
                         </div>
                     </div>
 
@@ -122,7 +129,7 @@
             </div>
             
             <!-- Tabla con las últimas 10 reservas -->
-            <div class="container">
+            <div class="column justify-content-center">
                 <table class="table mt-5">
                     <thead class="thead-dark">
                         <tr>
@@ -146,6 +153,83 @@
             <p [routerLink]="'/'" class="puntero">Volver</p>
           
         </div>
+
+        <!-- Si la URL es /dashboard/revisar-resenias -->
+        <div *ngIf="dashboardRevisarResenias == true">
+            <div class="container">
+                <div class="column justify-content-center mt-4">
+                    <h4 class="text-center">Listado de reseñas por aprobar</h4>
+                    <br>
+                    <div *ngIf="listadoReseniasAlgo; else noReseniaAprobar">
+                        <h6 class="text-center">Ninguna reseña por aprobar.</h6>
+                    </div>
+                    <ng-template #noReseniaAprobar>
+                        <div *ngFor="let resenia of listadoResenias; let i of index">
+                            <mat-card class="mb-4">
+    
+                                <mat-card-header class="justify-content-end">
+                                    <!-- FOTO del card <div mat-card-avatar></div> -->
+                                    <div class="col-9">
+    
+                                        <mat-card-title>ID de la reseña: {{resenia.idResenia}} </mat-card-title>
+    
+                                        <mat-card-subtitle class="float-lg-left">
+                                            <span>Nombre de usuario: {{resenia.alias_usuario}}</span>
+                                        </mat-card-subtitle>
+    
+                                        <mat-card-subtitle class="float-left float-lg-right">
+                                            <span class="float-right">Alojamiento: {{resenia.idAlojamiento}}</span>
+                                        </mat-card-subtitle>
+    
+                                    </div>
+    
+                                    <div class="column col-2">
+                                        <button mat-raised-button (click)="aprobado(resenia.idResenia, i, $event)" color="primary" class="col-12 float-right">Aprobar</button>
+                                        <br>
+                                        <br>
+                                        <button mat-raised-button (click)="denegado(resenia.idResenia, i, $event)" color="primary" class="col-12 float-right">Denegar</button>
+                                    </div>
+    
+    
+                                </mat-card-header>
+                                <mat-card-content>
+                                    <p>{{resenia.comentario}}</p>
+                                </mat-card-content>
+    
+                            </mat-card>
+    
+                        </div>
+                        <div class="card-footer pb-0 pt-3">
+                            <!--<jw-pagination [items]="items" (changePage)="onChangePage($event)"></jw-pagination>-->
+                        </div>
+
+                    </ng-template>
+                    
+                </div>
+            </div>
+        </div>
+
+        <!-- Si la URL es /dashboard/salidas-hoy -->
+        <div *ngIf="dashboardSalidasHoy == true"> HOLA SALIDAS HOY</div>
+
+        <!-- Si la URL es /dashboard/entradas-hoy -->
+        <div *ngIf="dashboardEntradasHoy == true">HOLA ENTRADAS HOY</div>
+
+        <!-- Si la URL es /dashboard/reservas -->
+        <div *ngIf="dashboardReservas == true">HOLA RESERVAS</div>
+
+        <!-- Si la URL es /dashboard/resenias -->
+        <div *ngIf="dashboardResenias == true">HOLA RESEÑAS</div>
+
+        <!-- Si la URL es /dashboard/usuarios -->
+        <div *ngIf="dashboardUsuarios == true">HOLA USUARIOS</div>
+
+        <!-- Si la URL es /dashboard/servicios -->
+        <div *ngIf="dashboardServicios == true">HOLA SERVICIOS</div>
+
+        <!-- Si la URL es /dashboard/admin PENDIENTE PORQUE LA PARTE ADMIN EN VERDAD ES UN MENÚ DESPLEGABLE, EN MÓVIL HACERLO DESPLEGBALE PERO NO EN UN POPUP, SINO QUE SE DESPLIEGUE DE VERDAD -->
+        <!--<div *ngIf="dashboardAdmin == true"></div>-->
+
       </mat-drawer-content>
   
     </mat-drawer-container>

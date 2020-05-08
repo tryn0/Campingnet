@@ -30,6 +30,14 @@ const routes: Routes = [
   { path: 'alojamiento/parcelas/:numero', component: AlojamientoComponent },
   { path: 'controlpanel', component: PaneldeControlComponent },
   { path: 'dashboard', component: DashboardComponent },
+  { path: 'dashboard/reservas', component: DashboardComponent },
+  { path: 'dashboard/resenias', component: DashboardComponent },
+  { path: 'dashboard/revisar-resenias', component: DashboardComponent },
+  { path: 'dashboard/usuarios', component: DashboardComponent },
+  { path: 'dashboard/servicios', component: DashboardComponent },
+  { path: 'dashboard/entradas-hoy', component: DashboardComponent },
+  { path: 'dashboard/salidas-hoy', component: DashboardComponent },
+  // { path: 'dashboard/admin', component: DashboardComponent }, PENDIENTE, ES UN MENÚ DESPLEGABLE? A LO MEJOR PONERLO /dashboard/admin/OPCION
 
   { path: '404', component: NoencontradoComponent}, // Si hay algún error en alguna página seteada
   { path: '**', component: NoencontradoComponent }, // Si no existe la página

@@ -78,6 +78,7 @@ export const DD_MM_YYYY_Format = {
     DashboardComponent,
     ReservasLoginComponent,
     ReservasRegistrarComponent,
+    
   ],
   imports: [
     BrowserModule,

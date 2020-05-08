@@ -125,7 +125,7 @@
 
 
 
-    <!-- Vista de la ficha del alojamiento -->
+    <!-- Vista de la ficha del alojamiento URL /alojamiento/parcelas/2 -->
     <div *ngIf='situacion == 2'>
         <!-- Alojamiento -->
         <div class="container">
@@ -139,10 +139,10 @@
 
                             <!-- Si el alojamiento es parcela -->
                             <div >
-                                <h4 class="card-title">Parcela nº {{ alojamientoSeleccionado.numeroAlojamiento }}</h4>
+                                <h4 class="card-title">Parcela nº {{ alojamientoSeleccionado?.numeroAlojamiento }}</h4>
                                 <!-- Los datos de bungalows.X dan errores falsos en la consola del navegador, preguntar por qué y cómo arreglarlo -->
-                                <p class="card-text">Sombra: {{ alojamientoSeleccionado.sombra }}</p>
-                                <p class="card-text">Dimensiones: {{ alojamientoSeleccionado.dimension }}</p>
+                                <p class="card-text">Sombra: {{ alojamientoSeleccionado?.sombra }}</p>
+                                <p class="card-text">Dimensiones: {{ alojamientoSeleccionado?.dimension }}</p>
                                 <p>Perfecta parcela para disfrutar, tanto en verano como en invierno, con caravana, autocaravana o tienda de camapaña.</p>
                             </div>
 
@@ -164,10 +164,10 @@
 
                             <!-- Si el alojamiento es parcela -->
                             <div >
-                                <h4 class="card-title">Bungalow nº {{ alojamientoSeleccionado.numeroAlojamiento }}</h4>
+                                <h4 class="card-title">Bungalow nº {{ alojamientoSeleccionado?.numeroAlojamiento }}</h4>
                                 <!-- Los datos de bungalows.X dan errores falsos en la consola del navegador, preguntar por qué y cómo arreglarlo -->
-                                <p class="card-text">Número de habitaciones: {{ alojamientoSeleccionado.habitaciones }}</p>
-                                <p class="card-text">Número máximo de personas: {{ alojamientoSeleccionado.maximo_personas }}</p>
+                                <p class="card-text">Número de habitaciones: {{ alojamientoSeleccionado?.habitaciones }}</p>
+                                <p class="card-text">Número máximo de personas: {{ alojamientoSeleccionado?.maximo_personas }}</p>
                                 <p>Exclusivo bungalow para disfrutar, tanto en verano como en invierno.</p>
                             </div>
 
@@ -230,6 +230,7 @@
                                         <h6 class="float-right">★ ★ ★ ★ ☆</h6>
                                         <input class="float-right" formControlName="puntuacion" type="number" max="10" min="0">
                                     </div>
+                                    <span class="float-right" *ngIf="resenia.get('puntuacion').hasError('noPuntuacion')" style="color: red;">La puntuación mínima es 1.</span>
 
                                 </div>
 
@@ -237,10 +238,11 @@
                                 <div class="col-md-12 row mt-4">
                                     <mat-form-field class="col-md-12">
                                         <mat-label>Comentario</mat-label>
-                                        <input matInput #mensaje maxlength="255" placeholder="Ej. Me encanta...">
+                                        <input matInput #mensaje formControlName="mensaje" maxlength="255" placeholder="Ej. Me encanta...">
                                         <mat-hint align="start"><strong>No escriba información personal</strong> </mat-hint>
                                         <mat-hint align="end">{{mensaje.value.length}} / 255</mat-hint>
                                     </mat-form-field>
+                                    <span *ngIf="resenia.get('mensaje').hasError('noTexto')" style="color: red;">Escriba un comentario de mínimo 25 carácteres por favor.</span>
                                 </div>
 
                                 <div class="text-center">

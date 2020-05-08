@@ -5,6 +5,7 @@ import { Router, NavigationEnd } from '@angular/router';
 
 import { encriptar, desencriptar } from './crypto-storage';
 import { MatDrawer } from '@angular/material/sidenav';
+import { stringToKeyValue } from '@angular/flex-layout/extended/typings/style/style-transforms';
 
 @Component({
   selector: 'app-root',
@@ -83,8 +84,9 @@ export class AppComponent {
     this.route.events.subscribe((e) => {
       if (e instanceof NavigationEnd) {
         //console.log(e.url);
-        if(e.url == '/dashboard'){
+        if(e.url.length >= 10 && e.url.slice(0, 10) == '/dashboard'){
           this.dashboard = true;
+
         }else{
           this.dashboard = false;
         }

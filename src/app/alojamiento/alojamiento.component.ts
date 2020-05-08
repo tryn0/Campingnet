@@ -4,6 +4,8 @@ import { HttpClient, HttpParams } from '@angular/common/http';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { Alojamiento } from "./alojamiento";
 
+import { encriptar, desencriptar } from '../crypto-storage';
+
 @Component({
   selector: 'app-alojamiento',
   templateUrl: './alojamiento.component.html',
@@ -141,6 +143,7 @@ export class AlojamientoComponent implements OnInit {
                 }else{ // Si es parcela creo un Alojamiento con los datos de la parcela
                   this.alojamientoSeleccionado = new Alojamiento(element.idAlojamiento, element.tipo, element.numeroAlojamiento, element.sombra, element.dimension, null, null);
                 }
+                // ! COGER EL ID DEL ALOJAMIENTO PARA ENVIAR LA RESEÑA this.alojamientoSeleccionado.idAlojamiento
 
               }
 
@@ -159,7 +162,9 @@ export class AlojamientoComponent implements OnInit {
        .set('numero', this.router.snapshot.params.numero);
        
        /**
-        * TODO: Es post de aqui abajo devuelve todas las reseñas del alojamiento, pero devuelve los datos sin el nombre de usuario, 
+        * TODO: El post de aqui abajo devuelve todas las reseñas del alojamiento, pero devuelve los datos sin el nombre de usuario, 
+        * TODO: USAR PAGINACIÓN AQUÍ PARA PODER LISTAR HASTA UN MÁXIMO DE 25, Y DIVIDIRLO EN PÁGINAS
+        * TODO: SELECT DE TODAS LAS RESENIAS CON ESTE idAlojamiento, Y POR CADA RESENIA COGER LA PUNTUACION Y GUARDARLA EN UN ARRAY O ALGO Y LUEGO HACER UN AVG O ALGO PARA SACAR LA MEDIA dDE TODAS LAS PUNTUACIONES DE LA LISTA
         */
         this.http.post('http://localhost/resenias.php', paramResenias).subscribe(data =>{ // Recopilar reseñas
           if(data != null){ // Si existen reseñas...
@@ -169,6 +174,7 @@ export class AlojamientoComponent implements OnInit {
 
               if(element['anonimo'] == '0'){
                 // si es anonimo no mostrarlo
+                console.log(element)
               }
               
             }
@@ -185,23 +191,55 @@ export class AlojamientoComponent implements OnInit {
     window.history.back();
   }
 
-  anonimo(e){
-
+  anonimo(e){ // Función para contorlar si es anónimo o no
     this.anonimoCheck = e.checked;
-    //console.log(this.anonimoCheck);
+    console.log(this.anonimoCheck);
   }
 
-  enviarResenia(){}
+
+  enviarResenia(){ // Función para guardar reseña
+     if (this.resenia.get('puntuacion').value == '' || this.resenia.get('puntuacion').value == 0){
+      this.resenia.get('puntuacion').setErrors({'noPuntuacion': true});
+      
+    }else if (this.resenia.get('mensaje').value.length == 0 || this.resenia.get('mensaje').value.length < 25){
+      this.resenia.get('mensaje').setErrors({'noTexto': true});
+      
+    }else{
+      this.resenia.get('puntuacion').setErrors(null);
+      this.resenia.get('mensaje').setErrors(null);
+
+      let reseniaEnviar = new HttpParams()
+      .set('idUsuario', this.usuarioActual.id)
+      .set('idAlojamiento', (this.alojamientoSeleccionado.idAlojamiento).toString())
+      .set('comentario', this.resenia.get('mensaje').value);
+
+      let anon: number = 0;
+      if (this.anonimoCheck == true) { // Si es anonimo igualo a anon a 1 y sino lo es se queda en 0
+        anon = 1;
+      }
+      reseniaEnviar = reseniaEnviar.set('anonimo', anon.toString());
+
+      console.log(reseniaEnviar)
+
+
+      // AQUI HTTP POST PARA ENVIAR LA RESEÑA
+
+    }
+  }
+
 
   ngOnInit(): void {
 
     // Comprobar que hay una sesion de usuario
-    this.usuarioActual = JSON.parse(localStorage.getItem('usuarioActual'));
+    if (localStorage.getItem('usuarioActual') != null) {
+      this.usuarioActual = desencriptar(localStorage.getItem('usuarioActual'));
+    }
+    
 
     this.resenia = this.fb.group({
-      anonimo: ['',  Validators.required],
-      mensaje: ['', Validators.required],
-      puntuacion: ['', Validators.required]
+      anonimo: [this.anonimoCheck,  Validators.required],
+      mensaje: ['', [Validators.required, Validators.minLength(25)]],
+      puntuacion: [0, [Validators.required, Validators.min(1)]]
     });
 
   }
