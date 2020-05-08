@@ -14,6 +14,11 @@ import { encriptar, desencriptar } from '../crypto-storage';
 })
 export class DashboardComponent implements OnInit {
 
+/**
+ * ? Para ver cómo va el proceso
+ * ? https://trello.com/b/4xofW6oE
+ */
+
   title = 'Administración';
 
   public trabajador: boolean = false;
