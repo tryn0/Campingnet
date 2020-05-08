@@ -44,6 +44,7 @@ import { NoencontradoComponent } from './noencontrado/noencontrado.component';
 import { PaneldeControlComponent } from './panelde-control/panelde-control.component';
 import { DashboardComponent } from './dashboard/dashboard.component';
 import { ReservasLoginComponent } from './reservas-login/reservas-login.component';
+import { ReservasRegistrarComponent } from './reservas-registrar/reservas-registrar.component';
 
 
 /* Formato Fecha DataPicker */
@@ -76,6 +77,7 @@ export const DD_MM_YYYY_Format = {
     PaneldeControlComponent,
     DashboardComponent,
     ReservasLoginComponent,
+    ReservasRegistrarComponent,
   ],
   imports: [
     BrowserModule,
