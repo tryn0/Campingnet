@@ -18,18 +18,7 @@
     $pwd = json_encode(md5($_POST['password']));
 
     if(!empty($email) && !empty($pwd)){
-        $sql = "SELECT * FROM usuario where email = $email and passwd = $pwd ;";
-        $resultado = mysqli_query($conn,$sql); 
-        $rows = array();
-        if ($resultado->num_rows > 0) {
-            while($row = $resultado->fetch_assoc()) {
-                $rows[] = $row;
-            }
-            cerrar_conexion($conn);
-            print json_encode($rows);
-        }else{
-            cerrar_conexion($conn);
-            print json_encode(null);
-        }
+        $sql = "SELECT * FROM usuario WHERE email = $email AND passwd = $pwd ;";
+        print json_encode(consulta($conn, $sql));
     }
 ?>
