@@ -83,6 +83,7 @@ Este proyecto ha sido creado con:
 - [Ignite UI Angular](https://github.com/angular/flex-layout) versión 9.0.12  
 - [Moment](https://momentjs.com/) versión 2.25.1
 - [CryptoJS](https://github.com/brix/crypto-js) versión 4.0.0
+- [NGX-Pagination](https://github.com/michaelbromley/ngx-pagination) versión 5.0.0 [NGX-Pagination en npmjs.com](https://www.npmjs.com/package/ngx-pagination)
 
 
 ## Errores conocidos y sus soluciones
