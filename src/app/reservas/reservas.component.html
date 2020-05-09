@@ -199,7 +199,7 @@
                         </div>
                     </div>
                     <p class="float-left">Precio total alojamiento: {{precioAlojamientoFinal.toFixed(2)}}€</p>
-                    <p class="float-right" *ngIf="preciosExtrasFinal != 0">Precio total servicios extras: {{preciosExtrasFinal}}€</p>
+                    <p class="float-right" *ngIf="preciosExtrasFinal != 0">Precio total servicios extras: {{preciosExtrasFinal.toFixed(2)}}€</p>
                     <br>
                     <p class="text-center">Precio total de la reserva: {{(precioAlojamientoFinal+preciosExtrasFinal).toFixed(2)}}€</p>
 

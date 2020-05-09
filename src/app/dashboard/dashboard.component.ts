@@ -1,16 +1,37 @@
 import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpParams } from '@angular/common/http';
+import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { Usuario } from '../usuario/usuario';
-import { MatDrawer, MatDrawerContainer } from '@angular/material/sidenav';
+import { MatDrawer } from '@angular/material/sidenav';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
+import {MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS} from '@angular/material-moment-adapter';
 
 import { encriptar, desencriptar } from '../crypto-storage';
+
+export const DD_MM_YYYY_Format = {
+  parse: {
+      dateInput: 'LL',
+  },
+  display: {
+      dateInput: 'DD/MM/YYYY',
+      monthYearLabel: 'MMM YYYY',
+      dateA11yLabel: 'LL',
+      monthYearA11yLabel: 'MMMM YYYY',
+  },
+};
 
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
+  providers: [{
+    provide: DateAdapter,
+    useClass: MomentDateAdapter,
+    deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]
+  },
+  {provide: MAT_DATE_FORMATS, useValue: DD_MM_YYYY_Format}],
 })
 export class DashboardComponent implements OnInit {
   @ViewChild('scrollMe') private myScrollContainer: ElementRef;
@@ -20,8 +41,8 @@ export class DashboardComponent implements OnInit {
    * ? https://trello.com/b/4xofW6oE
    */
 
+   // variable de pagination
   public p: number = 1;
-  //title = 'Administración';
 
   // Variable que indica si es un trabajador o no, si un cliente entra a la parte dashboard, no verá nada, solo el cargador y será redireccionado al Inicio
   public trabajador: boolean = false;
@@ -67,9 +88,19 @@ export class DashboardComponent implements OnInit {
 
   // Variables entradas-hoy
   public listadoEntradasHoy: any = [];
+
+  // Variables reservas
+  public buscarReserva: FormGroup;
   
 
-  constructor( private http: HttpClient, private route: Router, private router: ActivatedRoute, breakpointObserver: BreakpointObserver) {
+  constructor( private http: HttpClient, private route: Router, private router: ActivatedRoute, breakpointObserver: BreakpointObserver, public fb: FormBuilder) {
+
+    // FormBuilder de buscar reservas
+    this.buscarReserva = this.fb.group({
+      fechaEntrada: ['', [Validators.required]],
+      idReserva: ['',  Validators.required],
+      dniUsuario: ['',  Validators.required],
+    });
 
     
     // Obtiene el tamaño de la pantalla, para 
@@ -109,7 +140,6 @@ export class DashboardComponent implements OnInit {
   }
 
   aprobado(idResenia){
-    //console.log(this.p)
     // Aprueba la reseña
     let aprobado = new HttpParams()
     .set('opcion', '8')
@@ -331,22 +361,19 @@ export class DashboardComponent implements OnInit {
 
       this.http.post < any > ("http://localhost/dashboard.php", salidasHoy).subscribe(data => { // Obtener las reservas que saldrán hoy
         if (data != null && data != 0) {
-          //console.log(data)
           this.listadoSalidasHoy = data;
-          //console.log(data)
-          //console.log(dias)
           
           for (let i = 0; i < this.listadoSalidasHoy.length; i++) {
             const element = this.listadoSalidasHoy[i];
             this.serviciosExtras = [];
-            this.totalPagar = 0;
             
-            let dias = Math.floor((new Date(this.listadoSalidasHoy[i].fecha_salida).getTime() - new Date(this.listadoSalidasHoy[i].fecha_entrada).getTime())/86400000);
+            
+            // Total de días de la reserva
+            let dias = Math.floor((new Date(this.listadoSalidasHoy[i].fecha_salida).getTime() - new Date(this.listadoSalidasHoy[i].fecha_entrada).getTime())/86400000)+1;
 
             let nombreUser = new HttpParams()
-              .set('opcion', '6')
-              .set('idUsuario', element['idUsuario']);
-
+            .set('opcion', '6')
+            .set('idUsuario', element['idUsuario']);
             this.http.post < any > ("http://localhost/dashboard.php", nombreUser).subscribe(data => { // Obtener los datos del cliente
               if (data != null && data != 0) {
                 this.listadoSalidasHoy[i].alias_usuario = data[0]['alias_usuario'];
@@ -360,23 +387,22 @@ export class DashboardComponent implements OnInit {
             });
 
             let idAlojamientoSalidasHoy = new HttpParams()
-              .set('opcion', '11')
-              .set('idReserva', element['idReserva']);
-
+            .set('opcion', '11')
+            .set('idReserva', element['idReserva']);
             this.http.post < any > ("http://localhost/dashboard.php", idAlojamientoSalidasHoy).subscribe(data => { // Obtener los datos de los alojamientos de la reserva
               if (data != null && data != 0) {
                 this.listadoSalidasHoy[i].tipo_alojamiento = data[0]['nombre'];
                 this.listadoSalidasHoy[i].idAlojamiento = data[0]['idAlojamiento'];
                 this.listadoSalidasHoy[i].precioAlojamiento = data[0]['precio'];
 
+                // Precio del alojamiento, para que el trabajador de recepción cobre al cliente
+                this.totalPagar = 0;
                 this.totalPagar += (parseFloat(this.listadoSalidasHoy[i].precioAlojamiento)*dias)*parseFloat(this.listadoSalidasHoy[i].multiplicativo);
-                console.log(this.totalPagar);
 
                 let numeAlojamiento = new HttpParams()
                 .set('opcion', '12')
                 .set('idAlojamiento', data[0]['idAlojamiento']);
-
-                this.http.post < any > ("http://localhost/dashboard.php", numeAlojamiento).subscribe(data => { // Obtener los datos del alojamiento
+                this.http.post < any > ("http://localhost/dashboard.php", numeAlojamiento).subscribe(data => { // Obtener el número del alojamiento
                   if (data != null && data != 0) {
                     this.listadoSalidasHoy[i].numeroAlojamiento = data[0]['numeroAlojamiento'];
                     if(data[0]['tipo'] == 'bungalow'){
@@ -384,7 +410,6 @@ export class DashboardComponent implements OnInit {
                       this.listadoSalidasHoy[i].maximo_personas = data[0]['maximo_personas'];
                     }else{
                       this.listadoSalidasHoy[i].dimension = data[0]['dimension'];
-
                       switch (data[0]['sombra']) {
                         case '0':
                           this.listadoSalidasHoy[i].sombra = "Nada";
@@ -405,7 +430,6 @@ export class DashboardComponent implements OnInit {
                           this.listadoSalidasHoy[i].sombra = "Desconocido";
                           break;
                       }
-                      
                     }
                   }
                 });
@@ -413,55 +437,41 @@ export class DashboardComponent implements OnInit {
             });
 
             let cantidadServicios = new HttpParams()
-              .set('opcion', '14')
-              .set('idReserva', element['idReserva']);
-              //console.log(element['idReserva'])
-
+            .set('opcion', '14')
+            .set('idReserva', element['idReserva']);
             let cantidadFinal: any;
-            this.http.post<any>("http://localhost/dashboard.php", cantidadServicios).subscribe(data => { // Obtener los datos de los alojamientos de la reserva
+            this.http.post<any>("http://localhost/dashboard.php", cantidadServicios).subscribe(data => { // Obtener la cantidad de servicios contratados
               if (data != null && data != 0) {
-                //console.log(data)
                 cantidadFinal = data;
-                //console.log(data)
               }
             });
-
-
+            
             let servicios = new HttpParams()
-              .set('opcion', '13')
-              .set('idReserva', element['idReserva']);
-
-            this.http.post<any>("http://localhost/dashboard.php", servicios).subscribe(data => { // Obtener los datos de los alojamientos de la reserva
+            .set('opcion', '13')
+            .set('idReserva', element['idReserva']);
+            this.http.post<any>("http://localhost/dashboard.php", servicios).subscribe(data => { // Obtener los datos de los servicios contratados
               if (data != null && data != 0) {
                 for (let i = 0; i < data.length; i++) {
                   const element = data[i];
                   delete element.idAlojamiento;
-                  
-                  /**
-                   * TODO: TOTAL PAGAR PRECIO FINAL A PAGAR
-                   */
-                  
-                  for (let x = 0; x < cantidadFinal.length; x++) {
+                  for (let x = 0; x < cantidadFinal.length; x++) { // Por cada servicio si coincide el id con el de la lista se le agrega a ese mismo la cantidad en la reserva
                     const elemento = cantidadFinal[x];
-                    //console.log(elemento.idServicio+' '+element.idServicio);
                     if(elemento.idServicio == element.idServicio){
                       element.cantidad = elemento.cantidad;
-                      //this.totalPagar += (parseInt(element.precio)*parseInt(element.cantidad));
-                      console.log(element)
+
+                      // Precio de todos los servicios, para que el trabajador de recepción cobre al cliente
+                      this.totalPagar += (parseFloat(element.precio)*parseInt(element.cantidad));
                     }
                   }
-
                   this.serviciosExtras.push(element);
-                  
-                  //console.log(element)
                 }
                 this.serviciosExtras.idReserva = element['idReserva'];
               }
+              this.listadoSalidasHoy[i].total_pagar = this.totalPagar.toFixed(2);
             });
           }
         }
       });
-
 
        /**
         * ? Acaba aquí
@@ -490,21 +500,18 @@ export class DashboardComponent implements OnInit {
        */
 
       let entradasHoy = new HttpParams()
-      .set('opcion', '14');
+      .set('opcion', '15');
 
-      this.http.post < any > ("http://localhost/dashboard.php", entradasHoy).subscribe(data => { // Obtener las reservas que entran hoy
+      this.http.post < any > ("http://localhost/dashboard.php", entradasHoy).subscribe(data => { // Obtener las reservas que saldrán hoy
         if (data != null && data != 0) {
-          //console.log(data)
           this.listadoEntradasHoy = data;
-          
           for (let i = 0; i < this.listadoEntradasHoy.length; i++) {
             const element = this.listadoEntradasHoy[i];
             this.serviciosExtras = [];
 
             let nombreUser = new HttpParams()
-              .set('opcion', '6')
-              .set('idUsuario', element['idUsuario']);
-
+            .set('opcion', '6')
+            .set('idUsuario', element['idUsuario']);
             this.http.post < any > ("http://localhost/dashboard.php", nombreUser).subscribe(data => { // Obtener los datos del cliente
               if (data != null && data != 0) {
                 this.listadoEntradasHoy[i].alias_usuario = data[0]['alias_usuario'];
@@ -514,24 +521,22 @@ export class DashboardComponent implements OnInit {
                 this.listadoEntradasHoy[i].email = data[0]['email'];
                 this.listadoEntradasHoy[i].fecha_entrada = new Date(this.listadoEntradasHoy[i].fecha_entrada).toLocaleDateString("es-ES",{year: "numeric", month:"2-digit", day: "2-digit"});
                 this.listadoEntradasHoy[i].fecha_salida = new Date(this.listadoEntradasHoy[i].fecha_salida).toLocaleDateString("es-ES",{year: "numeric", month:"2-digit", day: "2-digit"});
-                //console.log(data)
               }
             });
 
             let idAlojamientoSalidasHoy = new HttpParams()
-              .set('opcion', '11')
-              .set('idReserva', element['idReserva']);
-
+            .set('opcion', '11')
+            .set('idReserva', element['idReserva']);
             this.http.post < any > ("http://localhost/dashboard.php", idAlojamientoSalidasHoy).subscribe(data => { // Obtener los datos de los alojamientos de la reserva
               if (data != null && data != 0) {
                 this.listadoEntradasHoy[i].tipo_alojamiento = data[0]['nombre'];
                 this.listadoEntradasHoy[i].idAlojamiento = data[0]['idAlojamiento'];
+                this.listadoEntradasHoy[i].precioAlojamiento = data[0]['precio'];
 
                 let numeAlojamiento = new HttpParams()
                 .set('opcion', '12')
                 .set('idAlojamiento', data[0]['idAlojamiento']);
-
-                this.http.post < any > ("http://localhost/dashboard.php", numeAlojamiento).subscribe(data => { // Obtener los datos del alojamiento
+                this.http.post < any > ("http://localhost/dashboard.php", numeAlojamiento).subscribe(data => { // Obtener el número del alojamiento
                   if (data != null && data != 0) {
                     this.listadoEntradasHoy[i].numeroAlojamiento = data[0]['numeroAlojamiento'];
                     if(data[0]['tipo'] == 'bungalow'){
@@ -539,7 +544,6 @@ export class DashboardComponent implements OnInit {
                       this.listadoEntradasHoy[i].maximo_personas = data[0]['maximo_personas'];
                     }else{
                       this.listadoEntradasHoy[i].dimension = data[0]['dimension'];
-
                       switch (data[0]['sombra']) {
                         case '0':
                           this.listadoEntradasHoy[i].sombra = "Nada";
@@ -560,28 +564,42 @@ export class DashboardComponent implements OnInit {
                           this.listadoEntradasHoy[i].sombra = "Desconocido";
                           break;
                       }
-                      
                     }
                   }
                 });
-                //console.log(this.listadoEntradasHoy);
               }
             });
-
-            let servicios = new HttpParams()
-              .set('opcion', '13')
+            /*let cantidadServicios = new HttpParams()
+              .set('opcion', '14')
               .set('idReserva', element['idReserva']);
 
-            this.http.post<any>("http://localhost/dashboard.php", servicios).subscribe(data => { // Obtener los datos de los alojamientos de la reserva
+            let cantidadFinal: any;
+            this.http.post<any>("http://localhost/dashboard.php", cantidadServicios).subscribe(data => { // Obtener la cantidad de servicios contratados
+              if (data != null && data != 0) {
+                cantidadFinal = data;
+              }
+            });*/
+
+            let servicios = new HttpParams()
+            .set('opcion', '13')
+            .set('idReserva', element['idReserva']);
+            this.http.post<any>("http://localhost/dashboard.php", servicios).subscribe(data => { // Obtener los datos de los servicios contratados
               if (data != null && data != 0) {
                 for (let i = 0; i < data.length; i++) {
                   const element = data[i];
                   delete element.idAlojamiento;
+                  /*for (let x = 0; x < cantidadFinal.length; x++) { // Por cada servicio si coincide el id con el de la lista se le agrega a ese mismo la cantidad en la reserva
+                    const elemento = cantidadFinal[x];
+                    if(elemento.idServicio == element.idServicio){
+                      element.cantidad = elemento.cantidad;
+                      this.totalPagar += (parseFloat(element.precio)*parseInt(element.cantidad));
+                    }
+                  }*/
                   this.serviciosExtras.push(element);
-                  console.log(element)
                 }
                 this.serviciosExtras.idReserva = element['idReserva'];
               }
+              //this.listadoEntradasHoy[i].total_pagar = this.totalPagar.toFixed(2);
             });
           }
         }
@@ -596,7 +614,7 @@ export class DashboardComponent implements OnInit {
 
       /**
        * ? Empieza aquí
-       */
+        */
 
       // Puestas las variables a false menos la correspondiente para mostrar su página
       this.dashboardInicio = false;
@@ -613,8 +631,16 @@ export class DashboardComponent implements OnInit {
        * ! Aquí va el código de RESERVAS, AQUÍ SE PODRÁ BUSCAR, VER, EDITAR O ELIMINAR RESERVAS
        */
 
+      let reservas = new HttpParams()
+      .set('opcion', '4');
 
-       /**
+      this.http.post<any>("http://localhost/dashboard.php", reservas).subscribe(data => {
+        if(data != null && data != 0){
+          console.log(data);
+        }
+      });
+
+      /**
         * ? Acaba aquí
         */
 

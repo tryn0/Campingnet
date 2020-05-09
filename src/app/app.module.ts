@@ -48,22 +48,6 @@ import { DashboardComponent } from './dashboard/dashboard.component';
 import { ReservasLoginComponent } from './reservas-login/reservas-login.component';
 import { ReservasRegistrarComponent } from './reservas-registrar/reservas-registrar.component';
 
-
-/* Formato Fecha DataPicker */
-export const DD_MM_YYYY_Format = {
-  parse: {
-      dateInput: 'LL',
-  },
-  display: {
-      dateInput: 'DD/MM/YYYY',
-      monthYearLabel: 'MMM YYYY',
-      dateA11yLabel: 'LL',
-      monthYearA11yLabel: 'MMMM YYYY',
-  },
-};
-
-
-
 @NgModule({
   declarations: [
     AppComponent,

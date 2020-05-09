@@ -1,9 +1,7 @@
 <div *ngIf="trabajador == true; else noTrabajador" class="main">
-
     <!-- Menú superior horizontal -->
     <mat-toolbar color="accent">
       <span (click)="togle()" class="puntero">{{menuMensaje}}</span>
-
       <span style="flex: 1 1 auto;"></span>
       <div style="float: right;">&nbsp;
         <small id="ajustes" mat-button [matMenuTriggerFor]="ajustes">Ajustes<mat-icon fxShow="true" fxHide.sm="true" class="icon">arrow_drop_down</mat-icon></small>&nbsp;
@@ -16,9 +14,7 @@
     </mat-toolbar>
   
     <!-- Contenedor del menú y del cuerpo -->
-    <mat-drawer-container style="height: 100vh;" #drawerContainer autosize>
-    
-  
+    <mat-drawer-container style="height: 100vh;" #drawerContainer autosize>  
       <!-- Menu lateral -->
       <mat-drawer *ngIf="pantalla; else pantallaPeque" style="width: 100vw;" #menu id="menu-lateral" mode="over">
         <div class="container">
@@ -44,7 +40,6 @@
                    <br>
                     <p [routerLink]="'/dashboard/admin'" class="puntero">Ajustes</p> 
                 </div>
-                
             </div>
         </div>
       </mat-drawer>
@@ -76,7 +71,6 @@
                        <br>
                         <p [routerLink]="'/dashboard/admin'" class="puntero text-success">Ajustes</p> 
                     </div>
-                    
                 </div>
             </div>
           </mat-drawer>
@@ -85,7 +79,6 @@
   
       <!-- Cuerpo de la web -->
       <mat-drawer-content>
-
         <!-- Si la URL es /dashboard -->
         <div class="container col-10" *ngIf="dashboardInicio == true">
             <div class="column">
@@ -96,11 +89,8 @@
                     <p class="text-center">Has entrado como <span *ngIf="usuarioActual?.rol == 'admin';else noAdmin" class="text-success">{{usuarioActual?.rol}}</span></p>
                     <ng-template #noAdmin><span class="text-primary">{{usuarioActual?.rol}}</span></ng-template>
                 </div>
-                
                 <br>
-
                 <div class="row justify-content-center">
-
                     <div class="row d-flex justify-content-between text-center">
                         <div class="col-12 col-sm-3 mt-3 mb-3 rounded border border-dark" >
                             <p class="my-auto py-5">
@@ -108,14 +98,12 @@
                             </p>
                             <p class="puntero" [routerLink]="'/dashboard/entradas-hoy'">Ver</p>
                         </div>
-
                         <div class="col-12 col-sm-3 mt-3 mb-3 rounded border border-dark" >
                             <p class="my-auto py-5">
                                 Hoy hay {{reservasHoySalidas}} reserva/s pendientes de salir al camping
                             </p>
                             <p class="puntero" [routerLink]="'/dashboard/salidas-hoy'">Ver</p>
                         </div>
-
                         <div class="col-12 col-sm-3 mt-3 mb-3 rounded border border-dark" >
                             <p class="my-auto py-5">
                                 {{revisarResenias}} reseña/s por revisar
@@ -123,9 +111,7 @@
                             <p class="puntero" [routerLink]="'/dashboard/revisar-resenias'">Ver</p>
                         </div>
                     </div>
-
                 </div>
-                
             </div>
             
             <!-- Tabla con las últimas 10 reservas -->
@@ -149,9 +135,7 @@
                     </thead>
                 </table>
             </div>
-
             <p [routerLink]="'/'" class="puntero">Volver</p>
-          
         </div>
 
         <!-- Si la URL es /dashboard/revisar-resenias -->
@@ -166,28 +150,20 @@
                     <ng-template #noReseniaAprobar>
                         <div *ngFor="let resenia of listadoResenias | paginate: { id: 'pagination', itemsPerPage: 10, currentPage: p, totalItems: listadoResenias.length }">
                             <mat-card class="mb-4">
-    
                                 <mat-card-header class="justify-content-end">
                                     <!-- FOTO del card <div mat-card-avatar></div> -->
-
                                     <div class="col-10" *ngIf="!pantalla; else pantallaResenias">
-    
                                         <mat-card-title>ID de la reseña: {{resenia.idResenia}} </mat-card-title>
-    
                                         <mat-card-subtitle class="float-lg-left">
                                             <span>Nombre de usuario: {{resenia.alias_usuario}}</span>
                                         </mat-card-subtitle>
-    
                                         <mat-card-subtitle class="float-left float-lg-right">
                                             <span class="float-right">Alojamiento: {{resenia.idAlojamiento}}</span>
                                         </mat-card-subtitle>
-    
                                     </div>
-
                                     <ng-template #pantallaResenias>
                                         <div class="col-12">
                                             <mat-card-title>ID de la reseña: {{resenia.idResenia}} </mat-card-title>
-    
                                             <mat-card-subtitle class="float-lg-left">
                                                 <span>Nombre de usuario: {{resenia.alias_usuario}}</span>
                                             </mat-card-subtitle>
@@ -197,17 +173,13 @@
                                             </mat-card-subtitle>
                                         </div>
                                     </ng-template>
-    
                                     <div class="column col-2" *ngIf="!pantalla">
                                         <button mat-raised-button (click)="aprobado(resenia.idResenia)" color="primary" class="col-12 float-right px-2">Aprobar</button>
                                         <br>
                                         <br>
                                         <button mat-raised-button (click)="denegado(resenia.idResenia)" color="primary" class="col-12 float-right px-2">Denegar</button>
                                     </div>
-    
-    
                                 </mat-card-header>
-
                                     <div *ngIf="pantalla" class="column col-12">
                                         <button mat-raised-button (click)="aprobado(resenia.idResenia)" color="primary" class="col-12 float-right px-2">Aprobar</button>
                                         <br>
@@ -215,22 +187,16 @@
                                         <button mat-raised-button (click)="denegado(resenia.idResenia)" color="primary" class="col-12 float-right px-2">Denegar</button>
                                         <br><br>
                                     </div>
-
                                 <mat-card-content>
                                     <p>Puntuación: {{resenia.puntuacion}}</p>
                                     <p class="mb-0">Comentario:</p>
                                     <p class="mt-0">{{resenia.comentario}}</p>
                                 </mat-card-content>
-    
                             </mat-card>
-    
                         </div>
                         <!-- Paginación de las reseñas por revisar -->
                         <pagination-controls [id]="'pagination'" (pageChange)="onChangePage($event, listadoResenias)" autoHide="true" nextLabel="Siguiente" previousLabel="Anterior"></pagination-controls>
-                        
-
                     </ng-template>
-                    
                 </div>
             </div>
         </div>
@@ -247,14 +213,10 @@
                     <ng-template #noSalidasHoy>
                         <div *ngFor="let salida of listadoSalidasHoy | paginate: { id: 'pagination', itemsPerPage: 10, currentPage: p, totalItems: listadoSalidasHoy.length }">
                             <mat-card class="mb-4">
-    
                                 <mat-card-header class="justify-content-end">
                                     <!-- FOTO del card <div mat-card-avatar></div> -->
-
                                     <div class="col-12 text-center text-md-left">
-    
                                         <mat-card-title>ID de la reserva: {{salida.idReserva}} </mat-card-title>
-    
                                         <mat-card-subtitle class="float-md-left text-md-left">
                                             <span class="importante">Nombre del usuario: {{salida.nombre_usuario}}</span>
                                             <br>
@@ -272,7 +234,6 @@
                                             <br>
                                             <span *ngIf="salida.tipo_alojamiento == 'Bungalow'">Habitaciones: {{salida.habitaciones}}</span><span *ngIf="salida.tipo_alojamiento == 'Parcela'">Dimensiones: {{salida.dimension}}</span>
                                         </mat-card-subtitle>
-    
                                         <mat-card-subtitle class="float-md-right text-md-right">
                                             <span class="importante">DNI Cliente: {{salida.nif}}</span>
                                             <br>
@@ -290,9 +251,7 @@
                                             <br>
                                             <span class="importante">Multiplicativo: {{salida.multiplicativo}}</span>
                                         </mat-card-subtitle>
-
                                     </div>
-
                                 </mat-card-header>
                                 <mat-card-content *ngIf="serviciosExtras.idReserva == salida.idReserva">
                                     <div class="row justify-content-center">
@@ -304,17 +263,12 @@
                                         </mat-card-subtitle>
                                     </div>
                                 </mat-card-content>
-                                <p class="text-center importante">Total a pagar: {{totalPagar}}€</p>
-    
+                                <p class="text-center importante">Total a pagar: {{salida.total_pagar}}€</p>
                             </mat-card>
-    
                         </div>
                         <!-- Paginación de las reseñas por revisar -->
                         <pagination-controls [id]="'pagination'" (pageChange)="onChangePage($event, listadoSalidasHoy)" autoHide="true" nextLabel="Siguiente" previousLabel="Anterior"></pagination-controls>
-                        
-
                     </ng-template>
-                    
                 </div>
             </div>
         </div>
@@ -323,7 +277,7 @@
         <div *ngIf="dashboardEntradasHoy == true">
             <div class="container">
                 <div class="column justify-content-center mt-4">
-                    <h4 class="text-center">Listado de las salidas de hoy</h4>
+                    <h4>Listado de las salidas de hoy</h4>
                     <br>
                     <div *ngIf="listadoEntradasHoy.length == 0 else noEntradasHoy">
                         <h6 class="text-center">Ninguna salida por aprobar.</h6>
@@ -331,14 +285,10 @@
                     <ng-template #noEntradasHoy>
                         <div *ngFor="let entrada of listadoEntradasHoy | paginate: { id: 'pagination', itemsPerPage: 10, currentPage: p, totalItems: listadoEntradasHoy.length }">
                             <mat-card class="mb-4">
-    
                                 <mat-card-header class="justify-content-end">
                                     <!-- FOTO del card <div mat-card-avatar></div> -->
-
                                     <div class="col-12 text-center text-md-left">
-    
                                         <mat-card-title>ID de la reserva: {{entrada.idReserva}} </mat-card-title>
-    
                                         <mat-card-subtitle class="float-md-left text-md-left">
                                             <span class="importante">Nombre del usuario: {{entrada.nombre_usuario}}</span>
                                             <br>
@@ -356,7 +306,6 @@
                                             <br>
                                             <span *ngIf="entrada.tipo_alojamiento == 'Bungalow'">Habitaciones: {{entrada.habitaciones}}</span><span *ngIf="entrada.tipo_alojamiento == 'Parcela'">Dimensiones: {{entrada.dimension}}</span>
                                         </mat-card-subtitle>
-    
                                         <mat-card-subtitle class="float-md-right text-md-right">
                                             <span class="importante">DNI Cliente: {{entrada.nif}}</span>
                                             <br>
@@ -374,9 +323,7 @@
                                             <br>
                                             <span class="importante">Multiplicativo: {{entrada.multiplicativo}}</span>
                                         </mat-card-subtitle>
-
                                     </div>
-
                                 </mat-card-header>
                                 <mat-card-content *ngIf="serviciosExtras.idReserva == entrada.idReserva && serviciosExtras[0] != null">
                                     <div class="row justify-content-center">
@@ -388,22 +335,34 @@
                                         </mat-card-subtitle>
                                     </div>
                                 </mat-card-content>
-    
                             </mat-card>
-    
                         </div>
                         <!-- Paginación de las reseñas por revisar -->
                         <pagination-controls [id]="'pagination'" (pageChange)="onChangePage($event, listadoEntradasHoy)" autoHide="true" nextLabel="Siguiente" previousLabel="Anterior"></pagination-controls>
-                        
-
                     </ng-template>
-                    
                 </div>
             </div>
         </div>
 
         <!-- Si la URL es /dashboard/reservas -->
-        <div *ngIf="dashboardReservas == true">HOLA RESERVAS</div>
+        <div *ngIf="dashboardReservas == true">
+            <div class="container">
+                <div class="column justify-content-center mt-4 bg-danger">
+                    <h4 class="text-center">Buscar reseñas</h4>
+                    <div class="bg-success">
+                        <form [formGroup]="buscarReserva" novalidate class="bg-warning col-12 d-flex justify-content-center">
+                            <mat-form-field>
+                                <mat-label>Fecha de entrada</mat-label>
+                                <input matInput formControlName="fechaEntrada" [matDatepicker]="fechas1" required>
+                                <mat-hint align="start"><strong>Con hora de entrada 12:00</strong></mat-hint>
+                                <mat-datepicker-toggle matSuffix [for]="fechas1"></mat-datepicker-toggle>
+                                <mat-datepicker touchUi #fechas1></mat-datepicker>
+                            </mat-form-field>
+                        </form>
+                    </div>
+                </div>
+            </div>
+        </div>
 
         <!-- Si la URL es /dashboard/resenias -->
         <div *ngIf="dashboardResenias == true">HOLA RESEÑAS</div>
@@ -418,9 +377,7 @@
         <!--<div *ngIf="dashboardAdmin == true"></div>-->
 
       </mat-drawer-content>
-  
     </mat-drawer-container>
-  
   </div>
 
   <!-- Página cargando para cuando se entra al dashboard mientras carga el rol del trabajador, si es cliente no ve nada del dashboard y regresa al inicio, si es trabajador entra al dashboard -->
@@ -430,10 +387,6 @@
             <div style="position: relative; top: 50vh;">
                 <mat-spinner></mat-spinner>
             </div>
-        
-            </div>
-      </div>
-      
-      
-      
+        </div>
+      </div>   
   </ng-template>
