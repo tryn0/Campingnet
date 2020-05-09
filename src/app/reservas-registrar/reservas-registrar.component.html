@@ -1,5 +1,5 @@
 <h2 mat-dialog-title class="text-center">Registrarse</h2>
-<form [formGroup]="registro" novalidate class="py-3 px-4">
+<form [formGroup]="registro" novalidate class="py-3 px-4" (keyup.enter)="signIn()">
     <mat-dialog-content class="mat-typography">
 
         <div class="mt-2">

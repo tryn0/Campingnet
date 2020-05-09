@@ -208,7 +208,7 @@
                     <h4 class="text-center">Listado de las salidas de hoy</h4>
                     <br>
                     <div *ngIf="listadoSalidasHoy.length == 0 else noSalidasHoy">
-                        <h6 class="text-center">Ninguna salida por aprobar.</h6>
+                        <h6 class="text-center">Ninguna salida hoy</h6>
                     </div>
                     <ng-template #noSalidasHoy>
                         <div *ngFor="let salida of listadoSalidasHoy | paginate: { id: 'pagination', itemsPerPage: 10, currentPage: p, totalItems: listadoSalidasHoy.length }">
@@ -277,10 +277,10 @@
         <div *ngIf="dashboardEntradasHoy == true">
             <div class="container">
                 <div class="column justify-content-center mt-4">
-                    <h4>Listado de las salidas de hoy</h4>
+                    <h4 class="text-center">Listado de las entradas de hoy</h4>
                     <br>
                     <div *ngIf="listadoEntradasHoy.length == 0 else noEntradasHoy">
-                        <h6 class="text-center">Ninguna salida por aprobar.</h6>
+                        <h6 class="text-center">Ninguna entrada hoy</h6>
                     </div>
                     <ng-template #noEntradasHoy>
                         <div *ngFor="let entrada of listadoEntradasHoy | paginate: { id: 'pagination', itemsPerPage: 10, currentPage: p, totalItems: listadoEntradasHoy.length }">
@@ -346,11 +346,11 @@
 
         <!-- Si la URL es /dashboard/reservas -->
         <div *ngIf="dashboardReservas == true">
-            <div class="container">
+            <div class="container" *ngIf="buscado == false; else reservaBuscada">
                 <div class="column justify-content-center mt-4">
-                    <h4 class="text-center">Buscar reservas</h4>
+                    <h4 class="text-center mb-4">Buscar reservas</h4>
                     <div class="d-flex justify-content-center">
-                        <form [formGroup]="buscarReserva" novalidate class="col-12 col-lg-6 mb-1 mt-1 border border-dark border rounded">
+                        <form [formGroup]="buscarReserva" (keyup.enter)="buscarReservas()" novalidate class="col-12 col-lg-6 mb-1 mt-1 border border-dark border rounded">
                             <mat-form-field class="d-flex justify-content-center mt-3">
                                 <mat-label>Fecha de entrada</mat-label>
                                 <input matInput formControlName="fechaEntrada" [matDatepicker]="fechas1">
@@ -377,12 +377,97 @@
                         <button mat-raised-button color="primary" (click)="buscarReservas()">Buscar</button>
                     </div>
                 </div>
-
                 <div class="mt-4">
                     <h4 class="text-center">Últimas 10 reservas</h4>
+                    <table class="table mt-5">
+                        <thead class="thead-dark">
+                            <tr>
+                                <th class="text-center" scope="col">#</th>
+                                <th class="text-center" scope="col">ID Reserva</th>
+                                <th class="text-center" scope="col">Fecha de entrada</th>
+                                <th class="text-center" scope="col">ID Usuario</th>
+                                <th class="text-center" scope="col">Nº Personas</th>
+                            </tr>
+                            <tr *ngFor="let reservas of reservasList; index as i">
+                                <th scope="row" class="text-center">{{i+1}}</th>
+                                <td class="text-center">{{reservas.idReserva}}</td>
+                                <td class="text-center">{{reservas.fecha_entrada}}</td>
+                                <td class="text-center">{{reservas.idUsuario}}</td>
+                                <td class="text-center">{{reservas.num_personas}}</td>
+                            </tr>
+                        </thead>
+                    </table>
                 </div>
-
             </div>
+            <ng-template #reservaBuscada>
+                <div *ngIf="listadoBuscado.length == 0 else noBuscadoENcontrado">
+                    <h4 class="text-center">Ninguna reserva encontrada</h4>
+                    <p class="puntero text-center" (click)="atrasBusqueda()">Volver</p>
+                </div>
+                <ng-template #noBuscadoENcontrado>
+                    <div class="container">
+                        <h4 class="text-center mb-4">Listado de reservas encontradas</h4>
+                        <div *ngFor="let buscado of listadoBuscado | paginate: { id: 'pagination', itemsPerPage: 1, currentPage: p, totalItems: listadoBuscado.length }">
+                            <mat-card class="mb-4">
+                                <mat-card-header class="justify-content-end">
+                                    <!-- FOTO del card <div mat-card-avatar></div> -->
+                                    <div class="col-12 text-center text-md-left">
+                                        <mat-card-title>ID de la reserva: {{buscado.idReserva}} </mat-card-title>
+                                        <mat-card-subtitle class="float-md-left text-md-left">
+                                            <span class="importante">Nombre del usuario: {{buscado.nombre_usuario}}</span>
+                                            <br>
+                                            <span>Alias del usuario: {{buscado.alias_usuario}}</span>
+                                            <br>
+                                            <span class="importante">Correo electrónico: {{buscado.email}}</span>
+                                            <br>
+                                            <span class="importante">Número de personas: {{buscado.num_personas}}</span>
+                                            <br>
+                                            <span class="importante">Fecha de buscado: {{buscado.fecha_entrada}}</span>
+                                            <br>
+                                            <span class="importante">Hora de entrada: {{buscado.hora_entrada}}</span>
+                                            <br>
+                                            <span class="importante">Tipo de alojamiento: {{buscado.tipo_alojamiento}}</span>
+                                            <br>
+                                            <span *ngIf="buscado.tipo_alojamiento == 'Bungalow'">Habitaciones: {{buscado.habitaciones}}</span><span *ngIf="buscado.tipo_alojamiento == 'Parcela'">Dimensiones: {{buscado.dimension}}</span>
+                                        </mat-card-subtitle>
+                                        <mat-card-subtitle class="float-md-right text-md-right">
+                                            <span class="importante">DNI Cliente: {{buscado.nif}}</span>
+                                            <br>
+                                            <span class="importante">Teléfono de contacto: {{buscado.telefono}}</span>
+                                            <br>
+                                            <span class="importante">ID del alojamiento: {{buscado.idAlojamiento}}</span>
+                                            <br>
+                                            <span>Fecha de salida: {{buscado.fecha_salida}}</span>
+                                            <br>
+                                            <span>Hora de salida: {{buscado.hora_salida}}</span>
+                                            <br>
+                                            <span class="importante">Número del alojamiento: {{buscado.numeroAlojamiento}}</span>
+                                            <br>
+                                            <span *ngIf="buscado.tipo_alojamiento == 'Bungalow'">Máximo de personas: {{buscado.maximo_personas}}</span><span  class="float-left float-md-right" *ngIf="buscado.tipo_alojamiento == 'Parcela'">Sombra: {{buscado.sombra}}</span>
+                                            <br>
+                                            <span class="importante">Multiplicativo: {{buscado.multiplicativo}}</span>
+                                        </mat-card-subtitle>
+                                    </div>
+                                </mat-card-header>
+                                <mat-card-content *ngIf="serviciosExtras.idReserva == buscado.idReserva && serviciosExtras[0] != null">
+                                    <div class="row justify-content-center">
+                                        <p class="importante">Listado de servicios extras</p>
+                                        <mat-card-subtitle class="text-center justify-content-center col-12">
+                                            <div #scrollMe style="overflow-y: auto; height: 100px;">
+                                                <div *ngFor="let extra of serviciosExtras">{{extra.nombre}}</div>
+                                            </div>
+                                        </mat-card-subtitle>
+                                    </div>
+                                </mat-card-content>
+                            </mat-card>
+                        </div>
+                        <!-- Paginación de las reseñas por revisar -->
+                        <pagination-controls class="text-center" [id]="'pagination'" (pageChange)="onChangePage($event, listadoBuscado)" autoHide="true" nextLabel="Siguiente" previousLabel="Anterior"></pagination-controls>
+                        <p class="puntero text-center" (click)="atrasBusqueda()">Volver</p>
+                    </div>
+                </ng-template>
+
+            </ng-template>
         </div>
 
         <!-- Si la URL es /dashboard/resenias -->

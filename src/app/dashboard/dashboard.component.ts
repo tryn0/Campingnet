@@ -34,7 +34,7 @@ export const DD_MM_YYYY_Format = {
   {provide: MAT_DATE_FORMATS, useValue: DD_MM_YYYY_Format}],
 })
 export class DashboardComponent implements OnInit {
-  @ViewChild('scrollMe') private myScrollContainer: ElementRef;
+  @ViewChild('scrollMe') private myScrollContainer: ElementRef; // Elemento con ID scrollMe (listado de servicios extras)
   
   /**
    * ? Para ver cómo va el proceso
@@ -91,6 +91,8 @@ export class DashboardComponent implements OnInit {
 
   // Variables reservas
   public buscarReserva: FormGroup;
+  public buscado: boolean = false;
+  public listadoBuscado: any = [];
   
 
   constructor( private http: HttpClient, private route: Router, private router: ActivatedRoute, breakpointObserver: BreakpointObserver, public fb: FormBuilder) {
@@ -139,8 +141,7 @@ export class DashboardComponent implements OnInit {
     window.location.reload();
   }
 
-  aprobado(idResenia){
-    // Aprueba la reseña
+  aprobado(idResenia){ // Aprueba la reseña
     let aprobado = new HttpParams()
     .set('opcion', '8')
     .set('idResenia', idResenia);
@@ -163,9 +164,7 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  denegado(idResenia){
-
-    // Deniega la reseña
+  denegado(idResenia){ // Deniega la reseña
     let denegado = new HttpParams()
     .set('opcion', '9')
     .set('idResenia', idResenia);
@@ -186,9 +185,9 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  scrollToBottom(): void {
+  scrollToBottom(): void { // Scroll de la lista de servicios empieza arriba
     try {
-      this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
+      this.myScrollContainer.nativeElement.scrollTop(this.myScrollContainer.nativeElement.scrollHeight);
     } catch(err) { }                 
   }
 
@@ -197,18 +196,124 @@ export class DashboardComponent implements OnInit {
   }
 
   buscarReservas(){
+    let fecha: any = '0';
+    let idReserva: any = '0';
+    let dni: any = '0';
+
     if (this.buscarReserva.get('fechaEntrada').value != null && this.buscarReserva.get('fechaEntrada').value != '' && !this.buscarReserva.get('fechaEntrada').errors) {
-      console.log((this.buscarReserva.get('fechaEntrada').value).format('DD-MM-YYYY'))
+      //console.log((this.buscarReserva.get('fechaEntrada').value).format('DD-MM-YYYY'))
+      fecha = (this.buscarReserva.get('fechaEntrada').value).format('YYYY-MM-DD')
     }
 
     if (this.buscarReserva.get('idReserva').value != null && this.buscarReserva.get('idReserva').value != '' && this.buscarReserva.get('idReserva').value != 0) {
-      console.log(this.buscarReserva.get('idReserva').value)
+      //console.log(this.buscarReserva.get('idReserva').value)
+      idReserva = this.buscarReserva.get('idReserva').value;
     }
 
     if (this.buscarReserva.get('dniUsuario').value != null && this.buscarReserva.get('dniUsuario').value != '' && this.buscarReserva.get('dniUsuario').value != 0 && !this.buscarReserva.get('dniUsuario').hasError('pattern')) {
-      console.log(this.buscarReserva.get('dniUsuario').value)
+      //console.log(this.buscarReserva.get('dniUsuario').value)
+      dni = this.buscarReserva.get('dniUsuario').value;
     }
 
+    let params = new HttpParams()
+    .set('opcion', '16')
+    .set('fechaEntrada', fecha)
+    .set('idReserva', idReserva)
+    .set('dni', dni);
+    this.http.post<any>("http://localhost/dashboard.php", params).subscribe(data => {
+      this.buscado = true;
+      if (data != null && data != 0) {
+        this.listadoBuscado = data;
+
+        for (let i = 0; i < this.listadoBuscado.length; i++) {
+          const element = this.listadoBuscado[i];
+          this.serviciosExtras = [];
+
+          let nombreUser = new HttpParams()
+          .set('opcion', '6')
+          .set('idUsuario', element['idUsuario']);
+          this.http.post < any > ("http://localhost/dashboard.php", nombreUser).subscribe(data => { // Obtener los datos del cliente
+            if (data != null && data != 0) {
+              this.listadoBuscado[i].alias_usuario = data[0]['alias_usuario'];
+              this.listadoBuscado[i].nif = data[0]['nif_usuario'];
+              this.listadoBuscado[i].nombre_usuario = data[0]['nombre_usuario'];
+              this.listadoBuscado[i].telefono = data[0]['telefono'];
+              this.listadoBuscado[i].email = data[0]['email'];
+              this.listadoBuscado[i].fecha_entrada = new Date(this.listadoBuscado[i].fecha_entrada).toLocaleDateString("es-ES",{year: "numeric", month:"2-digit", day: "2-digit"});
+              this.listadoBuscado[i].fecha_salida = new Date(this.listadoBuscado[i].fecha_salida).toLocaleDateString("es-ES",{year: "numeric", month:"2-digit", day: "2-digit"});
+            }
+          });
+
+          let idAlojamientoSalidasHoy = new HttpParams()
+          .set('opcion', '11')
+          .set('idReserva', element['idReserva']);
+          this.http.post < any > ("http://localhost/dashboard.php", idAlojamientoSalidasHoy).subscribe(data => { // Obtener los datos de los alojamientos de la reserva
+            if (data != null && data != 0) {
+              this.listadoBuscado[i].tipo_alojamiento = data[0]['nombre'];
+              this.listadoBuscado[i].idAlojamiento = data[0]['idAlojamiento'];
+              this.listadoBuscado[i].precioAlojamiento = data[0]['precio'];
+
+              let numeAlojamiento = new HttpParams()
+              .set('opcion', '12')
+              .set('idAlojamiento', data[0]['idAlojamiento']);
+              this.http.post < any > ("http://localhost/dashboard.php", numeAlojamiento).subscribe(data => { // Obtener el número del alojamiento
+                if (data != null && data != 0) {
+                  this.listadoBuscado[i].numeroAlojamiento = data[0]['numeroAlojamiento'];
+                  if(data[0]['tipo'] == 'bungalow'){
+                    this.listadoBuscado[i].habitaciones = data[0]['habitaciones'];
+                    this.listadoBuscado[i].maximo_personas = data[0]['maximo_personas'];
+                  }else{
+                    this.listadoBuscado[i].dimension = data[0]['dimension'];
+                    switch (data[0]['sombra']) {
+                      case '0':
+                        this.listadoBuscado[i].sombra = "Nada";
+                        break;
+                      case '1':
+                        this.listadoBuscado[i].sombra = "Media";
+                        break;
+
+                      case '2':
+                        this.listadoBuscado[i].sombra = "Bastante";
+                        break;
+
+                      case '3':
+                        this.listadoBuscado[i].sombra = 'Mucha';
+                        break;
+
+                      default:
+                        this.listadoBuscado[i].sombra = "Desconocido";
+                        break;
+                    }
+                  }
+                }
+              });
+            }
+          });
+
+          let servicios = new HttpParams()
+          .set('opcion', '13')
+          .set('idReserva', element['idReserva']);
+          this.http.post<any>("http://localhost/dashboard.php", servicios).subscribe(data => { // Obtener los datos de los servicios contratados
+            if (data != null && data != 0) {
+              for (let i = 0; i < data.length; i++) {
+                const element = data[i];
+                delete element.idAlojamiento;
+                this.serviciosExtras.push(element);
+              }
+              this.serviciosExtras.idReserva = element['idReserva'];
+            }
+          });
+        }
+      }
+    });
+  }
+
+  atrasBusqueda(){
+    this.listadoBuscado = [];
+    this.buscado = false;
+    this.buscarReserva.get('fechaEntrada').setValue('');
+    this.buscarReserva.get('idReserva').setValue('');
+    this.buscarReserva.get('dniUsuario').setValue('');
   }
 
 
@@ -651,7 +756,8 @@ export class DashboardComponent implements OnInit {
 
       this.http.post<any>("http://localhost/dashboard.php", reservas).subscribe(data => {
         if(data != null && data != 0){
-          console.log(data);
+          //console.log(data);
+          this.reservasList = data;
         }
       });
 
