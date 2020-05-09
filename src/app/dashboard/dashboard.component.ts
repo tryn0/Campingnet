@@ -199,23 +199,20 @@ export class DashboardComponent implements OnInit {
     this.scrollToBottom();
   }
 
-  buscarReservas(){
+  buscarReservas(){ //Busca las reservas por fecha, ID de la reserva o por el DNI del cliente
     let fecha: any = '0';
     let idReserva: any = '0';
     let dni: any = '0';
 
     if (this.buscarReserva.get('fechaEntrada').value != null && this.buscarReserva.get('fechaEntrada').value != '' && !this.buscarReserva.get('fechaEntrada').errors) {
-      //console.log((this.buscarReserva.get('fechaEntrada').value).format('DD-MM-YYYY'))
       fecha = (this.buscarReserva.get('fechaEntrada').value).format('YYYY-MM-DD')
     }
 
     if (this.buscarReserva.get('idReserva').value != null && this.buscarReserva.get('idReserva').value != '' && this.buscarReserva.get('idReserva').value != 0) {
-      //console.log(this.buscarReserva.get('idReserva').value)
       idReserva = this.buscarReserva.get('idReserva').value;
     }
 
     if (this.buscarReserva.get('dniUsuario').value != null && this.buscarReserva.get('dniUsuario').value != '' && this.buscarReserva.get('dniUsuario').value != 0 && !this.buscarReserva.get('dniUsuario').hasError('pattern')) {
-      //console.log(this.buscarReserva.get('dniUsuario').value)
       dni = this.buscarReserva.get('dniUsuario').value;
     }
 
@@ -228,7 +225,6 @@ export class DashboardComponent implements OnInit {
       this.buscado = true;
       if (data != null && data != 0) {
         this.listadoBuscado = data;
-
         for (let i = 0; i < this.listadoBuscado.length; i++) {
           const element = this.listadoBuscado[i];
           this.serviciosExtras = [];
@@ -312,12 +308,17 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  atrasBusqueda(){
+  atrasBusqueda(){ // Función del botón atrás de reservas (parte de búsqueda)
     this.listadoBuscado = [];
     this.buscado = false;
     this.buscarReserva.get('fechaEntrada').setValue('');
     this.buscarReserva.get('idReserva').setValue('');
     this.buscarReserva.get('dniUsuario').setValue('');
+  }
+
+
+  editar(r) {
+    console.log(r);
   }
 
 
@@ -493,7 +494,7 @@ export class DashboardComponent implements OnInit {
             
             
             // Total de días de la reserva
-            let dias = Math.floor((new Date(this.listadoSalidasHoy[i].fecha_salida).getTime() - new Date(this.listadoSalidasHoy[i].fecha_entrada).getTime())/86400000)+1;
+            let dias = Math.floor((new Date(this.listadoSalidasHoy[i].fecha_salida).getTime() - new Date(this.listadoSalidasHoy[i].fecha_entrada).getTime())/86400000);
 
             let nombreUser = new HttpParams()
             .set('opcion', '6')
@@ -760,7 +761,6 @@ export class DashboardComponent implements OnInit {
 
       this.http.post<any>("http://localhost/dashboard.php", reservas).subscribe(data => {
         if(data != null && data != 0){
-          //console.log(data);
           this.reservasList = data;
         }
       });
@@ -770,7 +770,7 @@ export class DashboardComponent implements OnInit {
         */
 
     }else if (this.router.snapshot.url.length > 1 && this.router.snapshot.url[0].path == 'dashboard' && this.router.snapshot.url[1].path == 'resenias') {
-      // Ver, buscar, editar o eliminar reservas
+      // Ver, buscar, eliminar reseñas
 
       /**
        * ? Empieza aquí
@@ -788,9 +788,17 @@ export class DashboardComponent implements OnInit {
       this.dashboardAdmin = false;
 
       /**
-       * ! Aquí va el código de RESERVAS, AQUÍ SE PODRÁ BUSCAR, VER, EDITAR O ELIMINAR RESERVAS
+       * ! Aquí va el código de RESEÑAS, AQUÍ SE PODRÁ BUSCAR, VER, ELIMINAR RESEÑAS
        */
 
+      let reseniasBuscar = new HttpParams()
+      .set('opcion', '4');
+
+      this.http.post<any>("http://localhost/dashboard.php", reseniasBuscar).subscribe(data => {
+        if(data != null && data != 0){
+          this.reservasList = data;
+        }
+      });
 
        /**
         * ? Acaba aquí
