@@ -95,6 +95,7 @@ export class DashboardComponent implements OnInit {
   public buscarReserva: FormGroup;
   public buscado: boolean = false;
   public listadoBuscado: any = [];
+  public reservaSeleccionada: boolean = false;
   
 
   constructor( private http: HttpClient, private route: Router, private router: ActivatedRoute, breakpointObserver: BreakpointObserver, public fb: FormBuilder) {
@@ -318,7 +319,13 @@ export class DashboardComponent implements OnInit {
 
 
   editar(r) {
+    this.reservaSeleccionada = true;
+    //console.log(this.reservaSeleccionada)
     console.log(r);
+  }
+
+  eliminar(r) {
+    console.log(r)
   }
 
 

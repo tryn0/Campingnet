@@ -411,7 +411,7 @@
                     <p class="puntero text-center" (click)="atrasBusqueda()">Volver</p>
                 </div>
                 <ng-template #noBuscadoENcontrado>
-                    <div class="container">
+                    <div class="container" *ngIf="reservaSeleccionada == false; else reservaElegida">
                         <h4 class="text-center mb-4">Listado de reservas encontradas</h4>
                         <div *ngFor="let buscado of listadoBuscado | paginate: { id: 'pagination', itemsPerPage: 1, currentPage: p, totalItems: listadoBuscado.length }">
                             <mat-card class="mb-4 pb-5">
@@ -475,6 +475,10 @@
                         <pagination-controls class="text-center" [id]="'pagination'" (pageChange)="onChangePage($event, listadoBuscado)" autoHide="true" nextLabel="Siguiente" previousLabel="Anterior"></pagination-controls>
                         <p class="puntero text-center" (click)="atrasBusqueda()">Volver</p>
                     </div>
+
+                    <ng-template #reservaElegida>
+                        hola
+                    </ng-template>
                 </ng-template>
             </ng-template>
         </div>

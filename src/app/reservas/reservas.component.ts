@@ -170,31 +170,28 @@ export class ReservasComponent implements OnInit {
               let salida = this.fechas.get('fechaSalida').value;
               // Seteo predefinido de los días entre la fecha de entrada de la reserva y la fecha de inicio de la temporada
               let diasAntes = Math.floor((new Date(element['fecha_entrada']).getTime() - new Date(entrada).getTime())/86400000);
-              //console.log(diasAntes)
               if(inicioTemporada > entrada){ // Si entra al camping antes de la temporada y...
                 if(i != 0){ // Si el índice del for no es igual a 0
                   diasAntes = Math.floor((new Date(element['fecha_entrada']).getTime() - new Date(data[i-1]['fecha_salida']).getTime())/86400000);
                 }              
                 if(finTemporada >= salida){ // sale del camping antes de que acabe la temporada
                   let total = Math.abs(salida.diff(inicioTemporada, 'days'));
-                  console.log('1 Entra al camping '+diasAntes+' dias antes de que empiece la temporada '+element['nombre_temporada']+', está '+total+' días en la temporada '+element['nombre_temporada']);
+                  //console.log('1 Entra al camping '+diasAntes+' dias antes de que empiece la temporada '+element['nombre_temporada']+', está '+total+' días en la temporada '+element['nombre_temporada']);
                   calculo = ((diasAntes*1)+(total*element['multiplicador']));
                   calculo = calculo/diff;
                   // Seteo del multiplicador a la variable del principio, para guardarla luego en la BD
                   this.multiplicador = parseFloat(calculo.toFixed(2));
-                  console.log('Por lo que su multiplicativo será: ('+diasAntes+'*1+'+total+'*'+element['multiplicador']+')/'+diff+' = '+ calculo.toFixed(2));
-                  console.log(calculo)
+                  //console.log('Por lo que su multiplicativo será: ('+diasAntes+'*1+'+total+'*'+element['multiplicador']+')/'+diff+' = '+ calculo.toFixed(2));
                   
                 }else{ // sale del camping después de que acabe la temporada
                   let total = Math.abs(finTemporada.diff(inicioTemporada, 'days'));
                   let dias = Math.abs(salida.diff(finTemporada, 'days'));
                   if(data2.length < 2){ // Si hay solo 1 temporada (a parte de la temporada media)
-                    console.log('2 Entra al camping '+diasAntes+' dias antes de la temporada '+element['nombre_temporada']+' pasa '+total+' días en la temporada '+element['nombre_temporada']+' y sale '+dias+' dias despues de que acabe la temporada');
+                    //console.log('2 Entra al camping '+diasAntes+' dias antes de la temporada '+element['nombre_temporada']+' pasa '+total+' días en la temporada '+element['nombre_temporada']+' y sale '+dias+' dias despues de que acabe la temporada');
                     calculo = ((diasAntes*1)+(total*element['multiplicador'])+(dias*1))/diff;
                     // Seteo del multiplicador a la variable del principio, para guardarla luego en la BD
                     this.multiplicador = parseFloat(calculo.toFixed(2));
-                    console.log('Por lo que su multiplicativo será: ('+diasAntes+'*1+'+total+'*'+element['multiplicador']+'+'+dias+'*1)/'+diff+' = '+ calculo.toFixed(2));
-                    //console.log(calculo)
+                    //console.log('Por lo que su multiplicativo será: ('+diasAntes+'*1+'+total+'*'+element['multiplicador']+'+'+dias+'*1)/'+diff+' = '+ calculo.toFixed(2));
                
                   }else{ // Si hay más de 1 temporada (cambios de temporada, a parte de la temporada media)
                     let dias2Temp: any;
@@ -204,9 +201,9 @@ export class ReservasComponent implements OnInit {
                       dias2Temp = Math.floor((new Date(salida).getTime() - new Date(element['fecha_salida']).getTime())/86400000);
                     }
                     // Multiplicador
-                    console.log('3 Está '+diasAntes+' días antes en el camping, pasa '+total+' días de la temporada '+element['nombre_temporada']+ ' y está '+dias2Temp+' en temp media');
+                    //console.log('3 Está '+diasAntes+' días antes en el camping, pasa '+total+' días de la temporada '+element['nombre_temporada']+ ' y está '+dias2Temp+' en temp media');
                     calculo += ((diasAntes*1)+(total*element['multiplicador']));
-                    console.log('Por lo que su multiplicativo será: ('+diasAntes+'*1+'+total+'*'+element['multiplicador']+') = '+calculo);
+                    //console.log('Por lo que su multiplicativo será: ('+diasAntes+'*1+'+total+'*'+element['multiplicador']+') = '+calculo);
                
                   }
                 }
@@ -214,12 +211,11 @@ export class ReservasComponent implements OnInit {
                 let dias: any;
                 if(finTemporada >= salida){ // sale del camping antes de que acabe la temporada y...
                   dias = Math.floor((new Date(salida).getTime() - new Date(entrada).getTime())/86400000);
-                  console.log('4 Entra al camping el día '+(this.fechas.get('fechaEntrada').value).format('YYYY-MM-DD')+' y sale el día '+(this.fechas.get('fechaSalida').value).format('YYYY-MM-DD')+' un total de '+dias+' días en la temporada '+element['nombre_temporada']);
+                  //console.log('4 Entra al camping el día '+(this.fechas.get('fechaEntrada').value).format('YYYY-MM-DD')+' y sale el día '+(this.fechas.get('fechaSalida').value).format('YYYY-MM-DD')+' un total de '+dias+' días en la temporada '+element['nombre_temporada']);
                   calculo = (dias*element['multiplicador'])/diff
                   // Seteo del multiplicador a la variable del principio, para guardarla luego en la BD
                   this.multiplicador = parseFloat(calculo.toFixed(2));
-                  console.log('Lo cual su multiplicador es: ('+dias+'*'+element['multiplicador']+')/'+diff+' = '+calculo.toFixed(2));
-                  //console.log(calculo)
+                  //console.log('Lo cual su multiplicador es: ('+dias+'*'+element['multiplicador']+')/'+diff+' = '+calculo.toFixed(2));
              
                 }else{ // sale del camping después de que acabe la temporada
                   dias = Math.floor((new Date(element['fecha_salida']).getTime() - new Date(entrada).getTime())/86400000);
@@ -227,24 +223,20 @@ export class ReservasComponent implements OnInit {
                     let diasSalida = Math.floor((new Date(salida).getTime() - new Date(element['fecha_salida']).getTime())/86400000);
                     calculo = ((dias*element['multiplicador'])+(diasSalida*1))/diff;
                     this.multiplicador = parseFloat(calculo.toFixed(2));
-                    //console.log(calculo.toFixed(2));	
-                    console.log('Entro durante la temporada '+element['nombre_temporada']+' y estuvo '+dias+' en dicha temporada, luego estuvo '+diasSalida+' en temporada media');
-                    //console.log(calculo)
+                    //console.log('Entro durante la temporada '+element['nombre_temporada']+' y estuvo '+dias+' en dicha temporada, luego estuvo '+diasSalida+' en temporada media');
                
                   }else{
-                    console.log('Ha entrado durante la temporada y ha estado '+dias+' días en la temporada '+element['nombre_temporada']);
+                    //console.log('Ha entrado durante la temporada y ha estado '+dias+' días en la temporada '+element['nombre_temporada']);
                     calculo += dias*element['multiplicador'];
                   }                 
                 }
-              }//7-6 a 31-7 sombra mucha 7x5 2 person 2 personas extras 2 mayores 1 perro y electricidad
-         
+              }
             }
           }else{ // Si lo que devuelve reserva.php es 0, significa que las fechas no están en ninguna temporada, lo que significa que todos los días de la estancia son en temporada media
             // Seteo del multiplicador a la variable del principio, para guardarla luego en la BD
             this.multiplicador = (diff*1)/diff;
-            console.log('Pasa '+diff+' días en temporada media por lo que el multiplicativo de la reserva es: '+diff+'*1/'+diff+' = '+this.multiplicador);
+            //console.log('Pasa '+diff+' días en temporada media por lo que el multiplicativo de la reserva es: '+diff+'*1/'+diff+' = '+this.multiplicador);
           }
-          //this.multiplicador = parseFloat(this.multiplicador.toPrecision(2));
         }
       }, error => console.log(error));
     }
@@ -252,7 +244,6 @@ export class ReservasComponent implements OnInit {
 
   // Al escoger un tipo de alojamiento consulta en la BD la característica 1 de todos los alojamientos de ese tipo que estén disponibles entre las fechas indicadas al principio
   getCaracteristica1(datos: string){
-    //console.log(this.multiplicador)
 
     // Cada vez que se cambie el tipo de alojamiento que ponga a null los demás campos, para que no permita crear un error, cuando eliges los datos de un tipo de alojamiento y luego cambias el tipo de alojamiento,
     // los datos del anterior alojamiento se quedan guardados y permite seguir con los datos del nuevo alojamiento en blanco,
@@ -525,7 +516,7 @@ export class ReservasComponent implements OnInit {
               k = k.set(element[1], element[2]);
             }
             this.precioAlojamientoFinal = ((this.precioAlojamiento*this.dias)*this.multiplicador);
-            console.log('Precio alojamiento final = ('+this.precioAlojamiento+'*'+this.dias+')*'+this.multiplicador);
+            //console.log('Precio alojamiento final = ('+this.precioAlojamiento+'*'+this.dias+')*'+this.multiplicador);
             this.http.post('http://localhost/reserva.php', k).subscribe(data =>{
               if(data != null && data != 0){ // Si recibe algún dato
                 this.preciosServicios = data;
