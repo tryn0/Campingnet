@@ -49,6 +49,11 @@ npm install crypto-js
 ```
 [Mini tutorial de cómo implementarlo en el proyecto](https://stackoverflow.com/questions/53478860/how-to-encrypt-and-decrypt-in-angular-6?noredirect=1&lq=1)
 
+Para la paginación usé NGX-Pagination:
+```
+npm install ngx-pagination --save
+```
+
 Y con este último ya estarían todas las dependencias externas instaladas.
 
 ## Proceso de instalación

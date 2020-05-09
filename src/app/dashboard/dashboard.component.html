@@ -1,4 +1,4 @@
-<div *ngIf="trabajador == true; else noTrabajador">
+<div *ngIf="trabajador == true; else noTrabajador" class="main">
 
     <!-- Menú superior horizontal -->
     <mat-toolbar color="accent">
@@ -16,7 +16,7 @@
     </mat-toolbar>
   
     <!-- Contenedor del menú y del cuerpo -->
-    <mat-drawer-container style="height: 100vh;">
+    <mat-drawer-container style="height: 100vh;" #drawerContainer autosize>
     
   
       <!-- Menu lateral -->
@@ -164,7 +164,7 @@
                         <h6 class="text-center">Ninguna reseña por aprobar.</h6>
                     </div>
                     <ng-template #noReseniaAprobar>
-                        <div *ngFor="let resenia of listadoResenias; let i of index">
+                        <div *ngFor="let resenia of listadoResenias | paginate: { id: 'pagination', itemsPerPage: 10, currentPage: p, totalItems: listadoResenias.length }">
                             <mat-card class="mb-4">
     
                                 <mat-card-header class="justify-content-end">
@@ -199,20 +199,20 @@
                                     </ng-template>
     
                                     <div class="column col-2" *ngIf="!pantalla">
-                                        <button mat-raised-button (click)="aprobado(resenia.idResenia, i, $event)" color="primary" class="col-12 float-right px-2">Aprobar</button>
+                                        <button mat-raised-button (click)="aprobado(resenia.idResenia)" color="primary" class="col-12 float-right px-2">Aprobar</button>
                                         <br>
                                         <br>
-                                        <button mat-raised-button (click)="denegado(resenia.idResenia, i, $event)" color="primary" class="col-12 float-right px-2">Denegar</button>
+                                        <button mat-raised-button (click)="denegado(resenia.idResenia)" color="primary" class="col-12 float-right px-2">Denegar</button>
                                     </div>
     
     
                                 </mat-card-header>
 
                                     <div *ngIf="pantalla" class="column col-12">
-                                        <button mat-raised-button (click)="aprobado(resenia.idResenia, i, $event)" color="primary" class="col-12 float-right px-2">Aprobar</button>
+                                        <button mat-raised-button (click)="aprobado(resenia.idResenia)" color="primary" class="col-12 float-right px-2">Aprobar</button>
                                         <br>
                                         <br>
-                                        <button mat-raised-button (click)="denegado(resenia.idResenia, i, $event)" color="primary" class="col-12 float-right px-2">Denegar</button>
+                                        <button mat-raised-button (click)="denegado(resenia.idResenia)" color="primary" class="col-12 float-right px-2">Denegar</button>
                                         <br><br>
                                     </div>
 
@@ -225,9 +225,9 @@
                             </mat-card>
     
                         </div>
-                        <!--<div class="card-footer pb-0 pt-3">
-                            <jw-pagination [items]="items" (changePage)="onChangePage($event)"></jw-pagination>
-                        </div>-->
+                        <!-- Paginación de las reseñas por revisar -->
+                        <pagination-controls [id]="'pagination'" (pageChange)="onChangePage($event, listadoResenias)" autoHide="true" nextLabel="Siguiente" previousLabel="Anterior"></pagination-controls>
+                        
 
                     </ng-template>
                     
@@ -236,10 +236,171 @@
         </div>
 
         <!-- Si la URL es /dashboard/salidas-hoy -->
-        <div *ngIf="dashboardSalidasHoy == true"> HOLA SALIDAS HOY</div>
+        <div *ngIf="dashboardSalidasHoy == true">
+            <div class="container">
+                <div class="column justify-content-center mt-4">
+                    <h4 class="text-center">Listado de las salidas de hoy</h4>
+                    <br>
+                    <div *ngIf="listadoSalidasHoy.length == 0 else noSalidasHoy">
+                        <h6 class="text-center">Ninguna salida por aprobar.</h6>
+                    </div>
+                    <ng-template #noSalidasHoy>
+                        <div *ngFor="let salida of listadoSalidasHoy | paginate: { id: 'pagination', itemsPerPage: 10, currentPage: p, totalItems: listadoSalidasHoy.length }">
+                            <mat-card class="mb-4">
+    
+                                <mat-card-header class="justify-content-end">
+                                    <!-- FOTO del card <div mat-card-avatar></div> -->
+
+                                    <div class="col-12 text-center text-md-left">
+    
+                                        <mat-card-title>ID de la reserva: {{salida.idReserva}} </mat-card-title>
+    
+                                        <mat-card-subtitle class="float-md-left text-md-left">
+                                            <span class="importante">Nombre del usuario: {{salida.nombre_usuario}}</span>
+                                            <br>
+                                            <span>Alias del usuario: {{salida.alias_usuario}}</span>
+                                            <br>
+                                            <span class="importante">Correo electrónico: {{salida.email}}</span>
+                                            <br>
+                                            <span class="importante">Número de personas: {{salida.num_personas}}</span>
+                                            <br>
+                                            <span>Fecha de entrada: {{salida.fecha_entrada}}</span>
+                                            <br>
+                                            <span>Hora de entrada: {{salida.hora_entrada}}</span>
+                                            <br>
+                                            <span class="importante">Tipo de alojamiento: {{salida.tipo_alojamiento}}</span>
+                                            <br>
+                                            <span *ngIf="salida.tipo_alojamiento == 'Bungalow'">Habitaciones: {{salida.habitaciones}}</span><span *ngIf="salida.tipo_alojamiento == 'Parcela'">Dimensiones: {{salida.dimension}}</span>
+                                        </mat-card-subtitle>
+    
+                                        <mat-card-subtitle class="float-md-right text-md-right">
+                                            <span class="importante">DNI Cliente: {{salida.nif}}</span>
+                                            <br>
+                                            <span class="importante">Teléfono de contacto: {{salida.telefono}}</span>
+                                            <br>
+                                            <span class="importante">ID del alojamiento: {{salida.idAlojamiento}}</span>
+                                            <br>
+                                            <span class="importante">Fecha de salida: {{salida.fecha_salida}}</span>
+                                            <br>
+                                            <span class="importante">Hora de salida: {{salida.hora_salida}}</span>
+                                            <br>
+                                            <span class="importante">Número del alojamiento: {{salida.numeroAlojamiento}}</span>
+                                            <br>
+                                            <span *ngIf="salida.tipo_alojamiento == 'Bungalow'">Máximo de personas: {{salida.maximo_personas}}</span><span  class="float-left float-md-right" *ngIf="salida.tipo_alojamiento == 'Parcela'">Sombra: {{salida.sombra}}</span>
+                                            <br>
+                                            <span class="importante">Multiplicativo: {{salida.multiplicativo}}</span>
+                                        </mat-card-subtitle>
+
+                                    </div>
+
+                                </mat-card-header>
+                                <mat-card-content *ngIf="serviciosExtras.idReserva == salida.idReserva">
+                                    <div class="row justify-content-center">
+                                        <p class="importante">Listado de servicios extras</p>
+                                        <mat-card-subtitle class="text-center justify-content-center col-12">
+                                            <div #scrollMe style="overflow-y: scroll; height: xyz;">
+                                                <div *ngFor="let extra of serviciosExtras">{{extra.nombre}}</div>
+                                            </div>
+                                        </mat-card-subtitle>
+                                    </div>
+                                </mat-card-content>
+                                <p class="text-center importante">Total a pagar: {{totalPagar}}€</p>
+    
+                            </mat-card>
+    
+                        </div>
+                        <!-- Paginación de las reseñas por revisar -->
+                        <pagination-controls [id]="'pagination'" (pageChange)="onChangePage($event, listadoSalidasHoy)" autoHide="true" nextLabel="Siguiente" previousLabel="Anterior"></pagination-controls>
+                        
+
+                    </ng-template>
+                    
+                </div>
+            </div>
+        </div>
 
         <!-- Si la URL es /dashboard/entradas-hoy -->
-        <div *ngIf="dashboardEntradasHoy == true">HOLA ENTRADAS HOY</div>
+        <div *ngIf="dashboardEntradasHoy == true">
+            <div class="container">
+                <div class="column justify-content-center mt-4">
+                    <h4 class="text-center">Listado de las salidas de hoy</h4>
+                    <br>
+                    <div *ngIf="listadoEntradasHoy.length == 0 else noEntradasHoy">
+                        <h6 class="text-center">Ninguna salida por aprobar.</h6>
+                    </div>
+                    <ng-template #noEntradasHoy>
+                        <div *ngFor="let entrada of listadoEntradasHoy | paginate: { id: 'pagination', itemsPerPage: 10, currentPage: p, totalItems: listadoEntradasHoy.length }">
+                            <mat-card class="mb-4">
+    
+                                <mat-card-header class="justify-content-end">
+                                    <!-- FOTO del card <div mat-card-avatar></div> -->
+
+                                    <div class="col-12 text-center text-md-left">
+    
+                                        <mat-card-title>ID de la reserva: {{entrada.idReserva}} </mat-card-title>
+    
+                                        <mat-card-subtitle class="float-md-left text-md-left">
+                                            <span class="importante">Nombre del usuario: {{entrada.nombre_usuario}}</span>
+                                            <br>
+                                            <span>Alias del usuario: {{entrada.alias_usuario}}</span>
+                                            <br>
+                                            <span class="importante">Correo electrónico: {{entrada.email}}</span>
+                                            <br>
+                                            <span class="importante">Número de personas: {{entrada.num_personas}}</span>
+                                            <br>
+                                            <span class="importante">Fecha de entrada: {{entrada.fecha_entrada}}</span>
+                                            <br>
+                                            <span class="importante">Hora de entrada: {{entrada.hora_entrada}}</span>
+                                            <br>
+                                            <span class="importante">Tipo de alojamiento: {{entrada.tipo_alojamiento}}</span>
+                                            <br>
+                                            <span *ngIf="entrada.tipo_alojamiento == 'Bungalow'">Habitaciones: {{entrada.habitaciones}}</span><span *ngIf="entrada.tipo_alojamiento == 'Parcela'">Dimensiones: {{entrada.dimension}}</span>
+                                        </mat-card-subtitle>
+    
+                                        <mat-card-subtitle class="float-md-right text-md-right">
+                                            <span class="importante">DNI Cliente: {{entrada.nif}}</span>
+                                            <br>
+                                            <span class="importante">Teléfono de contacto: {{entrada.telefono}}</span>
+                                            <br>
+                                            <span class="importante">ID del alojamiento: {{entrada.idAlojamiento}}</span>
+                                            <br>
+                                            <span>Fecha de salida: {{entrada.fecha_salida}}</span>
+                                            <br>
+                                            <span>Hora de salida: {{entrada.hora_salida}}</span>
+                                            <br>
+                                            <span class="importante">Número del alojamiento: {{entrada.numeroAlojamiento}}</span>
+                                            <br>
+                                            <span *ngIf="entrada.tipo_alojamiento == 'Bungalow'">Máximo de personas: {{entrada.maximo_personas}}</span><span  class="float-left float-md-right" *ngIf="entrada.tipo_alojamiento == 'Parcela'">Sombra: {{entrada.sombra}}</span>
+                                            <br>
+                                            <span class="importante">Multiplicativo: {{entrada.multiplicativo}}</span>
+                                        </mat-card-subtitle>
+
+                                    </div>
+
+                                </mat-card-header>
+                                <mat-card-content *ngIf="serviciosExtras.idReserva == entrada.idReserva && serviciosExtras[0] != null">
+                                    <div class="row justify-content-center">
+                                        <p class="importante">Listado de servicios extras</p>
+                                        <mat-card-subtitle class="text-center justify-content-center col-12">
+                                            <div #scrollMe style="overflow-y: scroll; height: xyz;">
+                                                <div *ngFor="let extra of serviciosExtras">{{extra.nombre}}</div>
+                                            </div>
+                                        </mat-card-subtitle>
+                                    </div>
+                                </mat-card-content>
+    
+                            </mat-card>
+    
+                        </div>
+                        <!-- Paginación de las reseñas por revisar -->
+                        <pagination-controls [id]="'pagination'" (pageChange)="onChangePage($event, listadoEntradasHoy)" autoHide="true" nextLabel="Siguiente" previousLabel="Anterior"></pagination-controls>
+                        
+
+                    </ng-template>
+                    
+                </div>
+            </div>
+        </div>
 
         <!-- Si la URL es /dashboard/reservas -->
         <div *ngIf="dashboardReservas == true">HOLA RESERVAS</div>

@@ -30,6 +30,8 @@ import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MaterialModule } from './material.module';
 import { LayoutModule } from '@angular/cdk/layout';
+import { NgxPaginationModule } from 'ngx-pagination';
+import { ScrollingModule } from '@angular/cdk/scrolling';
 
 //Componentes añadidos
 import { HomeComponent } from './home/home.component';
@@ -84,6 +86,7 @@ export const DD_MM_YYYY_Format = {
     BrowserModule,
     AppRoutingModule,
     BrowserAnimationsModule,
+    NgxPaginationModule,
     HttpClientModule,
     ReactiveFormsModule,
     MatToolbarModule,
@@ -107,7 +110,8 @@ export const DD_MM_YYYY_Format = {
     MatCheckboxModule,
     MatDialogModule,
     MaterialModule,
-    LayoutModule
+    LayoutModule,
+    ScrollingModule
   ],
   providers: [
     MatDatepickerModule

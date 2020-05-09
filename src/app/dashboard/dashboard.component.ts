@@ -1,8 +1,8 @@
-import { Component, OnInit, ViewChild } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { Usuario } from '../usuario/usuario';
-import { MatDrawer } from '@angular/material/sidenav';
+import { MatDrawer, MatDrawerContainer } from '@angular/material/sidenav';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 
 import { encriptar, desencriptar } from '../crypto-storage';
@@ -10,15 +10,17 @@ import { encriptar, desencriptar } from '../crypto-storage';
 @Component({
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
-  styleUrls: ['./dashboard.component.css']
+  styleUrls: ['./dashboard.component.css'],
 })
 export class DashboardComponent implements OnInit {
+  @ViewChild('scrollMe') private myScrollContainer: ElementRef;
+  
+  /**
+   * ? Para ver cómo va el proceso
+   * ? https://trello.com/b/4xofW6oE
+   */
 
-/**
- * ? Para ver cómo va el proceso
- * ? https://trello.com/b/4xofW6oE
- */
-
+  public p: number = 1;
   //title = 'Administración';
 
   // Variable que indica si es un trabajador o no, si un cliente entra a la parte dashboard, no verá nada, solo el cargador y será redireccionado al Inicio
@@ -56,11 +58,19 @@ export class DashboardComponent implements OnInit {
 
   // variables revisar-resenias
   public listadoResenias: any = [];
-  public items = [];
   public listadoReseniasAlgo: boolean = false;
+
+  // Variables salidas-hoy
+  public listadoSalidasHoy: any = [];
+  public serviciosExtras: any = []; // También es usado en entradas-hoy
+  public totalPagar: number = 0; 
+
+  // Variables entradas-hoy
+  public listadoEntradasHoy: any = [];
   
 
   constructor( private http: HttpClient, private route: Router, private router: ActivatedRoute, breakpointObserver: BreakpointObserver) {
+
     
     // Obtiene el tamaño de la pantalla, para 
     breakpointObserver.observe([
@@ -72,9 +82,17 @@ export class DashboardComponent implements OnInit {
     })
   }
 
-  onChangePage(listadoResenias: Array<any>) {
-    // update current page of items
-    this.listadoResenias = listadoResenias;
+  onChangePage($event, lista) {    
+    if ($event*1 > lista.length) { // Comprueba si la página actual * 10(reseñas de cada página) es mayor a la cantidad d ereseñas restantes si es mayor significa que hay más páginas que reseñas, redirige a la página anterior
+      this.p -= 1;
+    }else{ // Si hay más reseñas que páginas significa que hay más reseñas que páginas
+      this.p = $event
+    }
+    /**
+     * ? Por ejemplo si hay 34 reseñas, tiene que haber 4 páginas, lo hace solo el módulo ngx-pagination
+     * ? pero si paso de 34 a 29 tiene que haber 3 páginas, 10 por cada, más el pico en la siguiente
+     */
+    
 }
 
   togle(){ // Función para cerrar y abrir el menú lateral
@@ -90,51 +108,68 @@ export class DashboardComponent implements OnInit {
     window.location.reload();
   }
 
-  aprobado(idResenia, i, e){
-    //console.log(e.path[4])
-    
-    // Reseña aprobada
+  aprobado(idResenia, i, p){
+    //console.log(this.p)
+    // Aprueba la reseña
     let aprobado = new HttpParams()
     .set('opcion', '8')
     .set('idResenia', idResenia);
 
-    console.log(this.listadoResenias)
-
     this.http.post<any>("http://localhost/dashboard.php", aprobado).subscribe(data =>{ // Aprobar reseña
       if(data != null){
         if (data == 1){
-          this.listadoResenias.splice(i, 1, );
-          //e.path[4].remove(); Esto sirve para borrar el elemento del DOM, pero no los borra de la lista
-          if(this.listadoResenias.length == 0){
+          for (let x = 0; x < this.listadoResenias.length; x++) {
+            const element = this.listadoResenias[x];
+            if(element['idResenia'] == idResenia){
+              this.listadoResenias.splice(x, 1, ); // Quita la reseña de la lista de reseñas
+            }
+          }
+          this.onChangePage(this.p, this.listadoResenias) // Llamada a la función de cambio de página del pagination
+          if(this.listadoResenias.length == 0){ // Y seguidamente comprueba si queda alguna reseña
             this.listadoReseniasAlgo = true;
           }
         }
       }
     });
-
   }
 
-  denegado(idResenia, i, e){
+  denegado(idResenia, i){
 
-    // Reseña aprobada
+    // Deniega la reseña
     let denegado = new HttpParams()
     .set('opcion', '9')
     .set('idResenia', idResenia);
 
     this.http.post<any>("http://localhost/dashboard.php", denegado).subscribe(data =>{ // Denegar reseña
       if(data != null){
-        this.listadoResenias.splice(i, 1, ); // Quita la reseña de la lista de reseñas
-        if(this.listadoResenias.length == 0){ // Y seguidamente comrpueba si queda alguna reseña
+        for (let x = 0; x < this.listadoResenias.length; x++) {
+          const element = this.listadoResenias[x];
+          if(element['idResenia'] == idResenia){
+            this.listadoResenias.splice(x, 1, ); // Quita la reseña de la lista de reseñas
+          }
+        }
+        this.onChangePage(this.p, this.listadoResenias) // Llamada a la función de cambio de página del pagination
+        if(this.listadoResenias.length == 0){ // Y seguidamente comprueba si queda alguna reseña
           this.listadoReseniasAlgo = true;
         }
       }
     });
-
   }
+
+  scrollToBottom(): void {
+    try {
+        this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
+    } catch(err) { }                 
+  }
+
+  ngAfterViewChecked() {        
+    this.scrollToBottom();
+  } 
 
 
   ngOnInit(): void {
 
+    this.scrollToBottom();
     if(localStorage.getItem('usuarioActual') != null){ // Comprobación de que tiene autorización para entrar a la administración
       this.usuarioActual = desencriptar(localStorage.getItem('usuarioActual'));
       if(this.usuarioActual['rol'] == 'cliente'){
@@ -228,17 +263,13 @@ export class DashboardComponent implements OnInit {
       this.dashboardServicios = false;
       this.dashboardAdmin = false;
 
-      /**
-       * ! Aquí va el código de REVISAR RESEÑAS, RESEÑAS SIN PUBLICAR, CUADRADO DERECHO DE INICIO
-       */
 
       let reseniasAprobar = new HttpParams()
       .set('opcion', '5');
 
       this.http.post < any > ("http://localhost/dashboard.php", reseniasAprobar).subscribe(data => { // Obtener las reseñas que están por ser aprobadas para ser publicadas
-        if (data != 0) {
+        if (data!= null && data != 0) {
           this.listadoResenias = data;
-
           this.listadoReseniasAlgo = false;
 
           for (let i = 0; i < this.listadoResenias.length; i++) {
@@ -249,7 +280,7 @@ export class DashboardComponent implements OnInit {
               .set('idUsuario', element['idUsuario']);
 
             this.http.post < any > ("http://localhost/dashboard.php", nombreUser).subscribe(data => { // Obtener los nombres de todas las reseñas por aprobar
-              if (data != null) {
+              if (data != null && data != 0) {
                 this.listadoResenias[i].alias_usuario = data[0]['alias_usuario'];
               }
             });
@@ -259,22 +290,15 @@ export class DashboardComponent implements OnInit {
               .set('idResenia', element['idResenia']);
 
             this.http.post < any > ("http://localhost/dashboard.php", idAlojamientoResenia).subscribe(data => { // Obtener el idAlojamiento de todas las reseñas por aprobar
-              if (data != null) {
+              if (data != null && data != 0) {
                 this.listadoResenias[i].idAlojamiento = data[0]['idAlojamiento'];
               }
             });
-
           }
-          //console.log(this.listadoResenias)
-
         } else {
           this.listadoReseniasAlgo = true;
         }
       });
-
-      
-
-      
 
        /**
         * ? Acaba aquí
@@ -301,6 +325,139 @@ export class DashboardComponent implements OnInit {
       /**
        * ! Aquí va el código de SALIDAS HOY, CUADRADO CENTRAL DE INICIO
        */
+
+      let salidasHoy = new HttpParams()
+      .set('opcion', '10');
+
+      this.http.post < any > ("http://localhost/dashboard.php", salidasHoy).subscribe(data => { // Obtener las reservas que saldrán hoy
+        if (data != null && data != 0) {
+          //console.log(data)
+          this.listadoSalidasHoy = data;
+          //console.log(data)
+          //console.log(dias)
+          
+          for (let i = 0; i < this.listadoSalidasHoy.length; i++) {
+            const element = this.listadoSalidasHoy[i];
+            this.serviciosExtras = [];
+            this.totalPagar = 0;
+            
+            let dias = Math.floor((new Date(this.listadoSalidasHoy[i].fecha_salida).getTime() - new Date(this.listadoSalidasHoy[i].fecha_entrada).getTime())/86400000);
+
+            let nombreUser = new HttpParams()
+              .set('opcion', '6')
+              .set('idUsuario', element['idUsuario']);
+
+            this.http.post < any > ("http://localhost/dashboard.php", nombreUser).subscribe(data => { // Obtener los datos del cliente
+              if (data != null && data != 0) {
+                this.listadoSalidasHoy[i].alias_usuario = data[0]['alias_usuario'];
+                this.listadoSalidasHoy[i].nif = data[0]['nif_usuario'];
+                this.listadoSalidasHoy[i].nombre_usuario = data[0]['nombre_usuario'];
+                this.listadoSalidasHoy[i].telefono = data[0]['telefono'];
+                this.listadoSalidasHoy[i].email = data[0]['email'];
+                this.listadoSalidasHoy[i].fecha_entrada = new Date(this.listadoSalidasHoy[i].fecha_entrada).toLocaleDateString("es-ES",{year: "numeric", month:"2-digit", day: "2-digit"});
+                this.listadoSalidasHoy[i].fecha_salida = new Date(this.listadoSalidasHoy[i].fecha_salida).toLocaleDateString("es-ES",{year: "numeric", month:"2-digit", day: "2-digit"});
+              }
+            });
+
+            let idAlojamientoSalidasHoy = new HttpParams()
+              .set('opcion', '11')
+              .set('idReserva', element['idReserva']);
+
+            this.http.post < any > ("http://localhost/dashboard.php", idAlojamientoSalidasHoy).subscribe(data => { // Obtener los datos de los alojamientos de la reserva
+              if (data != null && data != 0) {
+                this.listadoSalidasHoy[i].tipo_alojamiento = data[0]['nombre'];
+                this.listadoSalidasHoy[i].idAlojamiento = data[0]['idAlojamiento'];
+                this.listadoSalidasHoy[i].precioAlojamiento = data[0]['precio'];
+
+                this.totalPagar += (parseFloat(this.listadoSalidasHoy[i].precioAlojamiento)*dias)*parseFloat(this.listadoSalidasHoy[i].multiplicativo);
+
+                let numeAlojamiento = new HttpParams()
+                .set('opcion', '12')
+                .set('idAlojamiento', data[0]['idAlojamiento']);
+
+                this.http.post < any > ("http://localhost/dashboard.php", numeAlojamiento).subscribe(data => { // Obtener los datos del alojamiento
+                  if (data != null && data != 0) {
+                    this.listadoSalidasHoy[i].numeroAlojamiento = data[0]['numeroAlojamiento'];
+                    if(data[0]['tipo'] == 'bungalow'){
+                      this.listadoSalidasHoy[i].habitaciones = data[0]['habitaciones'];
+                      this.listadoSalidasHoy[i].maximo_personas = data[0]['maximo_personas'];
+                    }else{
+                      this.listadoSalidasHoy[i].dimension = data[0]['dimension'];
+
+                      switch (data[0]['sombra']) {
+                        case '0':
+                          this.listadoSalidasHoy[i].sombra = "Nada";
+                          break;
+                        case '1':
+                          this.listadoSalidasHoy[i].sombra = "Media";
+                          break;
+
+                        case '2':
+                          this.listadoSalidasHoy[i].sombra = "Bastante";
+                          break;
+
+                        case '3':
+                          this.listadoSalidasHoy[i].sombra = 'Mucha';
+                          break;
+
+                        default:
+                          this.listadoSalidasHoy[i].sombra = "Desconocido";
+                          break;
+                      }
+                      
+                    }
+                  }
+                });
+              }
+            });
+
+            let cantidadServicios = new HttpParams()
+              .set('opcion', '14')
+              .set('idReserva', element['idReserva']);
+              //console.log(element['idReserva'])
+
+            let cantidadFinal: any;
+            this.http.post<any>("http://localhost/dashboard.php", cantidadServicios).subscribe(data => { // Obtener los datos de los alojamientos de la reserva
+              if (data != null && data != 0) {
+                //console.log(data)
+                cantidadFinal = data;
+                //console.log(data)
+              }
+            });
+
+
+            let servicios = new HttpParams()
+              .set('opcion', '13')
+              .set('idReserva', element['idReserva']);
+
+            this.http.post<any>("http://localhost/dashboard.php", servicios).subscribe(data => { // Obtener los datos de los alojamientos de la reserva
+              if (data != null && data != 0) {
+                for (let i = 0; i < data.length; i++) {
+                  const element = data[i];
+                  delete element.idAlojamiento;
+                  
+                  
+                  
+                  for (let x = 0; x < cantidadFinal.length; x++) {
+                    const elemento = cantidadFinal[x];
+                    //console.log(elemento.idServicio+' '+element.idServicio);
+                    if(elemento.idServicio == element.idServicio){
+                      element.cantidad = elemento.cantidad;
+                      //this.totalPagar += (parseInt(element.precio)*parseInt(element.cantidad));
+                      console.log(element)
+                    }
+                  }
+
+                  this.serviciosExtras.push(element);
+                  
+                  //console.log(element)
+                }
+                this.serviciosExtras.idReserva = element['idReserva'];
+              }
+            });
+          }
+        }
+      });
 
 
        /**
@@ -329,6 +486,103 @@ export class DashboardComponent implements OnInit {
        * ! Aquí va el código de ENTRADAS HOY, CUADRADO IZQUIERDO DE INICIO
        */
 
+      let entradasHoy = new HttpParams()
+      .set('opcion', '14');
+
+      this.http.post < any > ("http://localhost/dashboard.php", entradasHoy).subscribe(data => { // Obtener las reservas que entran hoy
+        if (data != null && data != 0) {
+          //console.log(data)
+          this.listadoEntradasHoy = data;
+          
+          for (let i = 0; i < this.listadoEntradasHoy.length; i++) {
+            const element = this.listadoEntradasHoy[i];
+            this.serviciosExtras = [];
+
+            let nombreUser = new HttpParams()
+              .set('opcion', '6')
+              .set('idUsuario', element['idUsuario']);
+
+            this.http.post < any > ("http://localhost/dashboard.php", nombreUser).subscribe(data => { // Obtener los datos del cliente
+              if (data != null && data != 0) {
+                this.listadoEntradasHoy[i].alias_usuario = data[0]['alias_usuario'];
+                this.listadoEntradasHoy[i].nif = data[0]['nif_usuario'];
+                this.listadoEntradasHoy[i].nombre_usuario = data[0]['nombre_usuario'];
+                this.listadoEntradasHoy[i].telefono = data[0]['telefono'];
+                this.listadoEntradasHoy[i].email = data[0]['email'];
+                this.listadoEntradasHoy[i].fecha_entrada = new Date(this.listadoEntradasHoy[i].fecha_entrada).toLocaleDateString("es-ES",{year: "numeric", month:"2-digit", day: "2-digit"});
+                this.listadoEntradasHoy[i].fecha_salida = new Date(this.listadoEntradasHoy[i].fecha_salida).toLocaleDateString("es-ES",{year: "numeric", month:"2-digit", day: "2-digit"});
+                //console.log(data)
+              }
+            });
+
+            let idAlojamientoSalidasHoy = new HttpParams()
+              .set('opcion', '11')
+              .set('idReserva', element['idReserva']);
+
+            this.http.post < any > ("http://localhost/dashboard.php", idAlojamientoSalidasHoy).subscribe(data => { // Obtener los datos de los alojamientos de la reserva
+              if (data != null && data != 0) {
+                this.listadoEntradasHoy[i].tipo_alojamiento = data[0]['nombre'];
+                this.listadoEntradasHoy[i].idAlojamiento = data[0]['idAlojamiento'];
+
+                let numeAlojamiento = new HttpParams()
+                .set('opcion', '12')
+                .set('idAlojamiento', data[0]['idAlojamiento']);
+
+                this.http.post < any > ("http://localhost/dashboard.php", numeAlojamiento).subscribe(data => { // Obtener los datos del alojamiento
+                  if (data != null && data != 0) {
+                    this.listadoEntradasHoy[i].numeroAlojamiento = data[0]['numeroAlojamiento'];
+                    if(data[0]['tipo'] == 'bungalow'){
+                      this.listadoEntradasHoy[i].habitaciones = data[0]['habitaciones'];
+                      this.listadoEntradasHoy[i].maximo_personas = data[0]['maximo_personas'];
+                    }else{
+                      this.listadoEntradasHoy[i].dimension = data[0]['dimension'];
+
+                      switch (data[0]['sombra']) {
+                        case '0':
+                          this.listadoEntradasHoy[i].sombra = "Nada";
+                          break;
+                        case '1':
+                          this.listadoEntradasHoy[i].sombra = "Media";
+                          break;
+
+                        case '2':
+                          this.listadoEntradasHoy[i].sombra = "Bastante";
+                          break;
+
+                        case '3':
+                          this.listadoEntradasHoy[i].sombra = 'Mucha';
+                          break;
+
+                        default:
+                          this.listadoEntradasHoy[i].sombra = "Desconocido";
+                          break;
+                      }
+                      
+                    }
+                  }
+                });
+                //console.log(this.listadoEntradasHoy);
+              }
+            });
+
+            let servicios = new HttpParams()
+              .set('opcion', '13')
+              .set('idReserva', element['idReserva']);
+
+            this.http.post<any>("http://localhost/dashboard.php", servicios).subscribe(data => { // Obtener los datos de los alojamientos de la reserva
+              if (data != null && data != 0) {
+                for (let i = 0; i < data.length; i++) {
+                  const element = data[i];
+                  delete element.idAlojamiento;
+                  this.serviciosExtras.push(element);
+                  console.log(element)
+                }
+                this.serviciosExtras.idReserva = element['idReserva'];
+              }
+            });
+          }
+        }
+      });
 
        /**
         * ? Acaba aquí
