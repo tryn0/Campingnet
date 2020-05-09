@@ -4,7 +4,7 @@
       <span (click)="togle()" class="puntero">{{menuMensaje}}</span>
       <span style="flex: 1 1 auto;"></span>
       <div style="float: right;">&nbsp;
-        <small id="ajustes" mat-button [matMenuTriggerFor]="ajustes">Ajustes<mat-icon fxShow="true" fxHide.sm="true" class="icon">arrow_drop_down</mat-icon></small>&nbsp;
+        <small class="puntero" id="ajustes" mat-button [matMenuTriggerFor]="ajustes">Ajustes<mat-icon fxShow="true" fxHide.sm="true" class="icon">arrow_drop_down</mat-icon></small>&nbsp;
         <mat-menu #ajustes="matMenu" class="text-center">
           <button class="botonInicio" mat-button [routerLink]="'/controlpanel'"><mat-icon fxShow="true" fxHide.sm="true" class="icon">dashboard</mat-icon>Panel de control</button><br>
           <button class="botonInicio" mat-button [routerLink]="'/dashboard'" *ngIf="usuarioActual != null && usuarioActual.rol != 'cliente'" ><mat-icon fxShow="true" fxHide.sm="true" class="icon">supervisor_account</mat-icon>Administración</button><br> <!-- Dashboard TRABAJADOR-->
@@ -347,20 +347,41 @@
         <!-- Si la URL es /dashboard/reservas -->
         <div *ngIf="dashboardReservas == true">
             <div class="container">
-                <div class="column justify-content-center mt-4 bg-danger">
-                    <h4 class="text-center">Buscar reseñas</h4>
-                    <div class="bg-success">
-                        <form [formGroup]="buscarReserva" novalidate class="bg-warning col-12 d-flex justify-content-center">
-                            <mat-form-field>
+                <div class="column justify-content-center mt-4">
+                    <h4 class="text-center">Buscar reservas</h4>
+                    <div class="d-flex justify-content-center">
+                        <form [formGroup]="buscarReserva" novalidate class="col-12 col-lg-6 mb-1 mt-1 border border-dark border rounded">
+                            <mat-form-field class="d-flex justify-content-center mt-3">
                                 <mat-label>Fecha de entrada</mat-label>
-                                <input matInput formControlName="fechaEntrada" [matDatepicker]="fechas1" required>
+                                <input matInput formControlName="fechaEntrada" [matDatepicker]="fechas1">
                                 <mat-hint align="start"><strong>Con hora de entrada 12:00</strong></mat-hint>
                                 <mat-datepicker-toggle matSuffix [for]="fechas1"></mat-datepicker-toggle>
                                 <mat-datepicker touchUi #fechas1></mat-datepicker>
+                            </mat-form-field><br>
+                            <mat-form-field class="mt-3 d-flex justify-content-center">
+                                <mat-label>ID de la reserva</mat-label>
+                                    <div>
+                                        <input matInput min="0" max="12" formControlName="idReserva" type="number">
+                                    </div>
+                            </mat-form-field><br>
+                            <mat-form-field class="mt-3 d-flex justify-content-center">
+                                <mat-label>DNI del usuario</mat-label>
+                                    <div>
+                                        <input matInput formControlName="dniUsuario" type="text">
+                                    </div>
                             </mat-form-field>
+                            <p><mat-icon class="icon">info</mat-icon>Escriba los campos a buscar</p>
                         </form>
                     </div>
+                    <div class="d-flex justify-content-center mt-2 pb-2">
+                        <button mat-raised-button color="primary" (click)="buscarReservas()">Buscar</button>
+                    </div>
                 </div>
+
+                <div class="mt-4">
+                    <h4 class="text-center">Últimas 10 reservas</h4>
+                </div>
+
             </div>
         </div>
 

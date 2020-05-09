@@ -95,11 +95,11 @@ export class DashboardComponent implements OnInit {
 
   constructor( private http: HttpClient, private route: Router, private router: ActivatedRoute, breakpointObserver: BreakpointObserver, public fb: FormBuilder) {
 
-    // FormBuilder de buscar reservas
+    // Inicializar FormBuilder de buscar reservas
     this.buscarReserva = this.fb.group({
-      fechaEntrada: ['', [Validators.required]],
-      idReserva: ['',  Validators.required],
-      dniUsuario: ['',  Validators.required],
+      fechaEntrada: ['', ],
+      idReserva: ['', ],
+      dniUsuario: ['', [Validators.pattern('^[0-9]{8,8}[A-Za-z]$')]],
     });
 
     
@@ -188,13 +188,28 @@ export class DashboardComponent implements OnInit {
 
   scrollToBottom(): void {
     try {
-        this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
+      this.myScrollContainer.nativeElement.scrollTop = this.myScrollContainer.nativeElement.scrollHeight;
     } catch(err) { }                 
   }
 
   ngAfterViewChecked() {        
     this.scrollToBottom();
-  } 
+  }
+
+  buscarReservas(){
+    if (this.buscarReserva.get('fechaEntrada').value != null && this.buscarReserva.get('fechaEntrada').value != '' && !this.buscarReserva.get('fechaEntrada').errors) {
+      console.log((this.buscarReserva.get('fechaEntrada').value).format('DD-MM-YYYY'))
+    }
+
+    if (this.buscarReserva.get('idReserva').value != null && this.buscarReserva.get('idReserva').value != '' && this.buscarReserva.get('idReserva').value != 0) {
+      console.log(this.buscarReserva.get('idReserva').value)
+    }
+
+    if (this.buscarReserva.get('dniUsuario').value != null && this.buscarReserva.get('dniUsuario').value != '' && this.buscarReserva.get('dniUsuario').value != 0 && !this.buscarReserva.get('dniUsuario').hasError('pattern')) {
+      console.log(this.buscarReserva.get('dniUsuario').value)
+    }
+
+  }
 
 
   ngOnInit(): void {

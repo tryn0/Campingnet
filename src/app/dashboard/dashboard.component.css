@@ -1,15 +1,6 @@
 html,body{
     margin: 0;
 }
-#bienvenida{
-    float: right;
-}
-#bienvenida2{
-    float: right;
-}
-#ajustes{
-    cursor: pointer;
-}
 .botonInicio{
     padding: 7px 5px;
 }
@@ -22,7 +13,6 @@ html,body{
     vertical-align: middle;
     width: 15%;
 }
-
 .cp {
     display: inline-block;
     height: 30px;
@@ -32,7 +22,6 @@ html,body{
     vertical-align: middle;
     width: 15%;
 }
-
 .logout {
     display: inline-block;
     height: 30px;
@@ -42,7 +31,6 @@ html,body{
     vertical-align: middle;
     width: 15%;
 }
-
 .bottom{
     display: inline-block;
     height: 30px;
@@ -68,3 +56,12 @@ html,body{
     left: 0;
     right: 0;
 }
+.icon {
+    display: inline-block;
+    height: 30px;
+    margin-right: 14px;
+    padding-right: 10px;
+    text-align: center;
+    vertical-align: middle;
+    width: 1%;
+  }
