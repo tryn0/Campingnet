@@ -108,7 +108,7 @@ export class DashboardComponent implements OnInit {
     window.location.reload();
   }
 
-  aprobado(idResenia, i, p){
+  aprobado(idResenia){
     //console.log(this.p)
     // Aprueba la reseña
     let aprobado = new HttpParams()
@@ -133,7 +133,7 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  denegado(idResenia, i){
+  denegado(idResenia){
 
     // Deniega la reseña
     let denegado = new HttpParams()
@@ -370,6 +370,7 @@ export class DashboardComponent implements OnInit {
                 this.listadoSalidasHoy[i].precioAlojamiento = data[0]['precio'];
 
                 this.totalPagar += (parseFloat(this.listadoSalidasHoy[i].precioAlojamiento)*dias)*parseFloat(this.listadoSalidasHoy[i].multiplicativo);
+                console.log(this.totalPagar);
 
                 let numeAlojamiento = new HttpParams()
                 .set('opcion', '12')
@@ -436,7 +437,9 @@ export class DashboardComponent implements OnInit {
                   const element = data[i];
                   delete element.idAlojamiento;
                   
-                  
+                  /**
+                   * TODO: TOTAL PAGAR PRECIO FINAL A PAGAR
+                   */
                   
                   for (let x = 0; x < cantidadFinal.length; x++) {
                     const elemento = cantidadFinal[x];
