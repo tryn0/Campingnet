@@ -53,7 +53,9 @@ export class DashboardComponent implements OnInit {
   // Menú lateral
   @ViewChild('menu') drawer: MatDrawer;
 
+  // Variables para los breakpoints de la pantalla
   public pantalla: boolean = false;
+  public pantalla2: boolean = false;
 
   // Variables del número de los cuadrados de inicio
   public reservasHoy: number = 0;
@@ -110,8 +112,10 @@ export class DashboardComponent implements OnInit {
       Breakpoints.HandsetLandscape,
       Breakpoints.HandsetPortrait
     ]).subscribe(res => {
-      const md = breakpointObserver.isMatched('(max-width: 768px)')
+      const md = breakpointObserver.isMatched('(max-width: 768px)');
+      const sm = breakpointObserver.isMatched('(max-width: 575px)');
       this.pantalla = md;
+      this.pantalla2 = sm;
     })
   }
 

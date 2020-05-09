@@ -108,6 +108,10 @@
                             <p class="my-auto py-5">
                                 {{revisarResenias}} reseña/s por revisar
                             </p>
+                            <div *ngIf="!pantalla2">
+                                <br>
+                                <br>
+                            </div>
                             <p class="puntero" [routerLink]="'/dashboard/revisar-resenias'">Ver</p>
                         </div>
                     </div>
@@ -197,6 +201,7 @@
                         <!-- Paginación de las reseñas por revisar -->
                         <pagination-controls [id]="'pagination'" (pageChange)="onChangePage($event, listadoResenias)" autoHide="true" nextLabel="Siguiente" previousLabel="Anterior"></pagination-controls>
                     </ng-template>
+                    <p class="puntero importante text-center" [routerLink]="'/dashboard'">Volver</p>
                 </div>
             </div>
         </div>
@@ -377,9 +382,9 @@
                         <button mat-raised-button color="primary" (click)="buscarReservas()">Buscar</button>
                     </div>
                 </div>
-                <div class="mt-4">
+                <div class="mt-5">
                     <h4 class="text-center">Últimas 10 reservas</h4>
-                    <table class="table mt-5">
+                    <table class="table mt-4 mb-5">
                         <thead class="thead-dark">
                             <tr>
                                 <th class="text-center" scope="col">#</th>
@@ -397,6 +402,7 @@
                             </tr>
                         </thead>
                     </table>
+                    <p class="puntero importante text-center" [routerLink]="'/dashboard'">Volver</p>
                 </div>
             </div>
             <ng-template #reservaBuscada>
