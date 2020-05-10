@@ -13,6 +13,8 @@ import { encriptar, desencriptar } from '../crypto-storage';
 })
 export class AlojamientoComponent implements OnInit {
 
+  public p: number = 1;
+
   public usuarioActual: any;
 
   public alojamiento: string = null;
@@ -38,6 +40,8 @@ export class AlojamientoComponent implements OnInit {
   public alojamientoSeleccionado: Alojamiento;
 
   // Reseñas
+  public noResenias: boolean = false;
+  public listadoResenias: any = [];
   public reseñas: any;
   public resenia: FormGroup;
   public anonimoCheck: boolean = false;
@@ -145,8 +149,37 @@ export class AlojamientoComponent implements OnInit {
                 }
                 // ! COGER EL ID DEL ALOJAMIENTO PARA ENVIAR LA RESEÑA this.alojamientoSeleccionado.idAlojamiento
 
-              }
+                let listaResenias = new HttpParams()
+                .set('opcion', '1')
+                .set('idAlojamiento', (this.alojamientoSeleccionado.idAlojamiento).toString());
 
+                this.http.post<any>("http://localhost/resenias.php", listaResenias).subscribe(data => {
+                  if (data != null && data != 0) {
+                    //console.log(data)
+                    this.listadoResenias = data;
+                    for (let z = 0; z <  this.listadoResenias.length; z++) {
+                      const element =  this.listadoResenias[z];
+                      if (element.anonimo != '1') { // Si la reseña no es anónima cojo el alias del usuario
+
+                        let user = new HttpParams()
+                        .set('opcion', '2')
+                        .set('idUsuario', element.idUsuario);
+
+                        this.http.post<any>("http://localhost/resenias.php", user).subscribe(data => {
+                          if (data != null && data != 0) {
+                            //console.log(data)
+                            element.alias = data[0]['alias_usuario'];
+                          }
+                        });
+                      }else{ // Si la reseña es anónima el alias será anónimo
+                        element.alias = 'Anónimo';
+                      }
+                    }
+                  }else{
+                    this.noResenias = true;
+                  }
+                });
+              }
             }else{ // Si no encuentra en la base de datos los datos de la URL (/alojamiento/bungalows/99) significa que no existe ese alojamiento
               this.errorExiste = true;
             }
@@ -156,30 +189,6 @@ export class AlojamientoComponent implements OnInit {
         }
 
       }, error => console.log(error));
-
-       // Parámetros a enviar al archivo PHP
-       let paramResenias = new HttpParams()
-       .set('numero', this.router.snapshot.params.numero);
-       
-       /**
-        * TODO: El post de aqui abajo devuelve todas las reseñas del alojamiento, pero devuelve los datos sin el nombre de usuario, 
-        * TODO: USAR PAGINACIÓN AQUÍ PARA PODER LISTAR HASTA UN MÁXIMO DE 25, Y DIVIDIRLO EN PÁGINAS
-        * TODO: SELECT DE TODAS LAS RESENIAS CON ESTE idAlojamiento, Y POR CADA RESENIA COGER LA PUNTUACION Y GUARDARLA EN UN ARRAY O ALGO Y LUEGO HACER UN AVG O ALGO PARA SACAR LA MEDIA dDE TODAS LAS PUNTUACIONES DE LA LISTA
-        */
-        this.http.post('http://localhost/resenias.php', paramResenias).subscribe(data =>{ // Recopilar reseñas
-          if(data != null){ // Si existen reseñas...
-            this.reseñas = data;
-            for (let i = 0; i < this.reseñas.length; i++) {
-              const element = this.reseñas[i];
-
-              if(element['anonimo'] == '0'){
-                // si es anonimo no mostrarlo
-                console.log(element)
-              }
-              
-            }
-          }
-        }, error => console.log(error));
 
 
     }else{ // Si la url es /alojamiento/ y el 2º parámetro no existe que se redirija a /inicio
@@ -196,6 +205,17 @@ export class AlojamientoComponent implements OnInit {
     console.log(this.anonimoCheck);
   }
 
+  onChangePage($event, lista) {    
+    if ($event*10 > lista.length) { // Comprueba si la página actual * 10(reseñas de cada página) es mayor a la cantidad d ereseñas restantes si es mayor significa que hay más páginas que reseñas, redirige a la página anterior
+      this.p -= 1;
+    }else{ // Si hay más reseñas que páginas significa que hay más reseñas que páginas
+      this.p = $event
+    }
+    /**
+     * ? Por ejemplo si hay 34 reseñas, tiene que haber 4 páginas, lo hace solo el módulo ngx-pagination
+     * ? pero si paso de 34 a 29 tiene que haber 3 páginas, 10 por cada, más el pico en la siguiente
+     */
+  }
 
   enviarResenia(){ // Función para guardar reseña
      if (this.resenia.get('puntuacion').value == '' || this.resenia.get('puntuacion').value == 0){

@@ -121,7 +121,7 @@ export class DashboardComponent implements OnInit {
   }
 
   onChangePage($event, lista) {    
-    if ($event*1 > lista.length) { // Comprueba si la página actual * 10(reseñas de cada página) es mayor a la cantidad d ereseñas restantes si es mayor significa que hay más páginas que reseñas, redirige a la página anterior
+    if ($event*10 > lista.length) { // Comprueba si la página actual * 10(reseñas de cada página) es mayor a la cantidad de reseñas restantes si es mayor significa que hay más páginas que reseñas, redirige a la página anterior
       this.p -= 1;
     }else{ // Si hay más reseñas que páginas significa que hay más reseñas que páginas
       this.p = $event
@@ -130,8 +130,7 @@ export class DashboardComponent implements OnInit {
      * ? Por ejemplo si hay 34 reseñas, tiene que haber 4 páginas, lo hace solo el módulo ngx-pagination
      * ? pero si paso de 34 a 29 tiene que haber 3 páginas, 10 por cada, más el pico en la siguiente
      */
-    
-}
+  }
 
   togle(){ // Función para cerrar y abrir el menú lateral
     if(this.drawer.opened){

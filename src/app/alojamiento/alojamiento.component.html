@@ -130,8 +130,8 @@
         <!-- Alojamiento -->
         <div class="container">
             <div class="row justify-content-center">
-                <div class="col-lg-12">
-                    <div class="card mt-4" *ngIf="alojamiento == 'parcelas'; else bungalow">
+                <div class="col-lg-12 mt-4">
+                    <div class="card" *ngIf="alojamiento == 'parcelas'; else bungalow">
                         <!-- Imagen del alojamiento -->
                         <img class="card-img-top img-fluid" src="../../assets/images/alojamientos/parcela1.jpg" alt="Imagen de la parcela">
                         <!-- Información del alojamiento -->
@@ -143,7 +143,6 @@
                                 <!-- Los datos de bungalows.X dan errores falsos en la consola del navegador, preguntar por qué y cómo arreglarlo -->
                                 <p class="card-text">Sombra: {{ alojamientoSeleccionado?.sombra }}</p>
                                 <p class="card-text">Dimensiones: {{ alojamientoSeleccionado?.dimension }}</p>
-                                <p>Perfecta parcela para disfrutar, tanto en verano como en invierno, con caravana, autocaravana o tienda de camapaña.</p>
                             </div>
 
                             <span class="text-warning">
@@ -168,7 +167,6 @@
                                 <!-- Los datos de bungalows.X dan errores falsos en la consola del navegador, preguntar por qué y cómo arreglarlo -->
                                 <p class="card-text">Número de habitaciones: {{ alojamientoSeleccionado?.habitaciones }}</p>
                                 <p class="card-text">Número máximo de personas: {{ alojamientoSeleccionado?.maximo_personas }}</p>
-                                <p>Exclusivo bungalow para disfrutar, tanto en verano como en invierno.</p>
                             </div>
 
                             <span class="text-warning">
@@ -185,23 +183,32 @@
 
                         <div class="card-header">Reseñas</div>
                         <!-- Reseña -->
-                        <div class="card-body">
+                        <div *ngIf="noResenias == false; else noReseniasTrue">
 
                             <!-- Aquí hacer un ngFor con las reseñas recogidas de la BD -->
                             <!-- Información de la reseña, usuario/anónimo y puntuación dada-->
-                            <div class="col-12">
-                                <span class="float-left">Usuario/Anónimo, a la izquierda del todo</span>
-                                <span class="float-right">Puntuación dada, a la derecha del todo</span>
+                            <div class="card-body" *ngFor="let resenias of listadoResenias | paginate: { id: 'pagination', itemsPerPage: 1, currentPage: p, totalItems: listadoResenias.length }; let i = index">
+
+                                <div class="col-12">
+                                    <span class="float-left">Nombre de usuario: {{resenias.alias}}</span>
+                                    <span class="float-right">Puntuación: {{resenias.puntuacion}}</span>
+                                </div>
+                                <!-- Texto de la reseña -->
+                                <p class="col-12 mt-5 mb-0">Comentario:</p>
+                                <p class="col-12 mt-0">
+                                    {{resenias.comentario}}
+                                </p>
+                                <hr *ngIf="i != listadoResenias.length-1">
                             </div>
-                            <!-- Texto de la reseña -->
-                            <p class="col-12 mt-5">
-                                Lorem ipsum, dolor sit amet consectetur adipisicing elit.
-                                Saepe, deleniti sapiente, et atque nulla, facilis enim perspiciatis ratione dignissimos quaerat placeat.
-                                Perspiciatis eaque harum optio obcaecati libero ducimus tempora enim?
-                            </p>
-                            <hr> <!-- Si es la última reseña que no aparezca este hr -->
+                             <!-- Paginación de las reseñas por revisar -->
+                            <pagination-controls class="text-center" [id]="'pagination'" (pageChange)="onChangePage($event, listadoResenias)" autoHide="true" nextLabel="Siguiente" previousLabel="Anterior"></pagination-controls> 
 
                         </div>
+                        <ng-template #noReseniasTrue>
+                            <div class="card-body">
+                                <p class="text-center">Este alojamiento aún no tiene reseñas, sé la primera persona en dejar una ;)</p>
+                            </div>
+                        </ng-template>
 
                     </div>
 
