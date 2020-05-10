@@ -406,11 +406,11 @@
                 </div>
             </div>
             <ng-template #reservaBuscada>
-                <div *ngIf="listadoBuscado.length == 0 else noBuscadoENcontrado">
+                <div *ngIf="listadoBuscado.length == 0 else noBuscadoEncontrado">
                     <h4 class="text-center">Ninguna reserva encontrada</h4>
                     <p class="puntero text-center" (click)="atrasBusqueda()">Volver</p>
                 </div>
-                <ng-template #noBuscadoENcontrado>
+                <ng-template #noBuscadoEncontrado>
                     <div class="container" *ngIf="reservaSeleccionada == false; else reservaElegida">
                         <h4 class="text-center mb-4">Listado de reservas encontradas</h4>
                         <div *ngFor="let buscado of listadoBuscado | paginate: { id: 'pagination', itemsPerPage: 10, currentPage: p, totalItems: listadoBuscado.length }">
@@ -548,7 +548,7 @@
                 </div>
                 <ng-template #noBuscadoEncontrado>
                     <div class="container">
-                        <h4 class="text-center mb-4">Listado de reservas encontradas</h4>
+                        <h4 class="text-center mb-4">Listado de reseñas encontradas</h4>
                         <div *ngFor="let buscado of listadoBuscado | paginate: { id: 'pagination', itemsPerPage: 10, currentPage: p, totalItems: listadoBuscado.length }">
                             <mat-card class="mb-4">
                                 <mat-card-header class="justify-content-end">

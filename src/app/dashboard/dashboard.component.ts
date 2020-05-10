@@ -465,6 +465,8 @@ export class DashboardComponent implements OnInit {
       this.dashboardServicios = false;
       this.dashboardAdmin = false;
 
+      this.atrasBusqueda();
+
       // Entradas
       let entrada = new HttpParams()
       .set('opcion', '1');
@@ -527,6 +529,8 @@ export class DashboardComponent implements OnInit {
       this.dashboardServicios = false;
       this.dashboardAdmin = false;
 
+      this.atrasBusqueda();
+
 
       let reseniasAprobar = new HttpParams()
       .set('opcion', '5');
@@ -585,6 +589,8 @@ export class DashboardComponent implements OnInit {
       this.dashboardUsuarios = false;
       this.dashboardServicios = false;
       this.dashboardAdmin = false;
+
+      this.atrasBusqueda();
 
       /**
        * ! Aquí va el código de SALIDAS HOY, CUADRADO CENTRAL DE INICIO
@@ -729,6 +735,8 @@ export class DashboardComponent implements OnInit {
       this.dashboardServicios = false;
       this.dashboardAdmin = false;
 
+      this.atrasBusqueda();
+
       /**
        * ! Aquí va el código de ENTRADAS HOY, CUADRADO IZQUIERDO DE INICIO
        */
@@ -861,6 +869,8 @@ export class DashboardComponent implements OnInit {
       this.dashboardServicios = false;
       this.dashboardAdmin = false;
 
+      this.atrasBusqueda();
+
       /**
        * ! Aquí va el código de RESERVAS, AQUÍ SE PODRÁ BUSCAR, VER, EDITAR O ELIMINAR RESERVAS
        */
@@ -895,6 +905,8 @@ export class DashboardComponent implements OnInit {
       this.dashboardUsuarios = false;
       this.dashboardServicios = false;
       this.dashboardAdmin = false;
+
+      this.atrasBusqueda();
 
       /**
        * ! Aquí va el código de RESEÑAS, AQUÍ SE PODRÁ BUSCAR Y VER RESEÑAS
@@ -949,6 +961,8 @@ export class DashboardComponent implements OnInit {
       this.dashboardServicios = false;
       this.dashboardAdmin = false;
 
+      this.atrasBusqueda();
+
       /**
        * ! Aquí va el código de USUARIOS, AQUÍ SE PODRÁ BUSCAR, VER, EDITAR O ELIMINAR USUARIOS, pero NO la contraseña, como en el Panel de Control
        */
@@ -975,6 +989,8 @@ export class DashboardComponent implements OnInit {
       this.dashboardUsuarios = false;
       this.dashboardServicios = true;
       this.dashboardAdmin = false;
+
+      this.atrasBusqueda();
 
       /**
        * ! Aquí va el código de SERVICIOS, AQUÍ SE PODRÁ BUSCAR, VER, Y AÑADIR SERVICIOS, pero NO eliminarlos
@@ -1013,12 +1029,6 @@ export class DashboardComponent implements OnInit {
         */
 
     //}
-
-    
-
-    
-    
-
   }
 
 }
