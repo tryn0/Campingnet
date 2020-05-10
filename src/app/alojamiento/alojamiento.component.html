@@ -145,6 +145,9 @@
                                 <p class="card-text">Dimensiones: {{ alojamientoSeleccionado?.dimension }}</p>
                             </div>
 
+                            <!-- PONER STAR RATING O ALGO ASÍ -->
+                            <star-rating value="5" totalstars="5" checkedcolor="red" uncheckedcolor="black" size="24px" readonly="false" (rate)="onRate($event)"></star-rating>
+
                             <span class="text-warning">
                                 Buscar sistema de puntuación de estrellas ★ ★ ★ ★ ☆ Aquí hacer una media de la
                                 puntuación dada por los usuarios, puntuacion del 1 al 5 por ejemplo, despues se hace una media y según

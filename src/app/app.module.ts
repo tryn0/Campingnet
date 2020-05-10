@@ -7,6 +7,8 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from "@angular/forms";
 
+import { RatingModule } from 'ng-starrating';
+
 // Componentes para Angular
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
@@ -95,7 +97,8 @@ import { ReservasRegistrarComponent } from './reservas-registrar/reservas-regist
     MatDialogModule,
     MaterialModule,
     LayoutModule,
-    ScrollingModule
+    ScrollingModule,
+    RatingModule
   ],
   providers: [
     MatDatepickerModule

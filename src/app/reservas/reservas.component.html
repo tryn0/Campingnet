@@ -125,7 +125,7 @@
                     <!-- Controlar el tema de borrar-->
                     <div class="row">
                         <div class="col-md-6 float-left row" *ngFor="let servicio of servicios">
-                            <mat-checkbox class="col-5 mt-3" [checked]="servicio['idServicio'] == 2 && alojamiento.get('numPersonas').value > 2" formControlName="servicio{{servicio['idServicio']}}" (change)='onChange(servicio)' [disabled]="servicio['idServicio'] != 3 && electricidad">{{servicio['nombre']}}</mat-checkbox>
+                            <mat-checkbox class="col-5 mt-3" [checked]="servicio['idServicio'] == 2 && alojamiento.get('numPersonas').value > 2" formControlName="servicio{{servicio['idServicio']}}" (change)='onChange(servicio)' [disabled]="(servicio['idServicio'] == 1 || servicio['idServicio'] == 2 || servicio['idServicio'] == 6 || servicio['idServicio'] == 7) && electricidad">{{servicio['nombre']}}</mat-checkbox>
                             <mat-form-field class="mt-0" *ngIf="servicio['idServicio'] != 1">
                                 <mat-label>Cantidad</mat-label>
                                     <div *ngIf="servicio['idServicio'] == 2 && alojamiento.get('numPersonas').value > 2; else otro">

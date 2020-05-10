@@ -5,6 +5,7 @@ import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { Alojamiento } from "./alojamiento";
 
 import { encriptar, desencriptar } from '../crypto-storage';
+import { StarRatingComponent } from 'ng-starrating';
 
 @Component({
   selector: 'app-alojamiento',
@@ -196,6 +197,13 @@ export class AlojamientoComponent implements OnInit {
     }
   }
 
+  onRate($event:{oldValue:number, newValue:number, starRating:StarRatingComponent}) {
+    alert(`Old Value:${$event.oldValue}, 
+      New Value: ${$event.newValue}, 
+      Checked Color: ${$event.starRating.checkedcolor}, 
+      Unchecked Color: ${$event.starRating.uncheckedcolor}`);
+  }
+
   volver(){ // Botón volver atrás
     window.history.back();
   }
@@ -206,11 +214,11 @@ export class AlojamientoComponent implements OnInit {
   }
 
   onChangePage($event, lista) {    
-    if ($event*10 > lista.length) { // Comprueba si la página actual * 10(reseñas de cada página) es mayor a la cantidad d ereseñas restantes si es mayor significa que hay más páginas que reseñas, redirige a la página anterior
-      this.p -= 1;
-    }else{ // Si hay más reseñas que páginas significa que hay más reseñas que páginas
+    //if ($event*10 > lista.length) { // Comprueba si la página actual * 10(reseñas de cada página) es mayor a la cantidad d ereseñas restantes si es mayor significa que hay más páginas que reseñas, redirige a la página anterior
+      //this.p -= 1;
+    //}else{ // Si hay más reseñas que páginas significa que hay más reseñas que páginas
       this.p = $event
-    }
+    //}
     /**
      * ? Por ejemplo si hay 34 reseñas, tiene que haber 4 páginas, lo hace solo el módulo ngx-pagination
      * ? pero si paso de 34 a 29 tiene que haber 3 páginas, 10 por cada, más el pico en la siguiente

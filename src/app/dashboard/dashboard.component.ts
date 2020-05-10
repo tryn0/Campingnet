@@ -96,6 +96,10 @@ export class DashboardComponent implements OnInit {
   public buscado: boolean = false;
   public listadoBuscado: any = [];
   public reservaSeleccionada: boolean = false;
+
+  // Variables reservas
+  public buscarResenia: FormGroup;
+  public reseniasList: any = [];
   
 
   constructor( private http: HttpClient, private route: Router, private router: ActivatedRoute, breakpointObserver: BreakpointObserver, public fb: FormBuilder) {
@@ -105,6 +109,13 @@ export class DashboardComponent implements OnInit {
       fechaEntrada: ['', ],
       idReserva: ['', ],
       dniUsuario: ['', [Validators.pattern('^[0-9]{8,8}[A-Za-z]$')]],
+    });
+
+    // Inicializar FormBuilder de buscar reservas
+    this.buscarResenia = this.fb.group({
+      idResenia: ['', ],
+      dniUsuario: ['', ],
+      idAlojamiento: ['', ],
     });
 
     
@@ -121,11 +132,11 @@ export class DashboardComponent implements OnInit {
   }
 
   onChangePage($event, lista) {    
-    if ($event*10 > lista.length) { // Comprueba si la página actual * 10(reseñas de cada página) es mayor a la cantidad de reseñas restantes si es mayor significa que hay más páginas que reseñas, redirige a la página anterior
-      this.p -= 1;
-    }else{ // Si hay más reseñas que páginas significa que hay más reseñas que páginas
+    //if ($event*10 > lista.length) { // Comprueba si la página actual * 10(reseñas de cada página) es mayor a la cantidad de reseñas restantes si es mayor significa que hay más páginas que reseñas, redirige a la página anterior
+      //this.p -= 1;
+    //}else{ // Si hay más reseñas que páginas significa que hay más reseñas que páginas
       this.p = $event
-    }
+    //}
     /**
      * ? Por ejemplo si hay 34 reseñas, tiene que haber 4 páginas, lo hace solo el módulo ngx-pagination
      * ? pero si paso de 34 a 29 tiene que haber 3 páginas, 10 por cada, más el pico en la siguiente
@@ -199,7 +210,7 @@ export class DashboardComponent implements OnInit {
     this.scrollToBottom();
   }
 
-  buscarReservas(){ //Busca las reservas por fecha, ID de la reserva o por el DNI del cliente
+  buscarReservas() { //Busca las reservas por fecha, ID de la reserva o por el DNI del cliente
     let fecha: any = '0';
     let idReserva: any = '0';
     let dni: any = '0';
@@ -308,12 +319,104 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  buscarResenias() { //Busca las reseñas por ID de la reseña, DNI del cliente o ID del alojamiento
+
+    let idResenia: any = '0';
+    let dni: any = '0';
+    let idAlojamiento: any = '0';
+
+    if (this.buscarResenia.get('idResenia').value != null && this.buscarResenia.get('idResenia').value != '' && this.buscarResenia.get('idResenia').value != 0) {
+      idResenia = this.buscarResenia.get('idResenia').value;
+    }
+
+    if (this.buscarResenia.get('dniUsuario').value != null && this.buscarResenia.get('dniUsuario').value != '' && this.buscarResenia.get('dniUsuario').value != 0) {
+      dni = (this.buscarResenia.get('dniUsuario').value).slice(0,8)+(this.buscarResenia.get('dniUsuario').value).charAt(8).toUpperCase();
+    }
+
+    if (this.buscarResenia.get('idAlojamiento').value != null && this.buscarResenia.get('idAlojamiento').value != '') {
+      idAlojamiento = this.buscarResenia.get('idAlojamiento').value;
+    }
+
+    let params = new HttpParams()
+    .set('opcion', '18')
+    .set('idResenia', idResenia)
+    .set('dniUsuario', dni)
+    .set('idAlojamiento', idAlojamiento);
+    this.http.post<any>("http://localhost/dashboard.php", params).subscribe(data => {
+      this.buscado = true;
+      if (data != null && data != 0) {
+        this.listadoBuscado = data;
+        for (let i = 0; i < this.listadoBuscado.length; i++) {
+          const element = this.listadoBuscado[i];
+          this.serviciosExtras = [];
+
+          let nombreUser = new HttpParams()
+          .set('opcion', '6')
+          .set('idUsuario', element['idUsuario']);
+          this.http.post < any > ("http://localhost/dashboard.php", nombreUser).subscribe(data => { // Obtener los datos del cliente
+            if (data != null && data != 0) {
+              this.listadoBuscado[i].alias_usuario = data[0]['alias_usuario'];
+              this.listadoBuscado[i].nif = data[0]['nif_usuario'];
+              this.listadoBuscado[i].nombre_usuario = data[0]['nombre_usuario'];
+              this.listadoBuscado[i].telefono = data[0]['telefono'];
+              this.listadoBuscado[i].email = data[0]['email'];
+            }
+          });
+
+          let userResenia = new HttpParams()
+          .set('opcion', '19')
+          .set('idResenia', element['idResenia']);
+          this.http.post < any > ("http://localhost/dashboard.php", userResenia).subscribe(data => { // Obtener los datos del cliente
+            if (data != null && data != 0) {
+              this.listadoBuscado[i].tipo_alojamiento = data[0]['tipo'].charAt(0).toUpperCase()+data[0]['tipo'].slice(1);
+              this.listadoBuscado[i].idAlojamiento = data[0]['idAlojamiento'];
+              this.listadoBuscado[i].numeroAlojamiento = data[0]['numeroAlojamiento'];
+              if(data[0]['tipo'] == 'bungalow'){
+                this.listadoBuscado[i].habitaciones = data[0]['habitaciones'];
+                this.listadoBuscado[i].maximo_personas = data[0]['maximo_personas'];
+              }else{
+                this.listadoBuscado[i].dimension = data[0]['dimension'];
+                switch (data[0]['sombra']) {
+                  case '0':
+                    this.listadoBuscado[i].sombra = "Nada";
+                    break;
+                  case '1':
+                    this.listadoBuscado[i].sombra = "Media";
+                    break;
+
+                  case '2':
+                    this.listadoBuscado[i].sombra = "Bastante";
+                    break;
+
+                  case '3':
+                    this.listadoBuscado[i].sombra = 'Mucha';
+                    break;
+
+                  default:
+                    this.listadoBuscado[i].sombra = "Desconocido";
+                    break;
+                }
+              }
+            }
+          });
+        }
+      }
+    });
+  }
+
   atrasBusqueda(){ // Función del botón atrás de reservas (parte de búsqueda)
     this.listadoBuscado = [];
     this.buscado = false;
-    this.buscarReserva.get('fechaEntrada').setValue('');
-    this.buscarReserva.get('idReserva').setValue('');
-    this.buscarReserva.get('dniUsuario').setValue('');
+    this.reservaSeleccionada = false;
+    if (this.router.snapshot.url.length > 1 && this.router.snapshot.url[0].path == 'dashboard' && this.router.snapshot.url[1].path == 'reservas') {
+      this.buscarReserva.get('fechaEntrada').setValue('');
+      this.buscarReserva.get('idReserva').setValue('');
+      this.buscarReserva.get('dniUsuario').setValue('');
+    }else if (this.router.snapshot.url.length > 1 && this.router.snapshot.url[0].path == 'dashboard' && this.router.snapshot.url[1].path == 'resenias') {
+      this.buscarResenia.get('idResenia').setValue('');
+      this.buscarResenia.get('dniUsuario').setValue('');
+      this.buscarResenia.get('idAlojamiento').setValue('');
+    }
   }
 
 
@@ -776,7 +879,7 @@ export class DashboardComponent implements OnInit {
         */
 
     }else if (this.router.snapshot.url.length > 1 && this.router.snapshot.url[0].path == 'dashboard' && this.router.snapshot.url[1].path == 'resenias') {
-      // Ver, buscar, eliminar reseñas
+      // Ver, buscar reseñas
 
       /**
        * ? Empieza aquí
@@ -794,15 +897,33 @@ export class DashboardComponent implements OnInit {
       this.dashboardAdmin = false;
 
       /**
-       * ! Aquí va el código de RESEÑAS, AQUÍ SE PODRÁ BUSCAR, VER, ELIMINAR RESEÑAS
+       * ! Aquí va el código de RESEÑAS, AQUÍ SE PODRÁ BUSCAR Y VER RESEÑAS
        */
 
       let reseniasBuscar = new HttpParams()
-      .set('opcion', '4');
+      .set('opcion', '17');
 
       this.http.post<any>("http://localhost/dashboard.php", reseniasBuscar).subscribe(data => {
         if(data != null && data != 0){
-          this.reservasList = data;
+          this.reseniasList = data;
+          for (let k = 0; k < this.reseniasList.length; k++) {
+            const element = this.reseniasList[k];
+            /**
+             * TODO: ¿Mostrar también el nombre de los usuarios anónimos?
+             * TODO: Sino se quiere mostrar...
+             * if (element.anonimo != 0) { params y POST a la BD }
+             */
+            let usuarioResenia = new HttpParams()
+            .set('opcion', '6')
+            .set('idUsuario', element.idUsuario);
+
+            this.http.post<any>("http://localhost/dashboard.php", usuarioResenia).subscribe(data => {
+              if(data != null && data != 0) {
+                this.reseniasList[k].nombre_usuario = data[0]['nombre_usuario'];
+                this.reseniasList[k].nif_usuario = data[0]['nif_usuario'];
+              }
+            });
+          }
         }
       });
 

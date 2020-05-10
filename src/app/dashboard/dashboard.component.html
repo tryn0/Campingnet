@@ -366,7 +366,7 @@
                             <mat-form-field class="mt-3 d-flex justify-content-center">
                                 <mat-label>ID de la reserva</mat-label>
                                     <div>
-                                        <input matInput min="0" max="12" formControlName="idReserva" type="number">
+                                        <input matInput min="0" formControlName="idReserva" type="number">
                                     </div>
                             </mat-form-field><br>
                             <mat-form-field class="mt-3 d-flex justify-content-center">
@@ -413,7 +413,7 @@
                 <ng-template #noBuscadoENcontrado>
                     <div class="container" *ngIf="reservaSeleccionada == false; else reservaElegida">
                         <h4 class="text-center mb-4">Listado de reservas encontradas</h4>
-                        <div *ngFor="let buscado of listadoBuscado | paginate: { id: 'pagination', itemsPerPage: 1, currentPage: p, totalItems: listadoBuscado.length }">
+                        <div *ngFor="let buscado of listadoBuscado | paginate: { id: 'pagination', itemsPerPage: 10, currentPage: p, totalItems: listadoBuscado.length }">
                             <mat-card class="mb-4 pb-5">
                                 <mat-card-header class="justify-content-end">
                                     <!-- FOTO del card <div mat-card-avatar></div> -->
@@ -464,11 +464,11 @@
                                             </div>
                                         </mat-card-subtitle>
                                     </div>
-                                    <button mat-raised-button color="primary" class="float-left" (click)="editar(buscado)">Editar</button>
-                                    <div style="flex: 1 1 auto;"></div>
-                                    <button mat-raised-button color="primary" class="float-right" (click)="eliminar(buscado)">Eliminar</button>
                                     
                                 </mat-card-content>
+                                <button mat-raised-button color="primary" class="float-left" (click)="editar(buscado)">Editar</button>
+                                    <div style="flex: 1 1 auto;"></div>
+                                    <button mat-raised-button color="primary" class="float-right" (click)="eliminar(buscado)">Eliminar</button>
                             </mat-card>
                         </div>
                         <!-- Paginación de las reseñas por revisar -->
@@ -478,6 +478,7 @@
 
                     <ng-template #reservaElegida>
                         hola
+                        <p class="puntero text-center" (click)="atrasBusqueda()">Volver</p>
                     </ng-template>
                 </ng-template>
             </ng-template>
@@ -485,22 +486,15 @@
 
         <!-- Si la URL es /dashboard/resenias -->
         <div *ngIf="dashboardResenias == true">
-            <div class="container" *ngIf="buscado == false; else reservaBuscada">
+            <div class="container" *ngIf="buscado == false; else reseniaBuscada">
                 <div class="column justify-content-center mt-4">
-                    <h4 class="text-center mb-4">Buscar reservas</h4>
+                    <h4 class="text-center mb-4">Buscar reseñas</h4>
                     <div class="d-flex justify-content-center">
-                        <form [formGroup]="buscarReserva" (keyup.enter)="buscarReservas()" novalidate class="col-12 col-lg-6 mb-1 mt-1 border border-dark border rounded">
+                        <form [formGroup]="buscarResenia" (keyup.enter)="buscarResenias()" novalidate class="col-12 col-lg-6 mb-1 mt-1 border border-dark border rounded">
                             <mat-form-field class="d-flex justify-content-center mt-3">
-                                <mat-label>Fecha de entrada</mat-label>
-                                <input matInput formControlName="fechaEntrada" [matDatepicker]="fechas1">
-                                <mat-hint align="start"><strong>Con hora de entrada 12:00</strong></mat-hint>
-                                <mat-datepicker-toggle matSuffix [for]="fechas1"></mat-datepicker-toggle>
-                                <mat-datepicker touchUi #fechas1></mat-datepicker>
-                            </mat-form-field><br>
-                            <mat-form-field class="mt-3 d-flex justify-content-center">
-                                <mat-label>ID de la reserva</mat-label>
+                                <mat-label>ID de la reseña</mat-label>
                                     <div>
-                                        <input matInput min="0" max="12" formControlName="idReserva" type="number">
+                                        <input matInput min="0" formControlName="idResenia" type="number">
                                     </div>
                             </mat-form-field><br>
                             <mat-form-field class="mt-3 d-flex justify-content-center">
@@ -508,84 +502,82 @@
                                     <div>
                                         <input matInput formControlName="dniUsuario" type="text">
                                     </div>
+                            </mat-form-field><br>
+                            <mat-form-field class="mt-3 d-flex justify-content-center">
+                                <mat-label>ID del alojamiento</mat-label>
+                                    <div>
+                                        <input matInput min="0" formControlName="idAlojamiento" type="number">
+                                    </div>
                             </mat-form-field>
-                            <p><mat-icon class="icon">info</mat-icon>Escriba los campos a buscar</p>
+                            <p><mat-icon class="icon">info</mat-icon>Escriba solo un campo de los 3.</p>
                         </form>
                     </div>
                     <div class="d-flex justify-content-center mt-2 pb-2">
-                        <button mat-raised-button color="primary" (click)="buscarReservas()">Buscar</button>
+                        <button mat-raised-button color="primary" (click)="buscarResenias()">Buscar</button>
                     </div>
                 </div>
                 <div class="mt-5">
-                    <h4 class="text-center">Últimas 10 reservas</h4>
+                    <h4 class="text-center">Últimas 10 reseñas</h4>
                     <table class="table mt-4 mb-5">
                         <thead class="thead-dark">
                             <tr>
                                 <th class="text-center" scope="col">#</th>
-                                <th class="text-center" scope="col">ID Reserva</th>
-                                <th class="text-center" scope="col">Fecha de entrada</th>
-                                <th class="text-center" scope="col">ID Usuario</th>
-                                <th class="text-center" scope="col">Nº Personas</th>
+                                <th class="text-center" scope="col">Nombre del usuario</th>
+                                <th class="text-center" scope="col">DNI del usuario</th>
+                                <th class="text-center" scope="col">ID de la reseña</th>
+                                <th class="text-center" scope="col">Puntuación</th>
+                                <th class="text-center" scope="col">Anónimo</th>
                             </tr>
-                            <tr *ngFor="let reservas of reservasList; index as i">
+                            <tr *ngFor="let resenias of reseniasList; index as i">
                                 <th scope="row" class="text-center">{{i+1}}</th>
-                                <td class="text-center">{{reservas.idReserva}}</td>
-                                <td class="text-center">{{reservas.fecha_entrada}}</td>
-                                <td class="text-center">{{reservas.idUsuario}}</td>
-                                <td class="text-center">{{reservas.num_personas}}</td>
+                                <td class="text-center">{{resenias.nombre_usuario}}</td>
+                                <td class="text-center">{{resenias.nif_usuario}}</td>
+                                <td class="text-center">{{resenias.idResenia}}</td>
+                                <td class="text-center">{{resenias.puntuacion}}</td>
+                                <td class="text-center">{{resenias.anonimo}}</td>
                             </tr>
                         </thead>
                     </table>
                     <p class="puntero importante text-center" [routerLink]="'/dashboard'">Volver</p>
                 </div>
             </div>
-            <ng-template #reservaBuscada>
-                <div *ngIf="listadoBuscado.length == 0 else noBuscadoENcontrado">
-                    <h4 class="text-center">Ninguna reserva encontrada</h4>
+            <ng-template #reseniaBuscada>
+                <div *ngIf="listadoBuscado.length == 0 else noBuscadoEncontrado">
+                    <h4 class="text-center">Ninguna reseña encontrada</h4>
                     <p class="puntero text-center" (click)="atrasBusqueda()">Volver</p>
                 </div>
-                <ng-template #noBuscadoENcontrado>
+                <ng-template #noBuscadoEncontrado>
                     <div class="container">
                         <h4 class="text-center mb-4">Listado de reservas encontradas</h4>
-                        <div *ngFor="let buscado of listadoBuscado | paginate: { id: 'pagination', itemsPerPage: 1, currentPage: p, totalItems: listadoBuscado.length }">
+                        <div *ngFor="let buscado of listadoBuscado | paginate: { id: 'pagination', itemsPerPage: 10, currentPage: p, totalItems: listadoBuscado.length }">
                             <mat-card class="mb-4">
                                 <mat-card-header class="justify-content-end">
-                                    <!-- FOTO del card <div mat-card-avatar></div> -->
+
                                     <div class="col-12 text-center text-md-left">
-                                        <mat-card-title>ID de la reserva: {{buscado.idReserva}} </mat-card-title>
+                                        <mat-card-title>ID de la reseña: {{buscado.idResenia}} </mat-card-title>
                                         <mat-card-subtitle class="float-md-left text-md-left">
-                                            <span class="importante">Nombre del usuario: {{buscado.nombre_usuario}}</span>
+                                            <span>Nombre del usuario: {{buscado.nombre_usuario}}</span>
                                             <br>
                                             <span>Alias del usuario: {{buscado.alias_usuario}}</span>
                                             <br>
-                                            <span class="importante">Correo electrónico: {{buscado.email}}</span>
+                                            <span>Correo electrónico: {{buscado.email}}</span>
                                             <br>
-                                            <span class="importante">Número de personas: {{buscado.num_personas}}</span>
-                                            <br>
-                                            <span class="importante">Fecha de buscado: {{buscado.fecha_entrada}}</span>
-                                            <br>
-                                            <span class="importante">Hora de entrada: {{buscado.hora_entrada}}</span>
-                                            <br>
-                                            <span class="importante">Tipo de alojamiento: {{buscado.tipo_alojamiento}}</span>
+                                            <span>Tipo de alojamiento: {{buscado.tipo_alojamiento}}</span>
                                             <br>
                                             <span *ngIf="buscado.tipo_alojamiento == 'Bungalow'">Habitaciones: {{buscado.habitaciones}}</span><span *ngIf="buscado.tipo_alojamiento == 'Parcela'">Dimensiones: {{buscado.dimension}}</span>
+                                            <br>
+                                            <span>Publicado:: {{buscado.publicado}}</span>
                                         </mat-card-subtitle>
                                         <mat-card-subtitle class="float-md-right text-md-right">
-                                            <span class="importante">DNI Cliente: {{buscado.nif}}</span>
+                                            <span>DNI Cliente: {{buscado.nif}}</span>
                                             <br>
-                                            <span class="importante">Teléfono de contacto: {{buscado.telefono}}</span>
+                                            <span>Teléfono de contacto: {{buscado.telefono}}</span>
                                             <br>
-                                            <span class="importante">ID del alojamiento: {{buscado.idAlojamiento}}</span>
+                                            <span>ID del alojamiento: {{buscado.idAlojamiento}}</span>
                                             <br>
-                                            <span>Fecha de salida: {{buscado.fecha_salida}}</span>
-                                            <br>
-                                            <span>Hora de salida: {{buscado.hora_salida}}</span>
-                                            <br>
-                                            <span class="importante">Número del alojamiento: {{buscado.numeroAlojamiento}}</span>
+                                            <span>Número del alojamiento: {{buscado.numeroAlojamiento}}</span>
                                             <br>
                                             <span *ngIf="buscado.tipo_alojamiento == 'Bungalow'">Máximo de personas: {{buscado.maximo_personas}}</span><span  class="float-left float-md-right" *ngIf="buscado.tipo_alojamiento == 'Parcela'">Sombra: {{buscado.sombra}}</span>
-                                            <br>
-                                            <span class="importante">Multiplicativo: {{buscado.multiplicativo}}</span>
                                         </mat-card-subtitle>
                                     </div>
                                 </mat-card-header>
@@ -601,12 +593,11 @@
                                 </mat-card-content>
                             </mat-card>
                         </div>
-                        <!-- Paginación de las reseñas por revisar -->
+
                         <pagination-controls class="text-center" [id]="'pagination'" (pageChange)="onChangePage($event, listadoBuscado)" autoHide="true" nextLabel="Siguiente" previousLabel="Anterior"></pagination-controls>
                         <p class="puntero text-center" (click)="atrasBusqueda()">Volver</p>
                     </div>
                 </ng-template>
-
             </ng-template>
         </div>
 
