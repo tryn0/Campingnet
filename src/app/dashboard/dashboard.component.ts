@@ -79,6 +79,8 @@ export class DashboardComponent implements OnInit {
   public dashboardUsuarios: boolean = false;
   public dashboardServicios: boolean = false; // todo: Pendiente de si dejarlo o meterlo en la parte /dashboard/admin
   public dashboardAdmin: boolean = false;
+  public dashboardAdminTemporadas: boolean = false;
+  public dashboardAdminServicios: boolean = false;
 
   // variables revisar-resenias
   public listadoResenias: any = [];
@@ -489,6 +491,34 @@ export class DashboardComponent implements OnInit {
     console.log(r)
   }
 
+  /*temporadas() {
+    this.dashboardInicio = false;
+    this.dashboardRevisarResenias = false;
+    this.dashboardSalidasHoy = false;
+    this.dashboardEntradasHoy = false;
+    this.dashboardReservas = false;
+    this.dashboardResenias = false;
+    this.dashboardUsuarios = false;
+    this.dashboardServicios = false;
+    this.dashboardAdmin = true;
+    this.dashboardAdminTemporadas = true;
+    this.dashboardAdminServicios = false;
+  }
+
+  serviciosExtrasAjustes() {
+    this.dashboardInicio = false;
+    this.dashboardRevisarResenias = false;
+    this.dashboardSalidasHoy = false;
+    this.dashboardEntradasHoy = false;
+    this.dashboardReservas = false;
+    this.dashboardResenias = false;
+    this.dashboardUsuarios = false;
+    this.dashboardServicios = false;
+    this.dashboardAdmin = true;
+    this.dashboardAdminTemporadas = false;
+    this.dashboardAdminServicios = true;
+  }*/
+
 
   ngOnInit(): void {
 
@@ -523,6 +553,8 @@ export class DashboardComponent implements OnInit {
       this.dashboardUsuarios = false;
       this.dashboardServicios = false;
       this.dashboardAdmin = false;
+      this.dashboardAdminTemporadas = false;
+      this.dashboardAdminServicios = false;
 
       this.atrasBusqueda();
 
@@ -587,6 +619,8 @@ export class DashboardComponent implements OnInit {
       this.dashboardUsuarios = false;
       this.dashboardServicios = false;
       this.dashboardAdmin = false;
+      this.dashboardAdminTemporadas = false;
+      this.dashboardAdminServicios = false;
 
       this.atrasBusqueda();
 
@@ -648,6 +682,8 @@ export class DashboardComponent implements OnInit {
       this.dashboardUsuarios = false;
       this.dashboardServicios = false;
       this.dashboardAdmin = false;
+      this.dashboardAdminTemporadas = false;
+      this.dashboardAdminServicios = false;
 
       this.atrasBusqueda();
 
@@ -793,6 +829,8 @@ export class DashboardComponent implements OnInit {
       this.dashboardUsuarios = false;
       this.dashboardServicios = false;
       this.dashboardAdmin = false;
+      this.dashboardAdminTemporadas = false;
+      this.dashboardAdminServicios = false;
 
       this.atrasBusqueda();
 
@@ -927,6 +965,8 @@ export class DashboardComponent implements OnInit {
       this.dashboardUsuarios = false;
       this.dashboardServicios = false;
       this.dashboardAdmin = false;
+      this.dashboardAdminTemporadas = false;
+      this.dashboardAdminServicios = false;
 
       this.atrasBusqueda();
 
@@ -964,6 +1004,8 @@ export class DashboardComponent implements OnInit {
       this.dashboardUsuarios = false;
       this.dashboardServicios = false;
       this.dashboardAdmin = false;
+      this.dashboardAdminTemporadas = false;
+      this.dashboardAdminServicios = false;
 
       this.atrasBusqueda();
 
@@ -1019,6 +1061,8 @@ export class DashboardComponent implements OnInit {
       this.dashboardUsuarios = true;
       this.dashboardServicios = false;
       this.dashboardAdmin = false;
+      this.dashboardAdminTemporadas = false;
+      this.dashboardAdminServicios = false;
 
       this.atrasBusqueda();
 
@@ -1056,6 +1100,8 @@ export class DashboardComponent implements OnInit {
       this.dashboardUsuarios = false;
       this.dashboardServicios = true;
       this.dashboardAdmin = false;
+      this.dashboardAdminTemporadas = false;
+      this.dashboardAdminServicios = false;
 
       this.atrasBusqueda();
 
@@ -1117,7 +1163,7 @@ export class DashboardComponent implements OnInit {
         * ? Acaba aquí
         */
 
-    }/*else if (this.router.snapshot.url.length > 1 && this.router.snapshot.url[0].path == 'dashboard' && this.router.snapshot.url[1].path == 'admin') {
+    }else if (this.router.snapshot.url.length > 1 && this.router.snapshot.url[0].path == 'dashboard' && this.router.snapshot.url[1].path == 'admin' && this.router.snapshot.url[2].path == 'temporadas') {
       // Aquí sólo se podrán VER los servicios, de ahí que piense solo en ponerlo en admin, o dejarlo igual pero si eres admin poder añadir o editar servicios NUNCA ELIMINAR, YA QUE PUEDE DAR ERRORES EN LA PARTE DE RESERVA
 
       /**
@@ -1125,7 +1171,7 @@ export class DashboardComponent implements OnInit {
        */
 
       // Puestas las variables a false menos la correspondiente para mostrar su página
-      /*this.dashboardInicio = false;
+      this.dashboardInicio = false;
       this.dashboardRevisarResenias = false;
       this.dashboardSalidasHoy = false;
       this.dashboardEntradasHoy = false;
@@ -1134,6 +1180,8 @@ export class DashboardComponent implements OnInit {
       this.dashboardUsuarios = false;
       this.dashboardServicios = false;
       this.dashboardAdmin = true;
+      this.dashboardAdminTemporadas = true;
+      this.dashboardAdminServicios = false;
 
       /**
        * ! PENDIENTE
@@ -1144,7 +1192,36 @@ export class DashboardComponent implements OnInit {
         * ? Acaba aquí
         */
 
-    //}
+    }else if (this.router.snapshot.url.length > 1 && this.router.snapshot.url[0].path == 'dashboard' && this.router.snapshot.url[1].path == 'admin' && this.router.snapshot.url[2].path == 'servicios-extras') {
+      // Aquí sólo se podrán VER los servicios, de ahí que piense solo en ponerlo en admin, o dejarlo igual pero si eres admin poder añadir o editar servicios NUNCA ELIMINAR, YA QUE PUEDE DAR ERRORES EN LA PARTE DE RESERVA
+
+      /**
+       * ? Empieza aquí
+       */
+
+      // Puestas las variables a false menos la correspondiente para mostrar su página
+      this.dashboardInicio = false;
+      this.dashboardRevisarResenias = false;
+      this.dashboardSalidasHoy = false;
+      this.dashboardEntradasHoy = false;
+      this.dashboardReservas = false;
+      this.dashboardResenias = false;
+      this.dashboardUsuarios = false;
+      this.dashboardServicios = false;
+      this.dashboardAdmin = true;
+      this.dashboardAdminTemporadas = false;
+      this.dashboardAdminServicios = true;
+
+      /**
+       * ! PENDIENTE
+       */
+
+
+       /**
+        * ? Acaba aquí
+        */
+
+    }
   }
 
 }

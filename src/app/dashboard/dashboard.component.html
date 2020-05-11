@@ -38,7 +38,12 @@
                 <hr>
                 <div *ngIf="usuarioActual?.rol == 'admin'">
                    <br>
-                    <p [routerLink]="'/dashboard/admin'" class="puntero">Ajustes</p> 
+                   <mat-menu #ajustes="matMenu">
+                       <button mat-menu-item [routerLink]="'/dashboard/admin/temporadas'">Temporadas</button>
+                       <button mat-menu-item [routerLink]="'/dashboard/admin/servicios-extras'">Servicios extras</button>
+                   </mat-menu>
+                   <button mat-icon-button [matMenuTriggerFor]="ajustes"><mat-icon>more_vert</mat-icon></button>
+                    <!--<p [routerLink]="'/dashboard/admin'" class="puntero text-success">Ajustes</p>-->
                 </div>
             </div>
         </div>
@@ -69,7 +74,12 @@
                     <hr>
                     <div *ngIf="usuarioActual?.rol == 'admin'">
                        <br>
-                        <p [routerLink]="'/dashboard/admin'" class="puntero text-success">Ajustes</p> 
+                       <mat-menu #ajustes="matMenu">
+                        <button mat-menu-item [routerLink]="'/dashboard/admin/temporadas'">Temporadas</button>
+                        <button mat-menu-item [routerLink]="'/dashboard/admin/servicios-extras'">Servicios extras</button>
+                        </mat-menu>
+                    <button mat-icon-button [matMenuTriggerFor]="ajustes"><mat-icon>settings</mat-icon></button>
+                     <!--<p [routerLink]="'/dashboard/admin'" class="puntero text-success">Ajustes</p>-->
                     </div>
                 </div>
             </div>
@@ -726,7 +736,7 @@
                                         <span *ngIf="servicio.sombra != null">Sombra: {{servicio.sombra}}</span>
                                         <span *ngIf="servicio.habitaciones != null">Nº de habitaciones: {{servicio.habitaciones}}</span>
                                         <br>
-                                        <span *ngIf="servicio.numeroAlojamiento!= null">Nº del laojamiento: {{servicio.numeroAlojamiento}}</span>
+                                        <span *ngIf="servicio.numeroAlojamiento!= null">Nº del alojamiento: {{servicio.numeroAlojamiento}}</span>
                                     </mat-card-subtitle>
                                 </div>
                             </mat-card-header>
@@ -740,7 +750,16 @@
 
         <!-- Si la URL es /dashboard/admin PENDIENTE PORQUE LA PARTE ADMIN EN VERDAD ES UN MENÚ DESPLEGABLE, EN MÓVIL HACERLO DESPLEGBALE PERO NO EN UN POPUP, SINO QUE SE DESPLIEGUE DE VERDAD -->
         <!-- MODIFICAR, AÑADIR TEMPORADAS Y AÑADIR O EDITAR SERVICIOS, NUNCA ELIMINAR, YA QUE PUEDEN DAR ERRORES -->
-        <!--<div *ngIf="dashboardAdmin == true"></div>-->
+        <div *ngIf="dashboardAdmin == true">
+            <div *ngIf="dashboardAdminTemporadas == true">
+                TEMPORADAS
+                <p class="puntero importante text-center" [routerLink]="'/dashboard'">Volver</p>
+            </div>
+            <div *ngIf="dashboardAdminServicios == true">
+                SERVICIOS EXTRAS
+                <p class="puntero importante text-center" [routerLink]="'/dashboard'">Volver</p>
+            </div>
+        </div>
 
       </mat-drawer-content>
     </mat-drawer-container>
