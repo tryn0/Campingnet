@@ -1,4 +1,4 @@
-import { Component, OnInit, ViewChild, ElementRef } from '@angular/core';
+import { Component, OnInit, ViewChild, ElementRef, Inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpParams } from '@angular/common/http';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
@@ -6,7 +6,8 @@ import { Usuario } from '../usuario/usuario';
 import { MatDrawer } from '@angular/material/sidenav';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
-import {MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS} from '@angular/material-moment-adapter';
+import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
+//import { MatBottomSheet, MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 
 import { encriptar, desencriptar } from '../crypto-storage';
 
@@ -100,9 +101,16 @@ export class DashboardComponent implements OnInit {
   // Variables reservas
   public buscarResenia: FormGroup;
   public reseniasList: any = [];
+
+  // Variables usuarios
+  public buscarUsuario: FormGroup;
+  public listadoUsuarios: any = [];
+
+  // Variables servicios extras
+  public listadoServicios: any = [];
   
 
-  constructor( private http: HttpClient, private route: Router, private router: ActivatedRoute, breakpointObserver: BreakpointObserver, public fb: FormBuilder) {
+  constructor( private http: HttpClient, private route: Router, private router: ActivatedRoute, breakpointObserver: BreakpointObserver, public fb: FormBuilder/*, private _popUp: MatBottomSheet*/) {
 
     // Inicializar FormBuilder de buscar reservas
     this.buscarReserva = this.fb.group({
@@ -114,8 +122,15 @@ export class DashboardComponent implements OnInit {
     // Inicializar FormBuilder de buscar reservas
     this.buscarResenia = this.fb.group({
       idResenia: ['', ],
-      dniUsuario: ['', ],
+      dniUsuario: ['', [Validators.pattern('^[0-9]{8,8}[A-Za-z]$')]],
       idAlojamiento: ['', ],
+    });
+
+    // Inicializar FormBuilder de buscar usuarios
+    this.buscarUsuario = this.fb.group({
+      alias_usuario: ['', ],
+      dniUsuario: ['', [Validators.pattern('^[0-9]{8,8}[A-Za-z]$')]],
+      email: ['', ],
     });
 
     
@@ -130,6 +145,11 @@ export class DashboardComponent implements OnInit {
       this.pantalla2 = sm;
     })
   }
+
+  /*
+  openBottomSheet(idUsuario): void {
+    this._popUp.open(confirmacion, {data: {idUsuario}});
+  }*/
 
   onChangePage($event, lista) {    
     //if ($event*10 > lista.length) { // Comprueba si la página actual * 10(reseñas de cada página) es mayor a la cantidad de reseñas restantes si es mayor significa que hay más páginas que reseñas, redirige a la página anterior
@@ -224,7 +244,7 @@ export class DashboardComponent implements OnInit {
     }
 
     if (this.buscarReserva.get('dniUsuario').value != null && this.buscarReserva.get('dniUsuario').value != '' && this.buscarReserva.get('dniUsuario').value != 0 && !this.buscarReserva.get('dniUsuario').hasError('pattern')) {
-      dni = this.buscarReserva.get('dniUsuario').value;
+      dni = (this.buscarResenia.get('dniUsuario').value).slice(0,8)+(this.buscarResenia.get('dniUsuario').value).charAt(8).toUpperCase();
     }
 
     let params = new HttpParams()
@@ -329,7 +349,7 @@ export class DashboardComponent implements OnInit {
       idResenia = this.buscarResenia.get('idResenia').value;
     }
 
-    if (this.buscarResenia.get('dniUsuario').value != null && this.buscarResenia.get('dniUsuario').value != '' && this.buscarResenia.get('dniUsuario').value != 0) {
+    if (this.buscarResenia.get('dniUsuario').value != null && this.buscarResenia.get('dniUsuario').value != '' && this.buscarResenia.get('dniUsuario').value != 0 && !this.buscarReserva.get('dniUsuario').hasError('pattern')) {
       dni = (this.buscarResenia.get('dniUsuario').value).slice(0,8)+(this.buscarResenia.get('dniUsuario').value).charAt(8).toUpperCase();
     }
 
@@ -404,6 +424,41 @@ export class DashboardComponent implements OnInit {
     });
   }
 
+  buscarUsuarios() { // Busca usuarios por el alias del usuario, el DNI o el email
+
+    let alias: any = '0';
+    let dni: any = '0';
+    let email: any = '0';
+
+    if (this.buscarUsuario.get('alias_usuario').value != null && this.buscarUsuario.get('alias_usuario').value != '' && this.buscarUsuario.get('alias_usuario').value != 0) {
+      alias = this.buscarUsuario.get('alias_usuario').value;
+    }
+    if (this.buscarUsuario.get('dniUsuario').value != null && this.buscarUsuario.get('dniUsuario').value != '' && this.buscarUsuario.get('dniUsuario').value != 0 && !this.buscarReserva.get('dniUsuario').hasError('pattern')) {
+      dni = (this.buscarUsuario.get('dniUsuario').value).slice(0,8)+(this.buscarUsuario.get('dniUsuario').value).charAt(8).toUpperCase();
+    }
+    if (this.buscarUsuario.get('email').value != null && this.buscarUsuario.get('email').value != '') {
+      email = this.buscarUsuario.get('email').value;
+    }
+
+    let params = new HttpParams()
+    .set('opcion', '21')
+    .set('alias', alias)
+    .set('dniUsuario', dni)
+    .set('email', email);
+    this.http.post<any>("http://localhost/dashboard.php", params).subscribe(data => {
+      this.buscado = true;
+      if (data != null && data != 0) {
+        this.listadoBuscado = data;
+      }
+    });
+  }
+
+
+
+  /*eliminarUsuario(idUsuario) {
+    this.openBottomSheet(idUsuario);
+  }*/
+
   atrasBusqueda(){ // Función del botón atrás de reservas (parte de búsqueda)
     this.listadoBuscado = [];
     this.buscado = false;
@@ -416,6 +471,10 @@ export class DashboardComponent implements OnInit {
       this.buscarResenia.get('idResenia').setValue('');
       this.buscarResenia.get('dniUsuario').setValue('');
       this.buscarResenia.get('idAlojamiento').setValue('');
+    }else if (this.router.snapshot.url.length > 1 && this.router.snapshot.url[0].path == 'dashboard' && this.router.snapshot.url[1].path == 'usuarios') {
+      this.buscarUsuario.get('alias_usuario').setValue('');
+      this.buscarUsuario.get('dniUsuario').setValue('');
+      this.buscarUsuario.get('email').setValue('');
     }
   }
 
@@ -915,7 +974,7 @@ export class DashboardComponent implements OnInit {
       let reseniasBuscar = new HttpParams()
       .set('opcion', '17');
 
-      this.http.post<any>("http://localhost/dashboard.php", reseniasBuscar).subscribe(data => {
+      this.http.post<any>("http://localhost/dashboard.php", reseniasBuscar).subscribe(data => { // Últimas 10 reseñas
         if(data != null && data != 0){
           this.reseniasList = data;
           for (let k = 0; k < this.reseniasList.length; k++) {
@@ -929,7 +988,7 @@ export class DashboardComponent implements OnInit {
             .set('opcion', '6')
             .set('idUsuario', element.idUsuario);
 
-            this.http.post<any>("http://localhost/dashboard.php", usuarioResenia).subscribe(data => {
+            this.http.post<any>("http://localhost/dashboard.php", usuarioResenia).subscribe(data => { // Datos de usuario de cada reseña
               if(data != null && data != 0) {
                 this.reseniasList[k].nombre_usuario = data[0]['nombre_usuario'];
                 this.reseniasList[k].nif_usuario = data[0]['nif_usuario'];
@@ -944,7 +1003,7 @@ export class DashboardComponent implements OnInit {
         */
 
     }else if (this.router.snapshot.url.length > 1 && this.router.snapshot.url[0].path == 'dashboard' && this.router.snapshot.url[1].path == 'usuarios') {
-      // Ver, buscar, editar o eliminar usuarios
+      // Ver, buscar, eliminar usuarios
 
       /**
        * ? Empieza aquí
@@ -964,16 +1023,24 @@ export class DashboardComponent implements OnInit {
       this.atrasBusqueda();
 
       /**
-       * ! Aquí va el código de USUARIOS, AQUÍ SE PODRÁ BUSCAR, VER, EDITAR O ELIMINAR USUARIOS, pero NO la contraseña, como en el Panel de Control
+       * ! Aquí va el código de USUARIOS, AQUÍ SE PODRÁ BUSCAR, VER, ELIMINAR USUARIOS, pero NO la contraseña, como en el Panel de Control
        */
 
+      let todosUsuarios = new HttpParams()
+      .set('opcion', '20');
+
+      this.http.post<any>("http://localhost/dashboard.php", todosUsuarios).subscribe(data => { // Obtención de todos los usuarios con rol cliente, mostrados en la parte inferior de la página
+        if(data != null && data != 0) {
+          this.listadoUsuarios = data;
+        }
+      });
 
        /**
         * ? Acaba aquí
         */
 
     }else if (this.router.snapshot.url.length > 1 && this.router.snapshot.url[0].path == 'dashboard' && this.router.snapshot.url[1].path == 'servicios') {
-      // Aquí sólo se podrán VER los servicios, de ahí que piense solo en ponerlo en admin, o dejarlo igual pero si eres admin poder añadir o editar servicios NUNCA ELIMINAR, YA QUE PUEDE DAR ERRORES EN LA PARTE DE RESERVA
+      // Aquí sólo se podrán VER los servicios
 
       /**
        * ? Empieza aquí
@@ -996,6 +1063,55 @@ export class DashboardComponent implements OnInit {
        * ! Aquí va el código de SERVICIOS, AQUÍ SE PODRÁ BUSCAR, VER, Y AÑADIR SERVICIOS, pero NO eliminarlos
        */
 
+      let todosServicios = new HttpParams()
+      .set('opcion', '22');
+
+      this.http.post<any>("http://localhost/dashboard.php", todosServicios).subscribe(data => {
+        if(data != null && data != 0) {
+          this.listadoServicios = data;
+          for (let i = 0; i < this.listadoServicios.length; i++) {
+            const element = this.listadoServicios[i];
+            if(element['idAlojamiento'] != null){
+
+              let datosAlojamiento = new HttpParams()
+              .set('opcion', '12')
+              .set('idAlojamiento', element['idAlojamiento']);
+
+              this.http.post<any>("http://localhost/dashboard.php", datosAlojamiento).subscribe(data => {
+                if(data != null && data != 0) {
+                  if (data[0]['tipo'] == 'parcela') {
+                    switch (data[0]['sombra']) {
+                      case '0':
+                        this.listadoServicios[i].sombra = "Nada";
+                        break;
+                      case '1':
+                        this.listadoServicios[i].sombra = "Media";
+                        break;
+
+                      case '2':
+                        this.listadoServicios[i].sombra = "Bastante";
+                        break;
+
+                      case '3':
+                        this.listadoServicios[i].sombra = 'Mucha';
+                        break;
+
+                      default:
+                        this.listadoServicios[i].sombra = "Desconocido";
+                        break;
+                    }
+                    this.listadoServicios[i].dimension = data[0]['dimension'];
+                  }else{
+                    this.listadoServicios[i].habitaciones = data[0]['habitaciones'];
+                    this.listadoServicios[i].maximo_personas = data[0]['maximo_personas'];
+                  }
+                  this.listadoServicios[i].numeroAlojamiento = data[0]['numeroAlojamiento']
+                }
+              });
+            }
+          }
+        }
+      });
 
        /**
         * ? Acaba aquí
@@ -1032,3 +1148,16 @@ export class DashboardComponent implements OnInit {
   }
 
 }
+/*
+@Component({
+  selector: 'confirmacion',
+  templateUrl: 'confirmacion.html',
+})
+export class confirmacion {
+  constructor(private _popUp: MatBottomSheetRef<confirmacion>, @Inject(MAT_BOTTOM_SHEET_DATA) public data: any) {}
+
+  openLink(event: MouseEvent): void {
+    this._popUp.dismiss();
+    event.preventDefault();
+  }
+}*/

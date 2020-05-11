@@ -32,7 +32,7 @@
                 <hr>
                 <p [routerLink]="'/dashboard/usuarios'" class="puntero">Ver usuarios</p>
                 <hr>
-                <p [routerLink]="'/dashboard/servicios'" class="puntero">Ver servicios extras</p>
+                <p [routerLink]="'/dashboard/servicios'" class="puntero">Ver servicios</p>
                 <hr>
                 <p [routerLink]="'/inicio'" class="puntero">Volver a la web</p>
                 <hr>
@@ -63,7 +63,7 @@
                     <hr>
                     <p [routerLink]="'/dashboard/usuarios'" class="puntero">Ver usuarios</p>
                     <hr>
-                    <p [routerLink]="'/dashboard/servicios'" class="puntero">Ver servicios extras</p>
+                    <p [routerLink]="'/dashboard/servicios'" class="puntero">Ver servicios</p>
                     <hr>
                     <p [routerLink]="'/inicio'" class="puntero">Volver a la web</p>
                     <hr>
@@ -509,7 +509,7 @@
                                         <input matInput min="0" formControlName="idAlojamiento" type="number">
                                     </div>
                             </mat-form-field>
-                            <p><mat-icon class="icon">info</mat-icon>Escriba solo un campo de los 3.</p>
+                            <p><mat-icon class="icon">info</mat-icon>Escriba solo un campo de los 3 para buscar reseñas</p>
                         </form>
                     </div>
                     <div class="d-flex justify-content-center mt-2 pb-2">
@@ -602,12 +602,144 @@
         </div>
 
         <!-- Si la URL es /dashboard/usuarios -->
-        <div *ngIf="dashboardUsuarios == true">HOLA USUARIOS</div>
+        <div *ngIf="dashboardUsuarios == true">
+            <div class="container" *ngIf="buscado == false; else usuarioBuscado">
+                <div class="column justify-content-center mt-4">
+                    <h4 class="text-center mb-4">Buscar usuarios</h4>
+                    <div class="d-flex justify-content-center">
+                        <form [formGroup]="buscarUsuario" (keyup.enter)="buscarUsuarios()" novalidate class="col-12 col-lg-6 mb-1 mt-1 border border-dark border rounded">
+                            <mat-form-field class="d-flex justify-content-center mt-3">
+                                <mat-label>Alias del usuario</mat-label>
+                                    <div>
+                                        <input matInput min="0" formControlName="alias_usuario" type="text">
+                                    </div>
+                            </mat-form-field><br>
+                            <mat-form-field class="mt-3 d-flex justify-content-center">
+                                <mat-label>DNI del usuario</mat-label>
+                                    <div>
+                                        <input matInput formControlName="dniUsuario" type="text">
+                                    </div>
+                            </mat-form-field><br>
+                            <mat-form-field class="mt-3 d-flex justify-content-center">
+                                <mat-label>Email</mat-label>
+                                    <div>
+                                        <input matInput min="0" formControlName="email" type="text">
+                                    </div>
+                            </mat-form-field>
+                            <p><mat-icon class="icon">info</mat-icon>Escriba los campos con los que desee buscar al usuario</p>
+                        </form>
+                    </div>
+                    <div class="d-flex justify-content-center mt-2 pb-2">
+                        <button mat-raised-button color="primary" (click)="buscarUsuarios()">Buscar</button>
+                    </div>
+                </div>
+                <div class="mt-5">
+                    <h4 class="text-center mb-4">Usuarios registrados</h4>
+                    <div *ngFor="let usuario of listadoUsuarios | paginate: { id: 'pagination', itemsPerPage: 10, currentPage: p, totalItems: listadoUsuarios.length }">
+                        <mat-card class="mb-4">
+                            <mat-card-header class="justify-content-end">
+                                <div class="col-12 text-center text-md-left">
+                                    <mat-card-title>ID del usuario: {{usuario.idUsuario}} </mat-card-title>
+                                    <mat-card-subtitle class="float-md-left text-md-left">
+                                        <span>Nombre del cliente: {{usuario.nombre_usuario}}</span>
+                                        <br>
+                                        <span>Alias del usuario: {{usuario.alias_usuario}}</span>
+                                        <br>
+                                        <span>Correo electrónico: {{usuario.email}}</span>
+                                    </mat-card-subtitle>
+                                    <mat-card-subtitle class="float-md-right text-md-right">
+                                        <span>DNI Cliente: {{usuario.nif_usuario}}</span>
+                                        <br>
+                                        <span>Teléfono de contacto: {{usuario.telefono}}</span>
+                                        <br>
+                                        <span>Rol del cliente: {{usuario.rol}}</span>
+                                    </mat-card-subtitle>
+                                </div>
+                            </mat-card-header>
+                        </mat-card>
+                    </div>
+                    <pagination-controls class="text-center" [id]="'pagination'" (pageChange)="onChangePage($event, listadoUsuarios)" autoHide="true" nextLabel="Siguiente" previousLabel="Anterior"></pagination-controls>
+                    <p class="puntero importante text-center" [routerLink]="'/dashboard'">Volver</p>
+                </div>
+            </div>
+
+            <ng-template #usuarioBuscado>
+                <div *ngIf="listadoBuscado.length == 0 else noBuscadoEncontrado">
+                    <h4 class="text-center">Ningún usuario encontrado</h4>
+                    <p class="puntero text-center" (click)="atrasBusqueda()">Volver</p>
+                </div>
+                <ng-template #noBuscadoEncontrado>
+                    <div class="container">
+                        <h4 class="text-center mb-4">Usuario encontrado</h4>
+                        <div *ngFor="let buscado of listadoBuscado">
+                            <mat-card class="mb-4">
+                                <mat-card-header class="justify-content-end">
+
+                                    <div class="col-12 text-center text-md-left">
+                                        <mat-card-title>ID del usuario: {{buscado.idUsuario}} </mat-card-title>
+                                        <mat-card-subtitle class="float-md-left text-md-left">
+                                            <span>Nombre del cliente: {{buscado.nombre_usuario}}</span>
+                                            <br>
+                                            <span>Alias del usuario: {{buscado.alias_usuario}}</span>
+                                            <br>
+                                            <span>Correo electrónico: {{buscado.email}}</span>
+                                        </mat-card-subtitle>
+                                        <mat-card-subtitle class="float-md-right text-md-right">
+                                            <span>DNI Cliente: {{buscado.nif_usuario}}</span>
+                                            <br>
+                                            <span>Teléfono de contacto: {{buscado.telefono}}</span>
+                                            <br>
+                                            <span>Rol del cliente: {{buscado.rol}}</span>
+                                        </mat-card-subtitle>
+                                    </div>
+                                </mat-card-header>
+                            </mat-card>
+                        </div>
+                        <p class="puntero text-center" (click)="atrasBusqueda()">Volver</p>
+                    </div>
+                </ng-template>
+            </ng-template>
+
+        </div>
 
         <!-- Si la URL es /dashboard/servicios -->
-        <div *ngIf="dashboardServicios == true">HOLA SERVICIOS</div>
+        <div *ngIf="dashboardServicios == true">
+            <div class="container">
+                <div class="mt-5">
+                    <h4 class="text-center mb-4">Listado de los servicios</h4>
+                    <div *ngFor="let servicio of listadoServicios | paginate: { id: 'pagination', itemsPerPage: 10, currentPage: p, totalItems: listadoUsuarios.length }">
+                        <mat-card class="mb-4">
+                            <mat-card-header class="justify-content-end">
+                                <div class="col-12 text-center text-md-left">
+                                    <mat-card-title>ID del servicio: {{servicio.idServicio}} </mat-card-title>
+                                    <mat-card-subtitle class="float-md-left text-md-left">
+                                        <span>Nombre del servicio: {{servicio.nombre}}</span>
+                                        <br>
+                                        <span *ngIf="servicio.idAlojamiento != null">ID del alojamiento: {{servicio.idAlojamiento}}</span>
+                                        <br>
+                                        <span *ngIf="servicio.dimension != null">Dimensiones: {{servicio.dimension}}</span>
+                                        <span *ngIf="servicio.maximo_personas != null">Nº máximo de personas: {{servicio.maximo_personas}}</span>
+                                    </mat-card-subtitle>
+                                    <mat-card-subtitle class="float-md-right text-md-right">
+                                        <span>Precio del servicio: {{servicio.precio}}</span>
+                                        <br>
+                                        <span *ngIf="servicio.sombra != null">Sombra: {{servicio.sombra}}</span>
+                                        <span *ngIf="servicio.habitaciones != null">Nº de habitaciones: {{servicio.habitaciones}}</span>
+                                        <br>
+                                        <span *ngIf="servicio.numeroAlojamiento!= null">Nº del laojamiento: {{servicio.numeroAlojamiento}}</span>
+                                    </mat-card-subtitle>
+                                </div>
+                            </mat-card-header>
+                        </mat-card>
+                    </div>
+                    <pagination-controls class="text-center" [id]="'pagination'" (pageChange)="onChangePage($event, listadoServicios)" autoHide="true" nextLabel="Siguiente" previousLabel="Anterior"></pagination-controls>
+                    <p class="puntero importante text-center" [routerLink]="'/dashboard'">Volver</p>
+                </div>
+            </div>
+        </div>
 
         <!-- Si la URL es /dashboard/admin PENDIENTE PORQUE LA PARTE ADMIN EN VERDAD ES UN MENÚ DESPLEGABLE, EN MÓVIL HACERLO DESPLEGBALE PERO NO EN UN POPUP, SINO QUE SE DESPLIEGUE DE VERDAD -->
+        <!-- MODIFICAR, AÑADIR TEMPORADAS Y AÑADIR O EDITAR SERVICIOS, NUNCA ELIMINAR, YA QUE PUEDEN DAR ERRORES -->
         <!--<div *ngIf="dashboardAdmin == true"></div>-->
 
       </mat-drawer-content>

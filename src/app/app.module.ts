@@ -34,6 +34,7 @@ import { MaterialModule } from './material.module';
 import { LayoutModule } from '@angular/cdk/layout';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { ScrollingModule } from '@angular/cdk/scrolling';
+import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 
 //Componentes añadidos
 import { HomeComponent } from './home/home.component';
@@ -98,7 +99,8 @@ import { ReservasRegistrarComponent } from './reservas-registrar/reservas-regist
     MaterialModule,
     LayoutModule,
     ScrollingModule,
-    RatingModule
+    RatingModule,
+    MatBottomSheetModule
   ],
   providers: [
     MatDatepickerModule
