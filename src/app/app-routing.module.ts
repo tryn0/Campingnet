@@ -39,7 +39,7 @@ const routes: Routes = [
   { path: 'dashboard/salidas-hoy', component: DashboardComponent },
   { path: 'dashboard/admin', component: DashboardComponent },
   { path: 'dashboard/admin/temporadas', component: DashboardComponent },
-  { path: 'dashboard/admin/servicios-extras', component: DashboardComponent },
+  { path: 'dashboard/admin/servicios', component: DashboardComponent },
 
   { path: '404', component: NoencontradoComponent}, // Si hay algún error en alguna página seteada
   { path: '**', component: NoencontradoComponent }, // Si no existe la página

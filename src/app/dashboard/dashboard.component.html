@@ -40,10 +40,9 @@
                    <br>
                    <mat-menu #ajustes="matMenu">
                        <button mat-menu-item [routerLink]="'/dashboard/admin/temporadas'">Temporadas</button>
-                       <button mat-menu-item [routerLink]="'/dashboard/admin/servicios-extras'">Servicios extras</button>
+                       <button mat-menu-item [routerLink]="'/dashboard/admin/servicios'">Servicios extras</button>
                    </mat-menu>
-                   <button mat-icon-button [matMenuTriggerFor]="ajustes"><mat-icon>more_vert</mat-icon></button>
-                    <!--<p [routerLink]="'/dashboard/admin'" class="puntero text-success">Ajustes</p>-->
+                   <button mat-icon-button [matMenuTriggerFor]="ajustes" class="text-success">Ajustes<mat-icon>settings</mat-icon></button>
                 </div>
             </div>
         </div>
@@ -76,10 +75,9 @@
                        <br>
                        <mat-menu #ajustes="matMenu">
                         <button mat-menu-item [routerLink]="'/dashboard/admin/temporadas'">Temporadas</button>
-                        <button mat-menu-item [routerLink]="'/dashboard/admin/servicios-extras'">Servicios extras</button>
+                        <button mat-menu-item [routerLink]="'/dashboard/admin/servicios'">Servicios extras</button>
                         </mat-menu>
-                    <button mat-icon-button [matMenuTriggerFor]="ajustes"><mat-icon>settings</mat-icon></button>
-                     <!--<p [routerLink]="'/dashboard/admin'" class="puntero text-success">Ajustes</p>-->
+                    <button mat-icon-button [matMenuTriggerFor]="ajustes" class="text-success">Ajustes<mat-icon>settings</mat-icon></button>
                     </div>
                 </div>
             </div>
@@ -188,17 +186,17 @@
                                         </div>
                                     </ng-template>
                                     <div class="column col-2" *ngIf="!pantalla">
-                                        <button mat-raised-button (click)="aprobado(resenia.idResenia)" color="primary" class="col-12 float-right px-2">Aprobar</button>
+                                        <button mat-raised-button (click)="aprobado(resenia.idResenia)" color="accent" class="col-12 float-right px-2">Aprobar</button>
                                         <br>
                                         <br>
-                                        <button mat-raised-button (click)="denegado(resenia.idResenia)" color="primary" class="col-12 float-right px-2">Denegar</button>
+                                        <button mat-raised-button (click)="denegado(resenia.idResenia)" color="accent" class="col-12 float-right px-2">Denegar</button>
                                     </div>
                                 </mat-card-header>
                                     <div *ngIf="pantalla" class="column col-12">
-                                        <button mat-raised-button (click)="aprobado(resenia.idResenia)" color="primary" class="col-12 float-right px-2">Aprobar</button>
+                                        <button mat-raised-button (click)="aprobado(resenia.idResenia)" color="accent" class="col-12 float-right px-2">Aprobar</button>
                                         <br>
                                         <br>
-                                        <button mat-raised-button (click)="denegado(resenia.idResenia)" color="primary" class="col-12 float-right px-2">Denegar</button>
+                                        <button mat-raised-button (click)="denegado(resenia.idResenia)" color="accent" class="col-12 float-right px-2">Denegar</button>
                                         <br><br>
                                     </div>
                                 <mat-card-content>
@@ -282,7 +280,7 @@
                             </mat-card>
                         </div>
                         <!-- Paginación de las reseñas por revisar -->
-                        <pagination-controls [id]="'pagination'" (pageChange)="onChangePage($event, listadoSalidasHoy)" autoHide="true" nextLabel="Siguiente" previousLabel="Anterior"></pagination-controls>
+                        <pagination-controls [id]="'pagination'" (pageChange)="onChangePage($event)" autoHide="true" nextLabel="Siguiente" previousLabel="Anterior"></pagination-controls>
                     </ng-template>
                 </div>
             </div>
@@ -353,7 +351,7 @@
                             </mat-card>
                         </div>
                         <!-- Paginación de las reseñas por revisar -->
-                        <pagination-controls [id]="'pagination'" (pageChange)="onChangePage($event, listadoEntradasHoy)" autoHide="true" nextLabel="Siguiente" previousLabel="Anterior"></pagination-controls>
+                        <pagination-controls [id]="'pagination'" (pageChange)="onChangePage($event)" autoHide="true" nextLabel="Siguiente" previousLabel="Anterior"></pagination-controls>
                     </ng-template>
                 </div>
             </div>
@@ -389,7 +387,7 @@
                         </form>
                     </div>
                     <div class="d-flex justify-content-center mt-2 pb-2">
-                        <button mat-raised-button color="primary" (click)="buscarReservas()">Buscar</button>
+                        <button mat-raised-button color="accent" (click)="buscarReservas()">Buscar</button>
                     </div>
                 </div>
                 <div class="mt-5">
@@ -476,13 +474,13 @@
                                     </div>
                                     
                                 </mat-card-content>
-                                <button mat-raised-button color="primary" class="float-left" (click)="editar(buscado)">Editar</button>
+                                <button mat-raised-button color="accent" class="float-left" (click)="editar(buscado)">Editar</button>
                                     <div style="flex: 1 1 auto;"></div>
-                                    <button mat-raised-button color="primary" class="float-right" (click)="eliminar(buscado)">Eliminar</button>
+                                    <button mat-raised-button color="accent" class="float-right" (click)="eliminar(buscado)">Eliminar</button>
                             </mat-card>
                         </div>
                         <!-- Paginación de las reseñas por revisar -->
-                        <pagination-controls class="text-center" [id]="'pagination'" (pageChange)="onChangePage($event, listadoBuscado)" autoHide="true" nextLabel="Siguiente" previousLabel="Anterior"></pagination-controls>
+                        <pagination-controls class="text-center" [id]="'pagination'" (pageChange)="onChangePage($event)" autoHide="true" nextLabel="Siguiente" previousLabel="Anterior"></pagination-controls>
                         <p class="puntero text-center" (click)="atrasBusqueda()">Volver</p>
                     </div>
 
@@ -523,7 +521,7 @@
                         </form>
                     </div>
                     <div class="d-flex justify-content-center mt-2 pb-2">
-                        <button mat-raised-button color="primary" (click)="buscarResenias()">Buscar</button>
+                        <button mat-raised-button color="accent" (click)="buscarResenias()">Buscar</button>
                     </div>
                 </div>
                 <div class="mt-5">
@@ -604,7 +602,7 @@
                             </mat-card>
                         </div>
 
-                        <pagination-controls class="text-center" [id]="'pagination'" (pageChange)="onChangePage($event, listadoBuscado)" autoHide="true" nextLabel="Siguiente" previousLabel="Anterior"></pagination-controls>
+                        <pagination-controls class="text-center" [id]="'pagination'" (pageChange)="onChangePage($event)" autoHide="true" nextLabel="Siguiente" previousLabel="Anterior"></pagination-controls>
                         <p class="puntero text-center" (click)="atrasBusqueda()">Volver</p>
                     </div>
                 </ng-template>
@@ -640,7 +638,7 @@
                         </form>
                     </div>
                     <div class="d-flex justify-content-center mt-2 pb-2">
-                        <button mat-raised-button color="primary" (click)="buscarUsuarios()">Buscar</button>
+                        <button mat-raised-button color="accent" (click)="buscarUsuarios()">Buscar</button>
                     </div>
                 </div>
                 <div class="mt-5">
@@ -668,7 +666,7 @@
                             </mat-card-header>
                         </mat-card>
                     </div>
-                    <pagination-controls class="text-center" [id]="'pagination'" (pageChange)="onChangePage($event, listadoUsuarios)" autoHide="true" nextLabel="Siguiente" previousLabel="Anterior"></pagination-controls>
+                    <pagination-controls class="text-center" [id]="'pagination'" (pageChange)="onChangePage($event)" autoHide="true" nextLabel="Siguiente" previousLabel="Anterior"></pagination-controls>
                     <p class="puntero importante text-center" [routerLink]="'/dashboard'">Volver</p>
                 </div>
             </div>
@@ -742,25 +740,233 @@
                             </mat-card-header>
                         </mat-card>
                     </div>
-                    <pagination-controls class="text-center" [id]="'pagination'" (pageChange)="onChangePage($event, listadoServicios)" autoHide="true" nextLabel="Siguiente" previousLabel="Anterior"></pagination-controls>
+                    <pagination-controls class="text-center" [id]="'pagination'" (pageChange)="onChangePage($event)" autoHide="true" nextLabel="Siguiente" previousLabel="Anterior"></pagination-controls>
                     <p class="puntero importante text-center" [routerLink]="'/dashboard'">Volver</p>
                 </div>
             </div>
         </div>
 
-        <!-- Si la URL es /dashboard/admin PENDIENTE PORQUE LA PARTE ADMIN EN VERDAD ES UN MENÚ DESPLEGABLE, EN MÓVIL HACERLO DESPLEGBALE PERO NO EN UN POPUP, SINO QUE SE DESPLIEGUE DE VERDAD -->
+        <!-- Si la URL es /dashboard/admin -->
         <!-- MODIFICAR, AÑADIR TEMPORADAS Y AÑADIR O EDITAR SERVICIOS, NUNCA ELIMINAR, YA QUE PUEDEN DAR ERRORES -->
         <div *ngIf="dashboardAdmin == true">
             <div *ngIf="dashboardAdminTemporadas == true">
-                TEMPORADAS
+                <div *ngIf="dashboardAdminTemporadasEditar == false; else temporadaEditar" class="container">
+                    <div *ngIf="agregarTemporada == false; else addTemp">
+                        <div class="mt-5">
+                            <h4 class="text-center mb-3">Temporadas del camping</h4>
+                            <div class="d-flex justify-content-center">
+                                <button mat-raised-button color="accent" (click)="agregarTemp()">Añadir temporada</button>
+                            </div>
+                            <p class="text-center mb-5"><mat-icon class="icon">info</mat-icon>Tenga en cuenta las fechas de las temporadas antes de añadir una</p>
+                            <div *ngFor="let temporada of listadoTemporadas | paginate: { id: 'pagination', itemsPerPage: 10, currentPage: p, totalItems: listadoUsuarios.length }">
+                                <mat-card class="mb-4">
+                                    <mat-card-header class="justify-content-end">
+                                        <div class="col-12 text-center text-md-left">
+                                            <mat-card-title>Nombre de la temporada: {{temporada.nombre_temporada}} </mat-card-title>
+                                            <mat-card-subtitle class="float-md-left text-md-left">
+                                                <span>Fecha de inicio: {{temporada.fecha_entrada}}</span>
+                                                <br>
+                                                <span>Multiplicador: {{temporada.multiplicador}}</span>
+                                            </mat-card-subtitle>
+                                            <mat-card-subtitle class="float-md-right text-md-right">
+                                                <span>Fecha de finalización: {{temporada.fecha_salida}}</span>
+                                            </mat-card-subtitle>
+                                        </div>
+                                    </mat-card-header>
+                                    <mat-card-actions>
+                                        <button mat-button (click)="editarTemporada(temporada.nombre_temporada, temporada.fecha_entrada)">Editar</button>
+                                        <button mat-button class="float-right" (click)="eliminarTemporada(temporada.nombre_temporada)">Eliminar</button>
+                                    </mat-card-actions>
+                                </mat-card>
+                            </div>
+                            <pagination-controls class="text-center" [id]="'pagination'" (pageChange)="onChangePage($event)" autoHide="true" nextLabel="Siguiente" previousLabel="Anterior"></pagination-controls>
+                        </div>
+                    </div>
+                </div>
+                <ng-template #addTemp>
+                    <h4 class="text-center">Añadir temporada</h4>
+                    <form [formGroup]="agregarTemporadas" novalidate class="mt-5" (keyup.enter)="addTemporada()">
+                        <mat-form-field class="d-flex justify-content-center mt-3">
+                            <mat-label>Nombre de la temporada</mat-label>
+                            <input matInput formControlName="nombre" type="text">
+                        </mat-form-field>
+                        <div class="d-flex justify-content-center">
+                            <span *ngIf="agregarTemporadas.get('nombre').hasError('noNombre')" class="text-center text-danger">Escriba el nombre de la temporada</span>
+                        </div>
+                        
+
+                        <mat-form-field class="d-flex justify-content-center mt-3">
+                            <mat-label>Fecha de inicio</mat-label>
+                            <input matInput formControlName="fechaInicio" [matDatepicker]="fechas1">
+                            <mat-datepicker-toggle matSuffix [for]="fechas1"></mat-datepicker-toggle>
+                            <mat-datepicker touchUi #fechas1></mat-datepicker>
+                        </mat-form-field><br>
+                        <div class="d-flex justify-content-center">
+                            <span *ngIf="agregarTemporadas.get('fechaInicio').hasError('noFechaInicio')" class="text-center text-danger">Escriba una fecha para el comienzo de la temporada</span>
+                        </div>
+                        
+
+                        <mat-form-field class="d-flex justify-content-center mt-3">
+                            <mat-label>Fecha de fin</mat-label>
+                            <input matInput formControlName="fechaFin" [matDatepicker]="fechas2">
+                            <mat-datepicker-toggle matSuffix [for]="fechas2"></mat-datepicker-toggle>
+                            <mat-datepicker touchUi #fechas2></mat-datepicker>
+                        </mat-form-field><br>
+                        <div class="d-flex justify-content-center">
+                            <span *ngIf="agregarTemporadas.get('fechaFin').hasError('noFechaFin')" class="text-center text-danger">Escriba una fecha para el fin de la temporada</span>
+                        </div>
+
+                        <mat-form-field class="d-flex justify-content-center mt-3">
+                            <mat-label>Multiplicador</mat-label>
+                            <input matInput formControlName="multiplicador" type="number">
+                        </mat-form-field>
+                        <div class="d-flex justify-content-center">
+                            <span *ngIf="agregarTemporadas.get('multiplicador').hasError('noMulti')" class="text-center text-danger">Escriba un multiplicador para la temporada</span>
+                        </div>
+                        
+                        <div class="d-flex justify-content-center mb-3">
+                            <span class="text-danger" *ngIf="errorTemp == true">Error, ya hay una temporada con ese nombre, misma fecha de inicio o misma fecha de fin.</span>
+                        </div>
+                        <p class="text-center mb-5"><mat-icon class="icon">info</mat-icon>Tenga cuidado de no confundir las fechas de temporadas, ya que puedes introducir temporadas siempre que no coincida el día de comienzo o fin de la temporada o el mismo nombre de la temporada.</p>
+                        <div class="d-flex justify-content-center">
+                            <button mat-raised-button color="accent" (click)="addTemporada()">Añadir</button>
+                        </div>
+                    </form>
+                </ng-template>
+                    
+                <ng-template #temporadaEditar>
+                    <h4 class="text-center">Editar temporada {{nombreTemp}}</h4>
+                    <form [formGroup]="edicionTemporada" novalidate class="mt-5" (keyup.enter)="guardarTemporada()">
+                        <mat-form-field class="d-flex justify-content-center mt-3">
+                            <mat-label>Nombre de la temporada</mat-label>
+                            <input matInput formControlName="nombre" type="text">
+                        </mat-form-field>
+
+                        <mat-form-field class="d-flex justify-content-center mt-3">
+                            <mat-label>Fecha de inicio</mat-label>
+                            <input matInput formControlName="fechaInicio" [matDatepicker]="fechas1">
+                            <mat-datepicker-toggle matSuffix [for]="fechas1"></mat-datepicker-toggle>
+                            <mat-datepicker touchUi #fechas1></mat-datepicker>
+                        </mat-form-field><br>
+
+                        <mat-form-field class="d-flex justify-content-center mt-3">
+                            <mat-label>Fecha de fin</mat-label>
+                            <input matInput formControlName="fechaFin" [matDatepicker]="fechas2">
+                            <mat-datepicker-toggle matSuffix [for]="fechas2"></mat-datepicker-toggle>
+                            <mat-datepicker touchUi #fechas2></mat-datepicker>
+                        </mat-form-field><br>
+
+                        <mat-form-field class="d-flex justify-content-center mt-3">
+                            <mat-label>Multiplicador</mat-label>
+                            <input matInput formControlName="multiplicador" type="number">
+                        </mat-form-field>
+                        <div class="d-flex justify-content-center mb-3">
+                            <span class="text-danger" *ngIf="errorTemp == true">Error, ya hay una temporada con ese nombre, misma fecha de inicio o misma fecha de fin.</span>
+                        </div>
+                        <div class="d-flex justify-content-center">
+                            <button mat-raised-button color="accent" (click)="guardarTemporada()">Guardar</button>
+                        </div>
+                    </form>
+                </ng-template>
                 <p class="puntero importante text-center" [routerLink]="'/dashboard'">Volver</p>
             </div>
+
             <div *ngIf="dashboardAdminServicios == true">
-                SERVICIOS EXTRAS
-                <p class="puntero importante text-center" [routerLink]="'/dashboard'">Volver</p>
+                <div *ngIf="dashboardServiciosEditar == false; else editarServices">
+                    <div class="container">
+                        <h4 class="text-center mb-4">Listado de los servicios</h4>
+                        <div *ngFor="let servicio of listadoServicios | paginate: { id: 'pagination', itemsPerPage: 10, currentPage: p, totalItems: listadoUsuarios.length }">
+                            <mat-card class="mb-4 pb-5">
+                                <mat-card-header class="justify-content-end">
+                                    <div class="col-12 text-center text-md-left">
+                                        <mat-card-title>ID del servicio: {{servicio.idServicio}} </mat-card-title>
+                                        <mat-card-subtitle class="float-md-left text-md-left">
+                                            <span>Nombre del servicio: {{servicio.nombre}}</span>
+                                            <br>
+                                            <span *ngIf="servicio.idAlojamiento != null">ID del alojamiento: {{servicio.idAlojamiento}}</span>
+                                            <br>
+                                            <span *ngIf="servicio.dimension != null">Dimensiones: {{servicio.dimension}}</span>
+                                            <span *ngIf="servicio.maximo_personas != null">Nº máximo de personas: {{servicio.maximo_personas}}</span>
+                                        </mat-card-subtitle>
+                                        <mat-card-subtitle class="float-md-right text-md-right">
+                                            <span>Precio del servicio: {{servicio.precio}}</span>
+                                            <br>
+                                            <span *ngIf="servicio.sombra != null">Sombra: {{servicio.sombra}}</span>
+                                            <span *ngIf="servicio.habitaciones != null">Nº de habitaciones: {{servicio.habitaciones}}</span>
+                                            <br>
+                                            <span *ngIf="servicio.numeroAlojamiento!= null">Nº del alojamiento: {{servicio.numeroAlojamiento}}</span>
+                                        </mat-card-subtitle>
+                                    </div>
+                                </mat-card-header>
+    
+                                <mat-card-actions>
+                                    <button mat-button class="float-right" (click)="editarServicio(servicio)">Editar</button>
+                                </mat-card-actions>
+                            </mat-card>
+                        </div>
+                        <pagination-controls class="text-center" [id]="'pagination'" (pageChange)="onChangePage($event)" autoHide="true" nextLabel="Siguiente" previousLabel="Anterior"></pagination-controls>
+                        <p class="puntero importante text-center" [routerLink]="'/dashboard'">Volver</p>
+                    </div>
+                </div>
+                <ng-template #editarServices>
+                    <form [formGroup]="edicionServicios" novalidate class="mt-5" (keyup.enter)="guardarServicio()">
+                        <mat-form-field class="d-flex justify-content-center mt-3">
+                            <mat-label>Nombre del servicio</mat-label>
+                            <input matInput formControlName="nombre" type="text">
+                        </mat-form-field>
+
+                        <mat-form-field class="d-flex justify-content-center mt-3">
+                            <mat-label>Precio</mat-label>
+                            <input matInput formControlName="precio" type="number">
+                        </mat-form-field>
+
+                        <div *ngIf="servicioAlojamiento == true">
+                            <mat-form-field class="d-flex justify-content-center mt-3">
+                                <mat-label>Tipo de alojamiento</mat-label>
+                                <mat-select matNativeControl required formControlName="tipo">
+                                    <mat-option value="bungalow">Bungalow</mat-option>
+                                    <mat-option value="parcela">Parcela</mat-option>
+                                  </mat-select>
+                            </mat-form-field>
+
+                            <div *ngIf="servicioEditar.tipo == 'parcela';else bungalowServicio">
+                                <mat-form-field class="d-flex justify-content-center mt-3">
+                                    <mat-label>Sombra</mat-label>
+                                    <mat-select matNativeControl required formControlName="sombra">
+                                        <mat-option value="0">Nada</mat-option>
+                                        <mat-option value="1">Media</mat-option>
+                                        <mat-option value="2">Bastante</mat-option>
+                                        <mat-option value="3">Mucha</mat-option>
+                                      </mat-select>
+                                </mat-form-field>
+
+                                <mat-form-field class="d-flex justify-content-center mt-3">
+                                    <mat-label>Dimensiones</mat-label>
+                                    <input matInput formControlName="dimension" type="text">
+                                </mat-form-field>
+                            </div>
+                            <ng-template #bungalowServicio>
+                                <mat-form-field class="d-flex justify-content-center mt-3">
+                                    <mat-label>Habitaciones</mat-label>
+                                    <input matInput formControlName="habitaciones" type="number">
+                                </mat-form-field>
+
+                                <mat-form-field class="d-flex justify-content-center mt-3">
+                                    <mat-label>Nº máximo de personas</mat-label>
+                                    <input matInput formControlName="maximo_personas" type="number">
+                                </mat-form-field>
+                            </ng-template>
+                        </div>
+
+                        <div class="d-flex justify-content-center">
+                            <button mat-raised-button color="accent" (click)="guardarServicio()">Guardar</button>
+                        </div>
+                    </form>
+                    <p class="puntero text-center" (click)="atrasBusqueda()">Volver</p>
+                </ng-template>
             </div>
         </div>
-
+        
       </mat-drawer-content>
     </mat-drawer-container>
   </div>

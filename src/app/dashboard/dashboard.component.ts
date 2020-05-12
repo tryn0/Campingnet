@@ -7,7 +7,8 @@ import { MatDrawer } from '@angular/material/sidenav';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
-//import { MatBottomSheet, MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
+import * as moment from 'moment/moment';
+import { MatBottomSheet, MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 
 import { encriptar, desencriptar } from '../crypto-storage';
 
@@ -108,11 +109,30 @@ export class DashboardComponent implements OnInit {
   public buscarUsuario: FormGroup;
   public listadoUsuarios: any = [];
 
-  // Variables servicios extras
+  // Variables servicios
   public listadoServicios: any = [];
+
+  // Variables admin/temporadas
+  public listadoTemporadas: any = [];
+  public dashboardAdminTemporadasEditar: boolean = false;
+  public edicionTemporada: FormGroup;
+  public temporadaEditar: any;
+  public nombreTemp: string;
+  public fecha1Temp: any;
+  public fecha2Temp: any;
+  public multiplicativoTemp: any;
+  public errorTemp: boolean = false;
+  public agregarTemporada: boolean = false;
+  public agregarTemporadas: FormGroup;
+
+  // Variables admin/servicios
+  public dashboardServiciosEditar: boolean = false;
+  public edicionServicios: FormGroup;
+  public servicioAlojamiento: boolean = false;
+  public servicioEditar: any;
   
 
-  constructor( private http: HttpClient, private route: Router, private router: ActivatedRoute, breakpointObserver: BreakpointObserver, public fb: FormBuilder/*, private _popUp: MatBottomSheet*/) {
+  constructor( private http: HttpClient, private route: Router, private router: ActivatedRoute, breakpointObserver: BreakpointObserver, public fb: FormBuilder, private _popUp: MatBottomSheet) {
 
     // Inicializar FormBuilder de buscar reservas
     this.buscarReserva = this.fb.group({
@@ -135,6 +155,35 @@ export class DashboardComponent implements OnInit {
       email: ['', ],
     });
 
+    // Inicializar FormBuilder de editar temporadas
+    this.edicionTemporada = this.fb.group({
+      fechaInicio: ['', [Validators.required]],
+      fechaFin: ['', [Validators.required]],
+      nombre: ['', [Validators.required, Validators.maxLength(20)]],
+      multiplicador: ['', [Validators.required]],
+    });
+
+    // Inicializar FormBuilder de añadido de temporadas
+    this.agregarTemporadas = this.fb.group({
+      fechaInicio: ['', [Validators.required]],
+      fechaFin: ['', [Validators.required]],
+      nombre: ['', [Validators.required, Validators.maxLength(20)]],
+      multiplicador: ['', [Validators.required, Validators.max(2)]],
+    });
+
+    // Inicializar FormBuilder de editar de servicios
+    this.edicionServicios = this.fb.group({
+      nombre: ['', [Validators.required]],
+      precio: ['', [Validators.required]],
+      tipo: ['', [Validators.required, Validators.maxLength(20)]],
+      sombra: ['',],
+      dimension: ['',],
+      habitaciones: ['',],
+      maximo_personas: ['',],
+      idServicio: ['',]
+    });
+
+
     
     // Obtiene el tamaño de la pantalla, para 
     breakpointObserver.observe([
@@ -148,24 +197,30 @@ export class DashboardComponent implements OnInit {
     })
   }
 
-  /*
-  openBottomSheet(idUsuario): void {
-    this._popUp.open(confirmacion, {data: {idUsuario}});
-  }*/
+  
+  openBottomSheet(nombre): void {
+    this._popUp.open(confirmacion, {data: {nombre}});
+  }
 
-  onChangePage($event, lista) {    
-    //if ($event*10 > lista.length) { // Comprueba si la página actual * 10(reseñas de cada página) es mayor a la cantidad de reseñas restantes si es mayor significa que hay más páginas que reseñas, redirige a la página anterior
-      //this.p -= 1;
-    //}else{ // Si hay más reseñas que páginas significa que hay más reseñas que páginas
+
+  onChangePage($event, lista?) {    
+    if (lista) { // Si se le pasa una lista por parámetro..
+      if ($event*10 > lista.length) { // Comprueba si la página actual * 10(reseñas de cada página) es mayor a la cantidad de reseñas restantes si es mayor significa que hay más páginas que reseñas, redirige a la página anterior
+        this.p -= 1;
+      }else{ // Si hay más reseñas que páginas significa que hay más reseñas que páginas
+        this.p = $event
+      }
+    }else{ // Sino se le pasa una lista por parámetro cambia de página en el pagination normal
       this.p = $event
-    //}
+    }
+    
     /**
      * ? Por ejemplo si hay 34 reseñas, tiene que haber 4 páginas, lo hace solo el módulo ngx-pagination
      * ? pero si paso de 34 a 29 tiene que haber 3 páginas, 10 por cada, más el pico en la siguiente
      */
   }
 
-  togle(){ // Función para cerrar y abrir el menú lateral
+  togle() { // Función para cerrar y abrir el menú lateral
     if(this.drawer.opened){
       this.drawer.close();
     }else{
@@ -173,12 +228,12 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  logOff(){ // Cerrar sesión
+  logOff() { // Cerrar sesión
     localStorage.removeItem("usuarioActual");
     window.location.reload();
   }
 
-  aprobado(idResenia){ // Aprueba la reseña
+  aprobado(idResenia) { // Aprueba la reseña
     let aprobado = new HttpParams()
     .set('opcion', '8')
     .set('idResenia', idResenia);
@@ -201,7 +256,7 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-  denegado(idResenia){ // Deniega la reseña
+  denegado(idResenia) { // Deniega la reseña
     let denegado = new HttpParams()
     .set('opcion', '9')
     .set('idResenia', idResenia);
@@ -455,13 +510,7 @@ export class DashboardComponent implements OnInit {
     });
   }
 
-
-
-  /*eliminarUsuario(idUsuario) {
-    this.openBottomSheet(idUsuario);
-  }*/
-
-  atrasBusqueda(){ // Función del botón atrás de reservas (parte de búsqueda)
+  atrasBusqueda() { // Función del botón atrás de reservas (parte de búsqueda)
     this.listadoBuscado = [];
     this.buscado = false;
     this.reservaSeleccionada = false;
@@ -477,9 +526,14 @@ export class DashboardComponent implements OnInit {
       this.buscarUsuario.get('alias_usuario').setValue('');
       this.buscarUsuario.get('dniUsuario').setValue('');
       this.buscarUsuario.get('email').setValue('');
+    }else if (this.router.snapshot.url.length > 1 && this.router.snapshot.url[0].path == 'dashboard' && this.router.snapshot.url[1].path == 'admin' && this.router.snapshot.url[2].path == 'temporadas' && this.agregarTemporada == true) {
+      this.agregarTemporada = false;
+    }else if (this.router.snapshot.url.length > 1 && this.router.snapshot.url[0].path == 'dashboard' && this.router.snapshot.url[1].path == 'admin' && this.router.snapshot.url[2].path == 'temporadas') {
+      this.dashboardAdminTemporadasEditar = false;
+    }else if (this.router.snapshot.url.length > 1 && this.router.snapshot.url[0].path == 'dashboard' && this.router.snapshot.url[1].path == 'admin' && this.router.snapshot.url[2].path == 'servicios' && this.dashboardServiciosEditar == true) {
+      this.dashboardServiciosEditar = false;
     }
   }
-
 
   editar(r) {
     this.reservaSeleccionada = true;
@@ -491,33 +545,181 @@ export class DashboardComponent implements OnInit {
     console.log(r)
   }
 
-  /*temporadas() {
-    this.dashboardInicio = false;
-    this.dashboardRevisarResenias = false;
-    this.dashboardSalidasHoy = false;
-    this.dashboardEntradasHoy = false;
-    this.dashboardReservas = false;
-    this.dashboardResenias = false;
-    this.dashboardUsuarios = false;
-    this.dashboardServicios = false;
-    this.dashboardAdmin = true;
-    this.dashboardAdminTemporadas = true;
-    this.dashboardAdminServicios = false;
+  agregarTemp() {
+    this.agregarTemporada = true;
   }
 
-  serviciosExtrasAjustes() {
-    this.dashboardInicio = false;
-    this.dashboardRevisarResenias = false;
-    this.dashboardSalidasHoy = false;
-    this.dashboardEntradasHoy = false;
-    this.dashboardReservas = false;
-    this.dashboardResenias = false;
-    this.dashboardUsuarios = false;
-    this.dashboardServicios = false;
-    this.dashboardAdmin = true;
-    this.dashboardAdminTemporadas = false;
-    this.dashboardAdminServicios = true;
-  }*/
+  addTemporada() { //Añadir temporada
+    // Si no hay algún campo vacío
+    if(this.agregarTemporadas.get('fechaInicio').value != '' && this.agregarTemporadas.get('fechaInicio').value != null) { 
+      this.agregarTemporadas.get('fechaInicio').setErrors(null);
+    }else {
+      this.agregarTemporadas.get('fechaInicio').setErrors({'noFechaInicio': true});
+    }
+    if(this.agregarTemporadas.get('fechaFin').value != '' && this.agregarTemporadas.get('fechaFin').value != null) {
+      this.agregarTemporadas.get('fechaFin').setErrors(null);
+    }else{
+      this.agregarTemporadas.get('fechaFin').setErrors({'noFechaFin': true});
+    }
+    if(this.agregarTemporadas.get('nombre').value != ''&& this.agregarTemporadas.get('nombre').value != null) {
+      this.agregarTemporadas.get('nombre').setErrors(null);
+    }else{
+      this.agregarTemporadas.get('nombre').setErrors({'noNombre': true});
+    }
+    if(this.agregarTemporadas.get('multiplicador').value != '' && this.agregarTemporadas.get('multiplicador').value != null) {
+      this.agregarTemporadas.get('multiplicador').setErrors(null);
+    }else{
+      this.agregarTemporadas.get('multiplicador').setErrors({'noMulti': true});
+    }
+
+    if(!this.agregarTemporadas.get('fechaInicio').hasError('noFechaInicio') && !this.agregarTemporadas.get('fechaFin').hasError('noFechaFin') && !this.agregarTemporadas.get('nombre').hasError('noNombre') && !this.agregarTemporadas.get('multiplicador').hasError('noMulti')) {
+      let tempParams = new HttpParams()
+      .set('opcion', '24')
+      .set('nombre', this.agregarTemporadas.get('nombre').value)
+      .set('fechaInicio', moment(this.agregarTemporadas.get('fechaInicio').value).format('YYYY-MM-DD'))
+      .set('fechaFin', moment(this.agregarTemporadas.get('fechaFin').value).format('YYYY-MM-DD'))
+      .set('multiplicador', this.agregarTemporadas.get('multiplicador').value)
+      .set('insert', '1');
+
+      this.http.post<any>("http://localhost/dashboard.php", tempParams).subscribe(data => {
+        if(data != null && data != 0) {
+          location.reload();
+          //console.log(data)
+        }else{
+          this.errorTemp = true;
+          //console.log(data)
+        }
+      });
+    }
+  }
+
+  eliminarTemporada (nombre) { // Eliminar temporada, abre popup
+    this.openBottomSheet(nombre);
+  }
+
+  editarTemporada(nombre, fechaInicio) { // Editar temporada, rellenado del formulario
+    this.errorTemp = false;
+    this.temporadaEditar = null;
+    this.dashboardAdminTemporadasEditar = true;
+    for (let i = 0; i < this.listadoTemporadas.length; i++) {
+      const element = this.listadoTemporadas[i];
+      if (element.nombre_temporada == nombre && element.fecha_entrada == fechaInicio) {
+        this.nombreTemp = nombre;
+        this.fecha1Temp = fechaInicio;
+        this.fecha2Temp = element.fecha_salida;
+        this.multiplicativoTemp = element.multiplicador;
+        this.temporadaEditar = element;
+      }
+    }
+    this.edicionTemporada.get('nombre').setValue(this.temporadaEditar.nombre_temporada);
+    this.edicionTemporada.get('fechaInicio').setValue(this.temporadaEditar.fecha_entrada);
+    this.edicionTemporada.get('fechaFin').setValue(this.temporadaEditar.fecha_salida);
+    this.edicionTemporada.get('multiplicador').setValue(this.temporadaEditar.multiplicador);
+  }
+
+  guardarTemporada() { // Guardar temporada BD
+    let nombre = this.edicionTemporada.get('nombre').value;
+    let fechaInicio = moment(this.edicionTemporada.get('fechaInicio').value);
+    let fechaFin = moment(this.edicionTemporada.get('fechaFin').value);
+    let multiplicador = this.edicionTemporada.get('multiplicador').value;
+
+    let tempParams = new HttpParams()
+    .set('opcion', '24')
+    .set('nombre', nombre)
+    .set('fechaInicio', fechaInicio.format('YYYY-MM-DD'))
+    .set('fechaFin', fechaFin.format('YYYY-MM-DD'))
+    .set('multiplicador', multiplicador)
+    .set('antiguoNombre', this.nombreTemp)
+    .set('antiguoFecha1', this.fecha1Temp)
+    .set('antiguoFecha2', this.fecha2Temp)
+    .set('antiguoMultiplicativo', this.multiplicativoTemp)
+    .set('update', '1');
+
+    this.http.post<any>("http://localhost/dashboard.php", tempParams).subscribe(data => {
+      if(data != null && data != 0) {
+        location.reload();
+      }else{
+        this.errorTemp = true;
+      }
+    });
+  }
+
+  editarServicio(servicio) { // Editar servicio, rellenado del formulario
+    this.dashboardServiciosEditar = true;
+    this.edicionServicios.get('idServicio').setValue(servicio.idServicio);
+    this.edicionServicios.get('nombre').setValue(servicio.nombre);
+    this.edicionServicios.get('precio').setValue(servicio.precio);
+    if(servicio.idAlojamiento != null) {
+      let alojamiento = new HttpParams()
+      .set('opcion', '12')
+      .set('idAlojamiento', servicio.idAlojamiento);
+
+      this.http.post<any>("http://localhost/dashboard.php", alojamiento).subscribe(data =>{ // Obtener las entradas al camping del día
+        if(data != null && data != 0){
+          this.servicioEditar = data[0];
+          this.servicioAlojamiento = true;
+          this.edicionServicios.get('tipo').setValue(this.servicioEditar.tipo);
+          if(this.edicionServicios.get('tipo').value == 'parcela'){
+            this.edicionServicios.get('sombra').setValue(this.servicioEditar.sombra);
+            this.edicionServicios.get('dimension').setValue(this.servicioEditar.dimension);
+          }else{
+            this.edicionServicios.get('habitaciones').setValue(this.servicioEditar.habitaciones);
+            this.edicionServicios.get('maximo_personas').setValue(this.servicioEditar.maximo_personas);
+          }
+          
+        }
+      });
+    }else{
+      this.servicioAlojamiento = false;
+      this.edicionServicios.get('tipo').setValue('');
+      this.edicionServicios.get('sombra').setValue('');
+      this.edicionServicios.get('dimension').setValue('');
+      this.edicionServicios.get('habitaciones').setValue('');
+      this.edicionServicios.get('maximo_personas').setValue('');
+    }
+  }
+
+  guardarServicio() { // Guardar servicio en BD (Editar)
+    console.log(this.edicionServicios.value)
+    if(this.edicionServicios.get('nombre').value != null && this.edicionServicios.get('nombre').value != '') {
+      this.edicionServicios.setErrors({'noNombre': true});
+    }else{
+      this.edicionServicios.setErrors(null);
+    }
+    if(this.edicionServicios.get('precio').value != null && this.edicionServicios.get('precio').value != '' && this.edicionServicios.get('precio').value != 0) {
+      this.edicionServicios.setErrors({'noPrecio': true});
+    }else{
+      this.edicionServicios.setErrors(null);
+    }
+    if(this.edicionServicios.get('precio').value != null && this.edicionServicios.get('precio').value != '' && this.edicionServicios.get('precio').value != 0) {
+      this.edicionServicios.setErrors({'noPrecio': true});
+    }else{
+      this.edicionServicios.setErrors(null);
+    }
+
+    let servicio = new HttpParams()
+      .set('opcion', '12')
+      .set('nombre', this.edicionServicios.get('nombre').value)
+      .set('precio', this.edicionServicios.get('precio').value)
+      .set('idServicio', this.edicionServicios.get('idServicio').value);
+
+      if(this.servicioAlojamiento == true) {
+        console.log('trueeee')
+        servicio = servicio.set('tipo', this.edicionServicios.get('tipo').value)
+        if(this.edicionServicios.get('tipo').value == 'parcela')
+        servicio = servicio.set('sombra', this.edicionServicios.get('sombra').value);
+        servicio = servicio.set('dimension', this.edicionServicios.get('dimension').value);
+      }else{
+        servicio = servicio.set('habitaciones', this.edicionServicios.get('habitaciones').value);
+        servicio = servicio.set('maximo_personas', this.edicionServicios.get('maximo_personas').value);
+      }
+
+     /* this.http.post<any>("http://localhost/dashboard.php", servicio).subscribe(data =>{ // Obtener las entradas al camping del día
+        if(data != null && data != 0){
+
+        }
+      });*/
+  }
 
 
   ngOnInit(): void {
@@ -533,8 +735,6 @@ export class DashboardComponent implements OnInit {
     }else{
       window.location.href = 'http://localhost:4200/';
     }
-
-    //console.log(this.router.snapshot.url[1].path);
 
     if (this.router.snapshot.url.length == 1 && this.router.snapshot.url[0].path == 'dashboard'){
       // Si en la URL es solo /dashboard, carga lso datos de inicio
@@ -1164,7 +1364,7 @@ export class DashboardComponent implements OnInit {
         */
 
     }else if (this.router.snapshot.url.length > 1 && this.router.snapshot.url[0].path == 'dashboard' && this.router.snapshot.url[1].path == 'admin' && this.router.snapshot.url[2].path == 'temporadas') {
-      // Aquí sólo se podrán VER los servicios, de ahí que piense solo en ponerlo en admin, o dejarlo igual pero si eres admin poder añadir o editar servicios NUNCA ELIMINAR, YA QUE PUEDE DAR ERRORES EN LA PARTE DE RESERVA
+      // Aquí se podrá ver todas las temporadas ya que no son muchas, añadir, editar o eliminar alguna.
 
       /**
        * ? Empieza aquí
@@ -1184,16 +1384,25 @@ export class DashboardComponent implements OnInit {
       this.dashboardAdminServicios = false;
 
       /**
-       * ! PENDIENTE
+       * ! Aquí va el código de temporadas
        */
 
+      let temporadas = new HttpParams()
+      .set('opcion', '23');
+
+      this.http.post<any>("http://localhost/dashboard.php", temporadas).subscribe(data => {
+        if(data != null && data != 0) {
+          //console.log(data)
+          this.listadoTemporadas = data;
+        }
+      });
 
        /**
         * ? Acaba aquí
         */
 
-    }else if (this.router.snapshot.url.length > 1 && this.router.snapshot.url[0].path == 'dashboard' && this.router.snapshot.url[1].path == 'admin' && this.router.snapshot.url[2].path == 'servicios-extras') {
-      // Aquí sólo se podrán VER los servicios, de ahí que piense solo en ponerlo en admin, o dejarlo igual pero si eres admin poder añadir o editar servicios NUNCA ELIMINAR, YA QUE PUEDE DAR ERRORES EN LA PARTE DE RESERVA
+    }else if (this.router.snapshot.url.length > 1 && this.router.snapshot.url[0].path == 'dashboard' && this.router.snapshot.url[1].path == 'admin' && this.router.snapshot.url[2].path == 'servicios') {
+      // Aquí sólo se podrán VER los servicios, añadir o editar servicios NUNCA ELIMINAR, YA QUE PUEDE DAR ERRORES EN LA PARTE DE RESERVA
 
       /**
        * ? Empieza aquí
@@ -1213,9 +1422,17 @@ export class DashboardComponent implements OnInit {
       this.dashboardAdminServicios = true;
 
       /**
-       * ! PENDIENTE
+       * ! Aquí va el código de servicios
        */
 
+      let todosServicios = new HttpParams()
+      .set('opcion', '22');
+
+      this.http.post<any>("http://localhost/dashboard.php", todosServicios).subscribe(data => {
+        if(data != null && data != 0) {
+          this.listadoServicios = data;
+        }
+      });
 
        /**
         * ? Acaba aquí
@@ -1225,16 +1442,29 @@ export class DashboardComponent implements OnInit {
   }
 
 }
-/*
+
+/**
+ * ? POPUP para confirmar eliminación de temporada
+ */
 @Component({
   selector: 'confirmacion',
-  templateUrl: 'confirmacion.html',
+  templateUrl: 'dashboard.component.confirmacion.html',
 })
 export class confirmacion {
-  constructor(private _popUp: MatBottomSheetRef<confirmacion>, @Inject(MAT_BOTTOM_SHEET_DATA) public data: any) {}
-
-  openLink(event: MouseEvent): void {
+  constructor(private _popUp: MatBottomSheetRef<confirmacion>, @Inject(MAT_BOTTOM_SHEET_DATA) public data: any, private http: HttpClient) {}
+  confirmado(e) {
     this._popUp.dismiss();
-    event.preventDefault();
+    let temporadas = new HttpParams()
+    .set('opcion', '25')
+    .set('nombre', e);
+
+    this.http.post<any>("http://localhost/dashboard.php", temporadas).subscribe(data => {
+      if(data != null && data != 0) {
+        location.reload();
+      }
+    });
   }
-}*/
+  cancelar() {
+    this._popUp.dismiss();
+  }
+}
