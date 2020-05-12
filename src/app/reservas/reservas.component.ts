@@ -319,6 +319,9 @@ export class ReservasComponent implements OnInit {
               case '3':
                 this.arrayCaract1[i][this.dato1] = 'Mucha';
                 break;
+              default:
+                this.arrayCaract1[i][this.dato1] = 'Desconocido';
+                break;
             }
           }
         }

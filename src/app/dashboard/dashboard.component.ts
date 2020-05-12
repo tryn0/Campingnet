@@ -130,6 +130,9 @@ export class DashboardComponent implements OnInit {
   public edicionServicios: FormGroup;
   public servicioAlojamiento: boolean = false;
   public servicioEditar: any;
+  public errorGuardarServicio: boolean = false;
+  public agregarAlojamiento: boolean = false;
+  public addAlojamientoForm: FormGroup;
   
 
   constructor( private http: HttpClient, private route: Router, private router: ActivatedRoute, breakpointObserver: BreakpointObserver, public fb: FormBuilder, private _popUp: MatBottomSheet) {
@@ -175,12 +178,18 @@ export class DashboardComponent implements OnInit {
     this.edicionServicios = this.fb.group({
       nombre: ['', [Validators.required]],
       precio: ['', [Validators.required]],
-      tipo: ['', [Validators.required, Validators.maxLength(20)]],
-      sombra: ['',],
-      dimension: ['',],
-      habitaciones: ['',],
-      maximo_personas: ['',],
-      idServicio: ['',]
+      idServicio: ['',],
+      idAlojamiento: ['',]
+    });
+
+    this.addAlojamientoForm = this.fb.group({
+      tipo: ['', [Validators.required]],
+      sombra: [''],
+      dimension: [''],
+      habitaciones: [''],
+      maximo_personas: [''],
+      nombre: ['', [Validators.required]],
+      precio: ['', [Validators.required]],
     });
 
 
@@ -201,7 +210,6 @@ export class DashboardComponent implements OnInit {
   openBottomSheet(nombre): void {
     this._popUp.open(confirmacion, {data: {nombre}});
   }
-
 
   onChangePage($event, lista?) {    
     if (lista) { // Si se le pasa una lista por parámetro..
@@ -532,7 +540,16 @@ export class DashboardComponent implements OnInit {
       this.dashboardAdminTemporadasEditar = false;
     }else if (this.router.snapshot.url.length > 1 && this.router.snapshot.url[0].path == 'dashboard' && this.router.snapshot.url[1].path == 'admin' && this.router.snapshot.url[2].path == 'servicios' && this.dashboardServiciosEditar == true) {
       this.dashboardServiciosEditar = false;
+      this.addAlojamientoForm.get('tipo').setValue('');
+      this.addAlojamientoForm.get('nombre').setValue('');
+      this.addAlojamientoForm.get('precio').setValue('');
+      this.addAlojamientoForm.get('sombra').setValue('');
+      this.addAlojamientoForm.get('dimension').setValue('');
+      this.addAlojamientoForm.get('habitaciones').setValue('');
+      this.addAlojamientoForm.get('maximo_personas').setValue('');
     }
+
+    
   }
 
   editar(r) {
@@ -658,29 +675,17 @@ export class DashboardComponent implements OnInit {
         if(data != null && data != 0){
           this.servicioEditar = data[0];
           this.servicioAlojamiento = true;
-          this.edicionServicios.get('tipo').setValue(this.servicioEditar.tipo);
-          if(this.edicionServicios.get('tipo').value == 'parcela'){
-            this.edicionServicios.get('sombra').setValue(this.servicioEditar.sombra);
-            this.edicionServicios.get('dimension').setValue(this.servicioEditar.dimension);
-          }else{
-            this.edicionServicios.get('habitaciones').setValue(this.servicioEditar.habitaciones);
-            this.edicionServicios.get('maximo_personas').setValue(this.servicioEditar.maximo_personas);
-          }
-          
+          this.edicionServicios.get('idAlojamiento').setValue(this.servicioEditar.idAlojamiento);
         }
       });
     }else{
       this.servicioAlojamiento = false;
-      this.edicionServicios.get('tipo').setValue('');
-      this.edicionServicios.get('sombra').setValue('');
-      this.edicionServicios.get('dimension').setValue('');
-      this.edicionServicios.get('habitaciones').setValue('');
-      this.edicionServicios.get('maximo_personas').setValue('');
+      this.edicionServicios.get('idAlojamiento').setValue('');
     }
   }
 
   guardarServicio() { // Guardar servicio en BD (Editar)
-    console.log(this.edicionServicios.value)
+    this.errorGuardarServicio = false;
     if(this.edicionServicios.get('nombre').value != null && this.edicionServicios.get('nombre').value != '') {
       this.edicionServicios.setErrors({'noNombre': true});
     }else{
@@ -691,34 +696,111 @@ export class DashboardComponent implements OnInit {
     }else{
       this.edicionServicios.setErrors(null);
     }
-    if(this.edicionServicios.get('precio').value != null && this.edicionServicios.get('precio').value != '' && this.edicionServicios.get('precio').value != 0) {
-      this.edicionServicios.setErrors({'noPrecio': true});
-    }else{
-      this.edicionServicios.setErrors(null);
-    }
 
     let servicio = new HttpParams()
-      .set('opcion', '12')
+      .set('opcion', '26')
       .set('nombre', this.edicionServicios.get('nombre').value)
       .set('precio', this.edicionServicios.get('precio').value)
       .set('idServicio', this.edicionServicios.get('idServicio').value);
 
-      if(this.servicioAlojamiento == true) {
-        console.log('trueeee')
-        servicio = servicio.set('tipo', this.edicionServicios.get('tipo').value)
-        if(this.edicionServicios.get('tipo').value == 'parcela')
-        servicio = servicio.set('sombra', this.edicionServicios.get('sombra').value);
-        servicio = servicio.set('dimension', this.edicionServicios.get('dimension').value);
+      console.log(servicio)
+      this.http.post<any>("http://localhost/dashboard.php", servicio).subscribe(data =>{ // Obtener las entradas al camping del día
+        if(data != null && data != 0){
+          location.reload();
+        }else{
+          this.errorGuardarServicio = true;
+        }
+      });
+  }
+
+  addAlojamiento() {
+    this.dashboardServiciosEditar = true;
+    this.agregarAlojamiento = true;
+  }
+
+  guardarAlojamiento() {
+    if(this.addAlojamientoForm.get('nombre').value != null && this.addAlojamientoForm.get('nombre').value != '') {
+      this.addAlojamientoForm.get('nombre').setErrors(null);
+    }else{
+      this.addAlojamientoForm.get('nombre').setErrors({'noNombre': true});
+    }
+    if(this.addAlojamientoForm.get('precio').value != null && this.addAlojamientoForm.get('precio').value != '' && this.addAlojamientoForm.get('precio').value != 0) {
+      this.addAlojamientoForm.get('precio').setErrors(null);
+    }else{
+      this.addAlojamientoForm.get('precio').setErrors({'noPrecio': true});
+    }
+    if(this.addAlojamientoForm.get('tipo').value != null && this.addAlojamientoForm.get('tipo').value != '') {
+      this.addAlojamientoForm.get('tipo').setErrors(null);
+    }else{
+      this.addAlojamientoForm.get('tipo').setErrors({'noTipo': true});
+    }
+
+    if(this.addAlojamientoForm.get('tipo').value != null && this.addAlojamientoForm.get('tipo').value != '' && this.addAlojamientoForm.get('tipo').value == 'parcela') {
+
+      if(this.addAlojamientoForm.get('sombra').value != null && this.addAlojamientoForm.get('sombra').value != '') {
+        this.addAlojamientoForm.get('sombra').setErrors(null);
       }else{
-        servicio = servicio.set('habitaciones', this.edicionServicios.get('habitaciones').value);
-        servicio = servicio.set('maximo_personas', this.edicionServicios.get('maximo_personas').value);
+        this.addAlojamientoForm.get('sombra').setErrors({'noSombra': true});
+      }
+      if(this.addAlojamientoForm.get('dimension').value != null && this.addAlojamientoForm.get('dimension').value != '') {
+        this.addAlojamientoForm.get('dimension').setErrors(null);
+      }else{
+        this.addAlojamientoForm.get('dimension').setErrors({'noDimension': true});
+      }
+    }else if (this.addAlojamientoForm.get('tipo').value != null && this.addAlojamientoForm.get('tipo').value != '' && this.addAlojamientoForm.get('tipo').value == 'bungalow') {
+
+      if(this.addAlojamientoForm.get('habitaciones').value != null && this.addAlojamientoForm.get('habitaciones').value != '' && this.addAlojamientoForm.get('habitaciones').value != 0) {
+        this.addAlojamientoForm.get('habitaciones').setErrors(null);
+      }else{
+        this.addAlojamientoForm.get('habitaciones').setErrors({'noHabitaciones': true});
+      }
+      if(this.addAlojamientoForm.get('maximo_personas').value != null && this.addAlojamientoForm.get('maximo_personas').value != '' && this.addAlojamientoForm.get('maximo_personas').value != 0) {
+        this.addAlojamientoForm.get('maximo_personas').setErrors(null);
+      }else{
+        this.addAlojamientoForm.get('dimension').setErrors({'noMaximo': true});
+      }
+    }
+
+    let ok = false;
+    if(!this.addAlojamientoForm.get('nombre').hasError('noNombre') && !this.addAlojamientoForm.get('precio').hasError('noPrecio') && !this.addAlojamientoForm.get('tipo').hasError('noTipo') ){
+      if(this.addAlojamientoForm.get('tipo').value == 'parcela' && !this.addAlojamientoForm.get('sombra').hasError('noSombra') && !this.addAlojamientoForm.get('dimension').hasError('noDimension')){
+        console.log('parcela SIN errores')
+        ok = true;
+      }else if(this.addAlojamientoForm.get('tipo').value == 'bungalow' && !this.addAlojamientoForm.get('habitaciones').hasError('noHabitaciones') && !this.addAlojamientoForm.get('maximo_personas').hasError('noMaximo')){
+        console.log('bungalow SIN errores')
+        ok = true;
+      }
+    }
+
+    if(ok) {
+      let insertAlojamiento = new HttpParams()
+      .set('opcion', '27')
+      .set('nombre', this.addAlojamientoForm.get('nombre').value)
+      .set('precio', this.addAlojamientoForm.get('precio').value)
+      .set('tipo', this.addAlojamientoForm.get('tipo').value);
+      if(this.addAlojamientoForm.get('tipo').value == 'parcela') {
+        insertAlojamiento = insertAlojamiento.set('sombra', this.addAlojamientoForm.get('sombra').value);
+        insertAlojamiento = insertAlojamiento.set('dimension', this.addAlojamientoForm.get('dimension').value);
+      }else{
+        insertAlojamiento = insertAlojamiento.set('habitaciones', this.addAlojamientoForm.get('habitaciones').value);
+        insertAlojamiento = insertAlojamiento.set('maximo_personas', this.addAlojamientoForm.get('maximo_personas').value);
       }
 
-     /* this.http.post<any>("http://localhost/dashboard.php", servicio).subscribe(data =>{ // Obtener las entradas al camping del día
-        if(data != null && data != 0){
+      this.http.post<any>("http://localhost/dashboard.php", insertAlojamiento).subscribe(data =>{ // Obtener las entradas al camping del día
+      if(data != null && data != 0){
+        console.log(data)
+      }else{
+        console.log(data+' error')
+      }
+    });
+      //console.log(insertAlojamiento)
+    }
 
-        }
-      });*/
+    //console.log(this.addAlojamientoForm.errors)
+  }
+
+  addServicio() {
+    this.dashboardServiciosEditar = true;
   }
 
 

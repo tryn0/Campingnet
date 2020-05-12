@@ -40,7 +40,7 @@
                    <br>
                    <mat-menu #ajustes="matMenu">
                        <button mat-menu-item [routerLink]="'/dashboard/admin/temporadas'">Temporadas</button>
-                       <button mat-menu-item [routerLink]="'/dashboard/admin/servicios'">Servicios extras</button>
+                       <button mat-menu-item [routerLink]="'/dashboard/admin/servicios'">Servicios</button>
                    </mat-menu>
                    <button mat-icon-button [matMenuTriggerFor]="ajustes" class="text-success">Ajustes<mat-icon>settings</mat-icon></button>
                 </div>
@@ -75,7 +75,7 @@
                        <br>
                        <mat-menu #ajustes="matMenu">
                         <button mat-menu-item [routerLink]="'/dashboard/admin/temporadas'">Temporadas</button>
-                        <button mat-menu-item [routerLink]="'/dashboard/admin/servicios'">Servicios extras</button>
+                        <button mat-menu-item [routerLink]="'/dashboard/admin/servicios'">Servicios</button>
                         </mat-menu>
                     <button mat-icon-button [matMenuTriggerFor]="ajustes" class="text-success">Ajustes<mat-icon>settings</mat-icon></button>
                     </div>
@@ -875,6 +875,11 @@
                 <div *ngIf="dashboardServiciosEditar == false; else editarServices">
                     <div class="container">
                         <h4 class="text-center mb-4">Listado de los servicios</h4>
+                        <div class="d-flex justify-content-center">
+                            <button mat-raised-button color="accent" class="mr-5 mb-4" (click)="addAlojamiento()">Añadir alojamiento</button>
+                            <button mat-raised-button color="accent" class="mb-4" (click)="addServicio()">Añadir servicio</button>
+                        </div>
+                        
                         <div *ngFor="let servicio of listadoServicios | paginate: { id: 'pagination', itemsPerPage: 10, currentPage: p, totalItems: listadoUsuarios.length }">
                             <mat-card class="mb-4 pb-5">
                                 <mat-card-header class="justify-content-end">
@@ -909,60 +914,83 @@
                     </div>
                 </div>
                 <ng-template #editarServices>
-                    <form [formGroup]="edicionServicios" novalidate class="mt-5" (keyup.enter)="guardarServicio()">
-                        <mat-form-field class="d-flex justify-content-center mt-3">
-                            <mat-label>Nombre del servicio</mat-label>
-                            <input matInput formControlName="nombre" type="text">
-                        </mat-form-field>
-
-                        <mat-form-field class="d-flex justify-content-center mt-3">
-                            <mat-label>Precio</mat-label>
-                            <input matInput formControlName="precio" type="number">
-                        </mat-form-field>
-
-                        <div *ngIf="servicioAlojamiento == true">
+                    <div *ngIf="agregarAlojamiento == false; else agregarAlojamientoview">
+                        <form [formGroup]="edicionServicios" novalidate class="mt-5" (keyup.enter)="guardarServicio()">
                             <mat-form-field class="d-flex justify-content-center mt-3">
-                                <mat-label>Tipo de alojamiento</mat-label>
-                                <mat-select matNativeControl required formControlName="tipo">
-                                    <mat-option value="bungalow">Bungalow</mat-option>
-                                    <mat-option value="parcela">Parcela</mat-option>
-                                  </mat-select>
+                                <mat-label>Nombre del servicio</mat-label>
+                                <input matInput formControlName="nombre" type="text">
                             </mat-form-field>
 
-                            <div *ngIf="servicioEditar.tipo == 'parcela';else bungalowServicio">
+                            <mat-form-field class="d-flex justify-content-center mt-3">
+                                <mat-label>Precio</mat-label>
+                                <input matInput formControlName="precio" type="number">
+                            </mat-form-field>
+
+                            <div class="d-flex justify-content-center">
+                                <span class="text-danger" *ngIf="errorGuardarServicio == true">No se pudo añadir/editar el servicio comprubea los datos (nombre del servicio)</span>
+                            </div>
+                            
+                            <div class="d-flex justify-content-center">
+                                <button mat-raised-button color="accent" (click)="guardarServicio()">Guardar</button>
+                            </div>
+                        </form>
+                        <p class="puntero text-center" (click)="atrasBusqueda()">Volver</p>
+                    </div>
+                    <ng-template #agregarAlojamientoview>
+                        <form [formGroup]="addAlojamientoForm" novalidate class="mt-5" (keyup.enter)="guardarAlojamiento()">
+                            <mat-form-field class="d-flex justify-content-center mt-3">
+                                <mat-label>Nombre del servicio</mat-label>
+                                <input matInput formControlName="nombre" type="text">
+                            </mat-form-field>
+
+                            <mat-form-field class="d-flex justify-content-center mt-3">
+                                <mat-label>Precio</mat-label>
+                                <input matInput formControlName="precio" type="number">
+                            </mat-form-field>
+
+                            <mat-form-field class="d-flex justify-content-center mt-3">
+                                <mat-label>Tipo del alojamiento</mat-label>
+                                <mat-select matInput formControlName="tipo" type="text">
+                                    <mat-option value="parcela">Parcela</mat-option>
+                                    <mat-option value="bungalow">Bungalow</mat-option>
+                                </mat-select>
+                            </mat-form-field>
+
+                            <div *ngIf="addAlojamientoForm.get('tipo').value == 'parcela'">
                                 <mat-form-field class="d-flex justify-content-center mt-3">
                                     <mat-label>Sombra</mat-label>
-                                    <mat-select matNativeControl required formControlName="sombra">
-                                        <mat-option value="0">Nada</mat-option>
-                                        <mat-option value="1">Media</mat-option>
-                                        <mat-option value="2">Bastante</mat-option>
-                                        <mat-option value="3">Mucha</mat-option>
-                                      </mat-select>
+                                    <input matInput formControlName="sombra" type="numebr">
+                                    <mat-hint>Del 0 al 3</mat-hint>
                                 </mat-form-field>
-
+    
                                 <mat-form-field class="d-flex justify-content-center mt-3">
-                                    <mat-label>Dimensiones</mat-label>
+                                    <mat-label>Dimension</mat-label>
                                     <input matInput formControlName="dimension" type="text">
                                 </mat-form-field>
                             </div>
-                            <ng-template #bungalowServicio>
+                            
+                            <div *ngIf="addAlojamientoForm.get('tipo').value == 'bungalow'">
                                 <mat-form-field class="d-flex justify-content-center mt-3">
-                                    <mat-label>Habitaciones</mat-label>
-                                    <input matInput formControlName="habitaciones" type="number">
+                                    <mat-label>Habiaciones</mat-label>
+                                    <input matInput formControlName="habitaciones" type="numebr">
                                 </mat-form-field>
 
                                 <mat-form-field class="d-flex justify-content-center mt-3">
                                     <mat-label>Nº máximo de personas</mat-label>
-                                    <input matInput formControlName="maximo_personas" type="number">
+                                    <input matInput formControlName="maximo_personas" type="numebr">
                                 </mat-form-field>
-                            </ng-template>
-                        </div>
+                            </div>
 
-                        <div class="d-flex justify-content-center">
-                            <button mat-raised-button color="accent" (click)="guardarServicio()">Guardar</button>
-                        </div>
-                    </form>
-                    <p class="puntero text-center" (click)="atrasBusqueda()">Volver</p>
+                            <div class="d-flex justify-content-center">
+                                <span class="text-danger" *ngIf="errorGuardarServicio == true">No se pudo añadir/editar el servicio comprubea los datos (nombre del servicio)</span>
+                            </div>
+                            
+                            <div class="d-flex justify-content-center">
+                                <button mat-raised-button color="accent" (click)="guardarAlojamiento()">Guardar</button>
+                            </div>
+                        </form>
+                        <p class="puntero text-center" (click)="atrasBusqueda()">Volver</p>
+                    </ng-template>
                 </ng-template>
             </div>
         </div>
