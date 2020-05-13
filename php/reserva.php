@@ -57,9 +57,6 @@
         $caract1 =  str_replace('"','',json_encode($_POST['caract1']));
         $caract2 =  str_replace('"','',json_encode($_POST['caract2']));
     }
-    
-
-    //print json_encode($entrada.' '.$salida);
 
 
     // Genérico
@@ -175,7 +172,7 @@
         }
 
 
-        }
+    }
 
     if($opcion == '"8"'){ // Obtención del id del alojamiento con las caracteristicas elegidas en el formulario, escoge el id del primer alojamiento que encuentre
         if($tipo == '"Bungalow"'){
@@ -209,12 +206,10 @@
         $idAlojamientoRandom = json_encode($_POST['idAlojamiento']);
         $sql = "SELECT precio FROM servicio WHERE idAlojamiento = $idAlojamientoRandom";
         print json_encode(consulta($conn, $sql));
-        
     }
-    if($opcion == '"10"'){ // Precio alojamiento
 
+    if($opcion == '"10"'){ // Precio servicios extras
         $preciosServicios = array();
-
         foreach($_POST as $key => $value) {
             if (intval($key)) {
                 $idService = json_encode($key);
@@ -224,9 +219,12 @@
 
             }
         }
-        
-        
         print json_encode($preciosServicios);
-        
+    }
+
+    // Temporadas
+    if($opcion == '"11"'){
+        $sql = "SELECT * FROM temporadas WHERE fecha_entrada < '$salida' AND fecha_salida > '$entrada'";
+        print json_encode(consulta($conn, $sql));
     }
 ?>

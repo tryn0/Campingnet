@@ -12,9 +12,15 @@
     //Conexión a la base de datos
     require_once('bd.php');
     $conn = conexion();
+    $opcion = json_encode($_POST['opcion']);
 
-    // ID Alojamiento
-
-    $id = intval(substr(json_encode($_POST['numero']), 1, -1));
-    $sql = "SELECT * FROM resenia WHERE idResenia IN (SELECT idResenia FROM resenias WHERE idAlojamiento = $id)";
-    print json_encode(consulta($conn, $sql));
+    if ($opcion == '"1"') { // Obtener todas las reseñas publicadas
+        $idAlojamiento = json_encode($_POST['idAlojamiento']);
+        $sql = "SELECT * FROM resenia WHERE publicado = 1 AND idResenia IN (SELECT idResenia FROM resenias WHERE idAlojamiento = $idAlojamiento)";
+        print json_encode(consulta($conn, $sql));
+    }else if ($opcion == '"2"') { // Obtener los datos del usuario de la reseña
+        $idUsuario = json_encode($_POST['idUsuario']);
+        $sql = "SELECT alias_usuario FROM usuario WHERE idUsuario = $idUsuario";
+        print json_encode(consulta($conn, $sql));
+    }
+    

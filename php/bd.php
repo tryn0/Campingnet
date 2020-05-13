@@ -37,7 +37,26 @@
             cerrar_conexion($conn);
             return mysqli_error($conn);
         }
-        
+    }
+
+    function update($conn, $sql){
+        if(mysqli_query($conn, $sql)) {
+            cerrar_conexion($conn);
+            return 1;
+        }else{
+            cerrar_conexion($conn);
+            return mysqli_error($conn);
+        }
+    }
+
+    function delete($conn, $sql){ // Esta función, la de update y la de insert son iguales, pero quería tenerlas distinguidas insert, update y delete, separadas
+        if(mysqli_query($conn, $sql)) {
+            cerrar_conexion($conn);
+            return 1;
+        }else{
+            cerrar_conexion($conn);
+            return mysqli_error($conn);
+        }
     }
 
     function cerrar_conexion($conn){ // Cerrar conexión
