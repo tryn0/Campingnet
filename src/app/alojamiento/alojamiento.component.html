@@ -24,7 +24,6 @@
                         </mat-card-content>
                         <mat-card-actions>
                             <button [routerLink]="['/alojamiento/parcelas/', parcela.numeroAlojamiento]" mat-button>VER</button>
-                            <button class="float-right" mat-button>RESERVAR</button>
                         </mat-card-actions>
                     </mat-card>
                 </div>
@@ -49,7 +48,6 @@
                         </mat-card-content>
                         <mat-card-actions>
                             <button [routerLink]="['/alojamiento/bungalows/', bungalow.numeroAlojamiento]" mat-button>VER</button>
-                            <button class="float-right" mat-button>RESERVAR</button>
                         </mat-card-actions>
                     </mat-card>
                 </div>
@@ -84,7 +82,6 @@
                             </mat-card-content>
                             <mat-card-actions>
                                 <button [routerLink]="['/alojamiento/bungalows/', bungalow.numeroAlojamiento]" mat-button>VER</button>
-                                <button class="float-right" mat-button>RESERVAR</button>
                             </mat-card-actions>
                         </mat-card>
                     </div>
@@ -113,7 +110,6 @@
                             </mat-card-content>
                             <mat-card-actions mat-card-actions>
                                 <button [routerLink]="['/alojamiento/parcelas/', parcela.numeroAlojamiento]" mat-button>VER</button>
-                                <button class="float-right" mat-button>RESERVAR</button>
                             </mat-card-actions>
                         </mat-card>
                     </div>
@@ -190,7 +186,7 @@
 
                             <!-- Aquí hacer un ngFor con las reseñas recogidas de la BD -->
                             <!-- Información de la reseña, usuario/anónimo y puntuación dada-->
-                            <div class="card-body" *ngFor="let resenias of listadoResenias | paginate: { id: 'pagination', itemsPerPage: 1, currentPage: p, totalItems: listadoResenias.length }; let i = index">
+                            <div class="card-body" *ngFor="let resenias of listadoResenias | paginate: { id: 'pagination', itemsPerPage: 10, currentPage: p, totalItems: listadoResenias.length }; let i = index">
 
                                 <div class="col-12">
                                     <span class="float-left">Nombre de usuario: {{resenias.alias}}</span>
@@ -204,7 +200,7 @@
                                 <hr *ngIf="i != listadoResenias.length-1">
                             </div>
                              <!-- Paginación de las reseñas por revisar -->
-                            <pagination-controls class="text-center" [id]="'pagination'" (pageChange)="onChangePage($event, listadoResenias)" autoHide="true" nextLabel="Siguiente" previousLabel="Anterior"></pagination-controls> 
+                            <pagination-controls class="text-center" [id]="'pagination'" (pageChange)="onChangePage($event)" autoHide="true" nextLabel="Siguiente" previousLabel="Anterior"></pagination-controls> 
 
                         </div>
                         <ng-template #noReseniasTrue>
@@ -236,13 +232,14 @@
                                     </div>
 
                                     <!-- Puntuación -->
-                                    <div class="col-md-5 ">
+                                    <div class="col-md-5">
                                         <h6 class="float-right">★ ★ ★ ★ ☆</h6>
                                         <input class="float-right" formControlName="puntuacion" type="number" max="10" min="0">
                                     </div>
-                                    <span class="float-right" *ngIf="resenia.get('puntuacion').hasError('noPuntuacion')" style="color: red;">La puntuación mínima es 1.</span>
 
                                 </div>
+
+                                <span class="float-right" *ngIf="resenia.get('puntuacion').hasError('noPuntuacion')" class="text-danger">Por favor, indique una puntuación mínima.</span>
 
                                 <!-- Texta area (mensaje/comentario) -->
                                 <div class="col-md-12 row mt-4">
@@ -252,11 +249,16 @@
                                         <mat-hint align="start"><strong>No escriba información personal</strong> </mat-hint>
                                         <mat-hint align="end">{{mensaje.value.length}} / 255</mat-hint>
                                     </mat-form-field>
-                                    <span *ngIf="resenia.get('mensaje').hasError('noTexto')" style="color: red;">Escriba un comentario de mínimo 25 carácteres por favor.</span>
+                                    <span *ngIf="resenia.get('mensaje').hasError('noTexto')" class="text-danger">Escriba un comentario de mínimo 25 carácteres por favor.</span>
                                 </div>
+
+                                
 
                                 <div class="text-center">
                                     <button mat-flat-button color="primary" class="mt-3" (click)="enviarResenia()">Enviar</button>
+                                    <br>
+                                    <span *ngIf="errorResenia == true" class="text-center text-danger">Ha habido un error insperado, inténtelo de nuevo más tarde.</span>
+                                    <span *ngIf="reseniaOk == true" class="text-center text-success">Tu reseña ha sido enviada correctamente, está a la espera de ser aprobada por el personal del camping, gracias.</span>
                                 </div>
 
                             </form>

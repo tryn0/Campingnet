@@ -46,6 +46,8 @@ export class AlojamientoComponent implements OnInit {
   public reseñas: any;
   public resenia: FormGroup;
   public anonimoCheck: boolean = false;
+  public errorResenia: boolean = false;
+  public reseniaOk: boolean = false;
 
   constructor(private router: ActivatedRoute, private http: HttpClient, public fb: FormBuilder, private route: Router) {
     
@@ -213,45 +215,46 @@ export class AlojamientoComponent implements OnInit {
     console.log(this.anonimoCheck);
   }
 
-  onChangePage($event, lista) {    
-    //if ($event*10 > lista.length) { // Comprueba si la página actual * 10(reseñas de cada página) es mayor a la cantidad d ereseñas restantes si es mayor significa que hay más páginas que reseñas, redirige a la página anterior
-      //this.p -= 1;
-    //}else{ // Si hay más reseñas que páginas significa que hay más reseñas que páginas
-      this.p = $event
-    //}
-    /**
-     * ? Por ejemplo si hay 34 reseñas, tiene que haber 4 páginas, lo hace solo el módulo ngx-pagination
-     * ? pero si paso de 34 a 29 tiene que haber 3 páginas, 10 por cada, más el pico en la siguiente
-     */
+  onChangePage($event) {    
+    this.p = $event
   }
 
   enviarResenia(){ // Función para guardar reseña
      if (this.resenia.get('puntuacion').value == '' || this.resenia.get('puntuacion').value == 0){
       this.resenia.get('puntuacion').setErrors({'noPuntuacion': true});
       
-    }else if (this.resenia.get('mensaje').value.length == 0 || this.resenia.get('mensaje').value.length < 25){
+    }else{
+      this.resenia.get('puntuacion').setErrors(null);
+    }
+    if (this.resenia.get('mensaje').value.length == 0 || this.resenia.get('mensaje').value.length < 25){
       this.resenia.get('mensaje').setErrors({'noTexto': true});
       
     }else{
-      this.resenia.get('puntuacion').setErrors(null);
       this.resenia.get('mensaje').setErrors(null);
+      if(!this.resenia.get('puntuacion').hasError('noPuntuacion')) {
+        let reseniaEnviar = new HttpParams()
+        .set('opcion', '3')
+        .set('idUsuario', this.usuarioActual.id)
+        .set('idAlojamiento', (this.alojamientoSeleccionado.idAlojamiento).toString())
+        .set('comentario', this.resenia.get('mensaje').value)
+        .set('puntuacion', this.resenia.get('puntuacion').value);
 
-      let reseniaEnviar = new HttpParams()
-      .set('idUsuario', this.usuarioActual.id)
-      .set('idAlojamiento', (this.alojamientoSeleccionado.idAlojamiento).toString())
-      .set('comentario', this.resenia.get('mensaje').value);
+        let anon: number = 0;
+        if (this.anonimoCheck == true) { // Si es anonimo igualo a anon a 1 y sino lo es se queda en 0
+          anon = 1;
+        }
+        reseniaEnviar = reseniaEnviar.set('anonimo', anon.toString());
 
-      let anon: number = 0;
-      if (this.anonimoCheck == true) { // Si es anonimo igualo a anon a 1 y sino lo es se queda en 0
-        anon = 1;
+        console.log(reseniaEnviar)
+        this.http.post<any>("http://localhost/resenias.php", reseniaEnviar).subscribe(data => {
+          if(data != null && data != 0) {
+            //console.log(data)
+            this.reseniaOk = true;
+          }else{
+            this.errorResenia = true;
+          }
+        });
       }
-      reseniaEnviar = reseniaEnviar.set('anonimo', anon.toString());
-
-      console.log(reseniaEnviar)
-
-
-      // AQUI HTTP POST PARA ENVIAR LA RESEÑA
-
     }
   }
 
