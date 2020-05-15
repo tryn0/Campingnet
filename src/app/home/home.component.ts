@@ -11,6 +11,8 @@ export class HomeComponent implements OnInit {
 
   userdata = [];
 
+  public mostrarEventos: boolean = false;
+
   constructor() {
 
   }
@@ -50,6 +52,26 @@ export class HomeComponent implements OnInit {
       informacion: "información 3"
     },
   ];
+
+  public listaEventos = [
+    {
+      evento: "evento 1", info: "info evento 1"
+    },
+    {
+      evento: "evento 2", info: "info evento 2"
+    },
+    {
+      evento: "evento 3", info: "info evento 3"
+    },
+  ];
+
+  eventos() {
+    this.mostrarEventos = true;
+  }
+
+  atrasEventos() {
+    this.mostrarEventos = false;
+  }
 
   ngOnInit(): void {
   }
