@@ -1,4 +1,5 @@
 import { Component, OnInit } from '@angular/core';
+import { ActivatedRoute, Router } from '@angular/router';
 
 @Component({
   selector: 'app-noencontrado',
@@ -7,12 +8,15 @@ import { Component, OnInit } from '@angular/core';
 })
 export class NoencontradoComponent implements OnInit {
 
-  constructor(){}
+  constructor(private route: ActivatedRoute, private router: Router){}
 
   volver(){ // Función para volver atrás en el historial
     history.back();
   }
 
-  ngOnInit(): void {}
-
+  ngOnInit(): void {
+    if(this.route.snapshot.url[0].path.toLowerCase() !== this.route.snapshot.url[0].path){
+      this.router.navigate([this.route.snapshot.url[0].path.toLowerCase()]);
+    }
+  }
 }
