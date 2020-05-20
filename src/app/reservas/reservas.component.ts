@@ -504,6 +504,7 @@ export class ReservasComponent implements OnInit {
 
     // Obtención de los precios
     this.http.post('http://34.206.59.221/reserva.php', params2).subscribe(data =>{
+      //console.log(data)
       if(data != null && data!= 0){ // Si recibe algún alojamiento
         this.idAlojamientoRandom = data[0]['idAlojamiento'];
         let precioAlojamiento2 = new HttpParams()
@@ -512,6 +513,7 @@ export class ReservasComponent implements OnInit {
         let k = new HttpParams()
         .set('opcion','10');
         this.http.post('http://34.206.59.221/reserva.php', precioAlojamiento2).subscribe(data =>{
+          //console.log(data)
           if(data != null && data != 0){ // Si recibe algún dato
             this.precioAlojamiento = data[0]['precio'];
             for (let i = 0; i < this.extras.length; i++) {
@@ -521,6 +523,7 @@ export class ReservasComponent implements OnInit {
             this.precioAlojamientoFinal = ((this.precioAlojamiento*this.dias)*this.multiplicador);
             //console.log('Precio alojamiento final = ('+this.precioAlojamiento+'*'+this.dias+')*'+this.multiplicador);
             this.http.post('http://34.206.59.221/reserva.php', k).subscribe(data =>{
+              //console.log(data)
               if(data != null && data != 0){ // Si recibe algún dato
                 this.preciosServicios = data;
                 for (let i = 0; i < this.extras.length; i++) {

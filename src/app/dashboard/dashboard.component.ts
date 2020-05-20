@@ -1353,10 +1353,10 @@ export class DashboardComponent implements OnInit {
        * ! Aquí va el código de USUARIOS, AQUÍ SE PODRÁ BUSCAR, VER, ELIMINAR USUARIOS, pero NO la contraseña, como en el Panel de Control
        */
 
-      let users = new HttpParams()
+      let usuariosDatos = new HttpParams()
       .set('opcion', '20');
-      this.http.post<any>("http://34.206.59.221/dashboard.php", users).subscribe(data => {
-        //console.log(data)
+      this.http.post<any>("http://34.206.59.221/dashboard.php", usuariosDatos).subscribe(data => {
+        console.log(data)
         if (data != null && data != 0) {
           this.listadoUsuarios = data;
         }
