@@ -715,7 +715,7 @@
             <div class="container">
                 <div class="mt-5">
                     <h4 class="text-center mb-4">Listado de los servicios</h4>
-                    <div *ngFor="let servicio of listadoServicios | paginate: { id: 'pagination', itemsPerPage: 10, currentPage: p, totalItems: listadoUsuarios.length }">
+                    <div *ngFor="let servicio of listadoServicios | paginate: { id: 'pagination', itemsPerPage: 10, currentPage: p, totalItems: listadoServicios.length }">
                         <mat-card class="mb-4">
                             <mat-card-header class="justify-content-end">
                                 <div class="col-12 text-center text-md-left">
@@ -758,7 +758,7 @@
                                 <button mat-raised-button color="accent" (click)="agregarTemp()">Añadir temporada</button>
                             </div>
                             <p class="text-center mb-5"><mat-icon class="icon">info</mat-icon>Tenga en cuenta las fechas de las temporadas antes de añadir una</p>
-                            <div *ngFor="let temporada of listadoTemporadas | paginate: { id: 'pagination', itemsPerPage: 10, currentPage: p, totalItems: listadoUsuarios.length }">
+                            <div *ngFor="let temporada of listadoTemporadas | paginate: { id: 'pagination', itemsPerPage: 10, currentPage: p, totalItems: listadoTemporadas.length }">
                                 <mat-card class="mb-4">
                                     <mat-card-header class="justify-content-end">
                                         <div class="col-12 text-center text-md-left">
@@ -880,7 +880,7 @@
                             <button mat-raised-button color="accent" class="mb-4" (click)="addServicio()">Añadir servicio</button>
                         </div>
                         
-                        <div *ngFor="let servicio of listadoServicios | paginate: { id: 'pagination', itemsPerPage: 10, currentPage: p, totalItems: listadoUsuarios.length }">
+                        <div *ngFor="let servicio of listadoServicios | paginate: { id: 'pagination', itemsPerPage: 10, currentPage: p, totalItems: listadoServicios.length }">
                             <mat-card class="mb-4 pb-5">
                                 <mat-card-header class="justify-content-end">
                                     <div class="col-12 text-center text-md-left">

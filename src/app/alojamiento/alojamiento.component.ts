@@ -5,7 +5,6 @@ import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { Alojamiento } from "./alojamiento";
 
 import { encriptar, desencriptar } from '../crypto-storage';
-import { StarRatingComponent } from 'ng-starrating';
 
 @Component({
   selector: 'app-alojamiento',
@@ -13,6 +12,8 @@ import { StarRatingComponent } from 'ng-starrating';
   styleUrls: ['./alojamiento.component.css']
 })
 export class AlojamientoComponent implements OnInit {
+
+  public currentRate = 5.50;
 
   public p: number = 1;
 
@@ -199,20 +200,13 @@ export class AlojamientoComponent implements OnInit {
     }
   }
 
-  onRate($event:{oldValue:number, newValue:number, starRating:StarRatingComponent}) {
-    alert(`Old Value:${$event.oldValue}, 
-      New Value: ${$event.newValue}, 
-      Checked Color: ${$event.starRating.checkedcolor}, 
-      Unchecked Color: ${$event.starRating.uncheckedcolor}`);
-  }
-
   volver(){ // Botón volver atrás
     window.history.back();
   }
 
   anonimo(e){ // Función para contorlar si es anónimo o no
     this.anonimoCheck = e.checked;
-    console.log(this.anonimoCheck);
+    //console.log(this.anonimoCheck);
   }
 
   onChangePage($event) {    
@@ -245,7 +239,7 @@ export class AlojamientoComponent implements OnInit {
         }
         reseniaEnviar = reseniaEnviar.set('anonimo', anon.toString());
 
-        console.log(reseniaEnviar)
+        //console.log(reseniaEnviar)
         this.http.post<any>("http://localhost/resenias.php", reseniaEnviar).subscribe(data => {
           if(data != null && data != 0) {
             //console.log(data)

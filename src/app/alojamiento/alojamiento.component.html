@@ -142,7 +142,7 @@
                             </div>
 
                             <!-- PONER STAR RATING O ALGO ASÍ -->
-                            <star-rating value="5" totalstars="5" checkedcolor="red" uncheckedcolor="black" size="24px" readonly="false" (rate)="onRate($event)"></star-rating>
+                            <!--<star-rating value="5" totalstars="5" checkedcolor="red" uncheckedcolor="black" size="24px" readonly="false" (rate)="onRate($event)"></star-rating>-->
 
                             <span class="text-warning">
                                 Buscar sistema de puntuación de estrellas ★ ★ ★ ★ ☆ Aquí hacer una media de la
@@ -168,12 +168,18 @@
                                 <p class="card-text">Número máximo de personas: {{ alojamientoSeleccionado?.maximo_personas }}</p>
                             </div>
 
-                            <span class="text-warning">
-                                Buscar sistema de puntuación de estrellas ★ ★ ★ ★ ☆ Aquí hacer una media de la
-                                puntuación dada por los usuarios, puntuacion del 1 al 5 por ejemplo, despues se hace una media y según
-                                el número que salga, ese número son carácteres ★, se le resta ese numero a 5 y lo que salga es el
-                                caracter ☆
-                            </span>
+                            <br>
+
+                            <!-- Puntuación media del alojamiento -->
+                            <ng-template #t let-fill="fill">
+                                <span class="star" [class.full]="fill === 100">
+                                  <span class="half" [style.width.%]="fill">&#9733;</span>&#9733;
+                                </span>
+                              </ng-template>
+                              
+                              <ngb-rating [(rate)]="currentRate" [starTemplate]="t" [readonly]="true" [max]="10"></ngb-rating>
+                            <hr>
+                            <pre>Puntuación: <b>{{currentRate}}</b></pre>
                         </div>                        
                     </ng-template>
 
@@ -233,8 +239,17 @@
 
                                     <!-- Puntuación -->
                                     <div class="col-md-5">
-                                        <h6 class="float-right">★ ★ ★ ★ ☆</h6>
-                                        <input class="float-right" formControlName="puntuacion" type="number" max="10" min="0">
+                                        <!-- Puntuación media del alojamiento -->
+                                        <ng-template #t let-fill="fill">
+                                            <span class="star" [class.full]="fill === 100">
+                                            <span class="half" [style.width.%]="fill">&#9733;</span>&#9733;
+                                            </span>
+                                        </ng-template>
+                                        
+                                        <ngb-rating [starTemplate]="t" [readonly]="false" [max]="10" formControlName="puntuacion"></ngb-rating>
+                                        <hr>
+                                        <pre>Puntuación: <b>{{currentRate}}</b></pre>
+
                                     </div>
 
                                 </div>

@@ -11,6 +11,7 @@ import * as moment from 'moment/moment';
 import { MatBottomSheet, MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 
 import { encriptar, desencriptar } from '../crypto-storage';
+import { CommonModule } from '@angular/common';
 
 export const DD_MM_YYYY_Format = {
   parse: {
@@ -1352,11 +1353,11 @@ export class DashboardComponent implements OnInit {
        * ! Aquí va el código de USUARIOS, AQUÍ SE PODRÁ BUSCAR, VER, ELIMINAR USUARIOS, pero NO la contraseña, como en el Panel de Control
        */
 
-      let todosUsuarios = new HttpParams()
+      let users = new HttpParams()
       .set('opcion', '20');
-
-      this.http.post<any>("http://localhost/dashboard.php", todosUsuarios).subscribe(data => { // Obtención de todos los usuarios con rol cliente, mostrados en la parte inferior de la página
-        if(data != null && data != 0) {
+      this.http.post<any>("http://localhost/dashboard.php", users).subscribe(data => {
+        console.log(data)
+        if (data != null && data != 0) {
           this.listadoUsuarios = data;
         }
       });

@@ -5,7 +5,7 @@ import { Router, NavigationEnd } from '@angular/router';
 
 import { encriptar, desencriptar } from './crypto-storage';
 import { MatDrawer } from '@angular/material/sidenav';
-import { stringToKeyValue } from '@angular/flex-layout/extended/typings/style/style-transforms';
+import { CommonModule } from '@angular/common';
 
 @Component({
   selector: 'app-root',

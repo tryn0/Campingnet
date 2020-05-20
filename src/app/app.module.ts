@@ -7,8 +7,6 @@ import { BrowserAnimationsModule } from '@angular/platform-browser/animations';
 import { HttpClientModule } from '@angular/common/http';
 import { ReactiveFormsModule } from "@angular/forms";
 
-import { RatingModule } from 'ng-starrating';
-
 // Componentes para Angular
 import { MatToolbarModule } from '@angular/material/toolbar';
 import { MatIconModule } from '@angular/material/icon';
@@ -35,6 +33,7 @@ import { LayoutModule } from '@angular/cdk/layout';
 import { NgxPaginationModule } from 'ngx-pagination';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
+import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
 
 //Componentes añadidos
 import { HomeComponent } from './home/home.component';
@@ -100,14 +99,15 @@ import { ReservasRegistrarComponent } from './reservas-registrar/reservas-regist
     MaterialModule,
     LayoutModule,
     ScrollingModule,
-    RatingModule,
-    MatBottomSheetModule
+    MatBottomSheetModule,
+    NgbModule
   ],
   providers: [
     MatDatepickerModule
   ],
   bootstrap: [AppComponent],
-  entryComponents: [ReservasLoginComponent, confirmacion]
+  entryComponents: [ReservasLoginComponent, confirmacion],
+  exports: [AlojamientoComponent]
 })
 export class AppModule {
 }
