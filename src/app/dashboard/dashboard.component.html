@@ -795,8 +795,9 @@
                             <input matInput formControlName="nombre" type="text">
                         </mat-form-field>
                         <div class="d-flex justify-content-center">
-                            <span *ngIf="agregarTemporadas.get('nombre').hasError('noNombre')" class="text-center text-danger">Escriba el nombre de la temporada</span>
+                            <span *ngIf="agregarTemporadas.get('nombre').hasError('noNombre')" class="text-center text-danger">Escriba el nombre correcto de la temporada</span>
                         </div>
+                        <p class="text-center mb-5"><mat-icon class="icon">info</mat-icon>No use tildes ni símbolos, solo letras, a excepción de la Ñ, tampoco la use.</p>
                         
 
                         <mat-form-field class="d-flex justify-content-center mt-3">
@@ -829,7 +830,7 @@
                         </div>
                         
                         <div class="d-flex justify-content-center mb-3">
-                            <span class="text-danger" *ngIf="errorTemp == true">Error, ya hay una temporada con ese nombre, misma fecha de inicio o misma fecha de fin.</span>
+                            <span class="text-danger" *ngIf="errorTemp == true">Error, ya hay una temporada con ese nombre, misma fecha de inicio o misma fecha de fin. Quite las tildes o cualquier otro símbolo.</span>
                         </div>
                         <p class="text-center mb-5"><mat-icon class="icon">info</mat-icon>Tenga cuidado de no confundir las fechas de temporadas, ya que puedes introducir temporadas siempre que no coincida el día de comienzo o fin de la temporada o el mismo nombre de la temporada.</p>
                         <div class="d-flex justify-content-center">
@@ -866,7 +867,7 @@
                             <input matInput formControlName="multiplicador" type="number">
                         </mat-form-field>
                         <div class="d-flex justify-content-center mb-3">
-                            <span class="text-danger" *ngIf="errorTemp == true">Error, ya hay una temporada con ese nombre, misma fecha de inicio o misma fecha de fin.</span>
+                            <span class="text-danger" *ngIf="errorTemp == true">Error, ya hay una temporada con ese nombre, misma fecha de inicio o misma fecha de fin. Quite las tildes o cualquier otro símbolo.</span>
                         </div>
                         <div class="d-flex justify-content-center">
                             <button mat-raised-button color="accent" (click)="guardarTemporada()">Guardar</button>

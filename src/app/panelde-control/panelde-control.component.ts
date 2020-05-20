@@ -143,11 +143,11 @@ export class PaneldeControlComponent implements OnInit {
 
         this.http.post < any > ('http://34.206.59.221/cp.php', fd).subscribe(data => {
           if(data === 0){
-            console.log('Telefono ya en uso');
+            //console.log('Telefono ya en uso');
             this.existeTel = true;
 
           }else if(data === 1){
-            console.log('Email ya en uso');
+            //console.log('Email ya en uso');
             this.existeEmail = true;
 
           }else if(data !== 0 && data !== 1){

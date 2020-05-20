@@ -46,7 +46,6 @@ export class LoginComponent implements OnInit {
       this.http.post<any>('http://34.206.59.221/login-usuario.php', fd).subscribe(data =>{
         if(data != null){ // Si encuentra el usuario y la pass coincide
           if(data != 0){
-            console.log(data)
             this.comprobado = 'true';
             this.existe = data[0];
             this.crearUsuario();
@@ -54,7 +53,6 @@ export class LoginComponent implements OnInit {
             this.comprobado = 'false';
           }
         }else{ // No se encuentra el usuario o la pass no coincide
-          console.log(data)
           this.comprobado = 'false';
         }
       }, error => console.log(error));
@@ -80,21 +78,6 @@ export class LoginComponent implements OnInit {
   }
 
   ngOnInit(): void {
-
-    /*let fd: any = new FormData();
-    fd.append('email', 'pr1997@gmail.com');
-    fd.append('password','pepe');
-
-    this.http.post<any>('http://34.206.59.221/login-usuario.php', fd).subscribe(data => {
-     console.log(data);
-   }, error => console.log(error));*/
-/*
-    this.http.post<any>('http://34.206.59.221/login-usuario.php', fd).subscribe(data =>{
-        if(data != null){ // Si encuentra el usuario y la pass coincide
-         console.log(data)
-        }
-      }, error => console.log(error));*/
-
     // Si hay una sesión iniciada redirige a Inicio
     if(this.userdata != null){
       //this.router.navigate(['/']);

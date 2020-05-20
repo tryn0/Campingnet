@@ -173,7 +173,7 @@ export class DashboardComponent implements OnInit {
     this.agregarTemporadas = this.fb.group({
       fechaInicio: ['', [Validators.required]],
       fechaFin: ['', [Validators.required]],
-      nombre: ['', [Validators.required, Validators.maxLength(20)]],
+      nombre: ['', [Validators.required, Validators.maxLength(20), Validators.pattern('[a-zA-Z]+')]],
       multiplicador: ['', [Validators.required, Validators.max(2)]],
     });
 
@@ -442,7 +442,7 @@ export class DashboardComponent implements OnInit {
           .set('opcion', '6')
           .set('idUsuario', element['idUsuario']);
           this.http.post < any > ("http://34.206.59.221/dashboard.php", nombreUser).subscribe(data => { // Obtener los datos del cliente
-          console.log(data)
+          //console.log(data)
             if (data != null && data != 0) {
               this.listadoBuscado[i].alias_usuario = data[0]['alias_usuario'];
               this.listadoBuscado[i].nif = data[0]['nif_usuario'];
@@ -557,13 +557,20 @@ export class DashboardComponent implements OnInit {
     
   }
 
-  editar(r) {
+  editar(r) { // Editar reserva
+    /**
+     * TODO: Cargar un formulario con los datos de la reserva, las fechas han cambiado comprobar si hay alguna reserva de ese alojamiento entre las fechas de entrada y salida, lo mismo que al reservas pero especificamente del alojamiento
+     * TODO: Añadir al formulario tantos checkbox e inputs como servicios haya, y los servicios que tenga contratado checkados y con la cantidad en los inputs, si se quiere añadir un servicio checkar el checkbox e introducir una cantidad y creo que ya
+     */
     this.reservaSeleccionada = true;
     //console.log(this.reservaSeleccionada)
-    console.log(r);
+    //console.log(r);
   }
 
-  eliminar(r) {
+  eliminar(r) { // Eliminación de reserva
+    /**
+     * TODO: Copiar lo del popup de eliminacion pero para reserva, primero eliminar servicios_reserva y luego la reserva en sí
+     */
     console.log(r)
   }
 
@@ -583,7 +590,7 @@ export class DashboardComponent implements OnInit {
     }else{
       this.agregarTemporadas.get('fechaFin').setErrors({'noFechaFin': true});
     }
-    if(this.agregarTemporadas.get('nombre').value != ''&& this.agregarTemporadas.get('nombre').value != null) {
+    if(this.agregarTemporadas.get('nombre').value != '' && this.agregarTemporadas.get('nombre').value != null && !this.agregarTemporadas.get('nombre').hasError('pattern')) {
       this.agregarTemporadas.get('nombre').setErrors(null);
     }else{
       this.agregarTemporadas.get('nombre').setErrors({'noNombre': true});
@@ -604,6 +611,7 @@ export class DashboardComponent implements OnInit {
       .set('insert', '1');
 
       this.http.post<any>("http://34.206.59.221/dashboard.php", tempParams).subscribe(data => {
+        //console.log(data)
         if(data != null && data != 0) {
           location.reload();
           //console.log(data)
@@ -708,7 +716,7 @@ export class DashboardComponent implements OnInit {
       .set('precio', this.edicionServicios.get('precio').value)
       .set('idServicio', this.edicionServicios.get('idServicio').value);
 
-      console.log(servicio)
+      //console.log(servicio)
       this.http.post<any>("http://34.206.59.221/dashboard.php", servicio).subscribe(data =>{ // Obtener las entradas al camping del día
         if(data != null && data != 0){
           location.reload();
@@ -769,10 +777,10 @@ export class DashboardComponent implements OnInit {
     let ok = false;
     if(!this.addAlojamientoForm.get('nombre').hasError('noNombre') && !this.addAlojamientoForm.get('precio').hasError('noPrecio') && !this.addAlojamientoForm.get('tipo').hasError('noTipo') ){
       if(this.addAlojamientoForm.get('tipo').value == 'parcela' && !this.addAlojamientoForm.get('sombra').hasError('noSombra') && !this.addAlojamientoForm.get('dimension').hasError('noDimension')){
-        console.log('parcela SIN errores')
+        //console.log('parcela SIN errores')
         ok = true;
       }else if(this.addAlojamientoForm.get('tipo').value == 'bungalow' && !this.addAlojamientoForm.get('habitaciones').hasError('noHabitaciones') && !this.addAlojamientoForm.get('maximo_personas').hasError('noMaximo')){
-        console.log('bungalow SIN errores')
+        //console.log('bungalow SIN errores')
         ok = true;
       }
     }
@@ -793,7 +801,7 @@ export class DashboardComponent implements OnInit {
 
       this.http.post<any>("http://34.206.59.221/dashboard.php", insertAlojamiento).subscribe(data =>{ // Obtener las entradas al camping del día
       if(data != null && data != 0){
-        console.log(data)
+        //console.log(data)
       }else{
         console.log(data+' error')
       }
@@ -1304,7 +1312,7 @@ export class DashboardComponent implements OnInit {
       .set('opcion', '17');
 
       this.http.post<any>("http://34.206.59.221/dashboard.php", reseniasBuscar).subscribe(data => { // Últimas 10 reseñas
-      console.log(data)
+      //console.log(data)
         if(data != null && data != 0){
           this.reseniasList = data;
           for (let k = 0; k < this.reseniasList.length; k++) {
@@ -1361,7 +1369,7 @@ export class DashboardComponent implements OnInit {
       let usuariosDatos = new HttpParams()
       .set('opcion', '20');
       this.http.post<any>("http://34.206.59.221/dashboard.php", usuariosDatos).subscribe(data => {
-        console.log(data)
+        //console.log(data)
         if (data != null && data != 0) {
           this.listadoUsuarios = data;
         }
@@ -1479,7 +1487,7 @@ export class DashboardComponent implements OnInit {
       .set('opcion', '23');
 
       this.http.post<any>("http://34.206.59.221/dashboard.php", temporadas).subscribe(data => {
-        console.log(data)
+        //console.log(data)
         if(data != null && data != 0) {
           //console.log(data)
           this.listadoTemporadas = data;
