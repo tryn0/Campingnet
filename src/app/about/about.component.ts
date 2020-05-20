@@ -25,7 +25,7 @@ export class AboutComponent implements OnInit {
   ];
 
   constructor(private http: HttpClient) {
-    this.http.get('http://localhost/servicios.php').subscribe(data => {
+    this.http.get('http://34.206.59.221/servicios.php').subscribe(data => {
       this.servicios = data;
       }, error => console.log(error));
   }

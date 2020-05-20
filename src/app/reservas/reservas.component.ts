@@ -124,7 +124,7 @@ export class ReservasComponent implements OnInit {
       .set('opcion', '1');
 
       // Petición POST para obtener todos los tipos de alojamieto, FORMULARIO 1, Tipo de alojamiento
-      this.http.post('http://localhost/reserva.php', params2).subscribe(data =>{
+      this.http.post('http://34.206.59.221/reserva.php', params2).subscribe(data =>{
         if(data != null && data != 0){ // Si recibe algún alojamiento
           this.tipos2 = data;
           for (let i = 0; i < this.tipos2.length; i++) {
@@ -145,7 +145,7 @@ export class ReservasComponent implements OnInit {
       this.fecha2 = (this.fechas.get('fechaSalida').value).format('DD-MM-YYYY');
 
       // Para los multiplicativos de las fechas
-      this.http.post('http://localhost/reserva.php', params3).subscribe(data =>{
+      this.http.post('http://34.206.59.221/reserva.php', params3).subscribe(data =>{
         if(data != null){ // Si recibe algún alojamiento
 
           // Total de días
@@ -292,7 +292,7 @@ export class ReservasComponent implements OnInit {
 
 
     // Petición POST para obtener todos los tipos de alojamieto y sus características, FORMULARIO 1, Sombra o habitaciones
-    this.http.post('http://localhost/reserva.php', params).subscribe(data =>{
+    this.http.post('http://34.206.59.221/reserva.php', params).subscribe(data =>{
       if(data != null && data != 0){ // Si recibe algún alojamiento
         Object.keys(data[0]).forEach(key => { // Para sacar las keys del array obtenido desde reserva.php
           this.dato1 = key; // Sin mayúscula
@@ -369,7 +369,7 @@ export class ReservasComponent implements OnInit {
       .set('habitaciones', datos['habitaciones']);
     }
      
-    this.http.post('http://localhost/reserva.php', params2).subscribe(data =>{
+    this.http.post('http://34.206.59.221/reserva.php', params2).subscribe(data =>{
       if(data != null && data != 0){ // Si recibe algún alojamiento
         this.arrayCaract2 = data;
         Object.keys(data[0]).forEach(key => { // Para sacar las keys del array obtenido desde reserva.php
@@ -503,7 +503,7 @@ export class ReservasComponent implements OnInit {
      */
 
     // Obtención de los precios
-    this.http.post('http://localhost/reserva.php', params2).subscribe(data =>{
+    this.http.post('http://34.206.59.221/reserva.php', params2).subscribe(data =>{
       if(data != null && data!= 0){ // Si recibe algún alojamiento
         this.idAlojamientoRandom = data[0]['idAlojamiento'];
         let precioAlojamiento2 = new HttpParams()
@@ -511,7 +511,7 @@ export class ReservasComponent implements OnInit {
         .set('idAlojamiento', this.idAlojamientoRandom.toString());
         let k = new HttpParams()
         .set('opcion','10');
-        this.http.post('http://localhost/reserva.php', precioAlojamiento2).subscribe(data =>{
+        this.http.post('http://34.206.59.221/reserva.php', precioAlojamiento2).subscribe(data =>{
           if(data != null && data != 0){ // Si recibe algún dato
             this.precioAlojamiento = data[0]['precio'];
             for (let i = 0; i < this.extras.length; i++) {
@@ -520,7 +520,7 @@ export class ReservasComponent implements OnInit {
             }
             this.precioAlojamientoFinal = ((this.precioAlojamiento*this.dias)*this.multiplicador);
             //console.log('Precio alojamiento final = ('+this.precioAlojamiento+'*'+this.dias+')*'+this.multiplicador);
-            this.http.post('http://localhost/reserva.php', k).subscribe(data =>{
+            this.http.post('http://34.206.59.221/reserva.php', k).subscribe(data =>{
               if(data != null && data != 0){ // Si recibe algún dato
                 this.preciosServicios = data;
                 for (let i = 0; i < this.extras.length; i++) {
@@ -597,7 +597,7 @@ export class ReservasComponent implements OnInit {
         /**
          * * Esto es para guardar la reserva en la BD
          */
-        this.http.post('http://localhost/reserva.php', params2).subscribe(data => {
+        this.http.post('http://34.206.59.221/reserva.php', params2).subscribe(data => {
           if (data != null && data != 0) { // Si recibe algún alojamiento
             if (data == 1) {
               this.reservaHecha = true;
@@ -705,7 +705,7 @@ export class ReservasComponent implements OnInit {
     let params = new HttpParams()
     .set('opcion', '6');
     // Petición POST para obtener todos los servicios
-    this.http.post('http://localhost/reserva.php', params).subscribe(data => {
+    this.http.post('http://34.206.59.221/reserva.php', params).subscribe(data => {
       if (data != null && data != 0) { // Si recibe algún alojamiento
         this.servicios = data;
         for (let i = 0; i < this.servicios.length; i++) {

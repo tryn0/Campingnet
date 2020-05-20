@@ -103,7 +103,7 @@ export class RegistrarComponent implements OnInit {
 
 
                   //Envío de variables a archivo PHP
-                  this.http.post < any > ('http://localhost/registro-usuario.php', fd).subscribe(data => {
+                  this.http.post < any > ('http://34.206.59.221/registro-usuario.php', fd).subscribe(data => {
                     //console.log(data);
                      if(data == 'email'){ //Si no se pudo registrar el usuario (dni, telefono o email repetido u otro error ajeno a los datos)
 

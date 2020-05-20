@@ -67,7 +67,7 @@ export class ReservasRegistrarComponent implements OnInit {
     fd.append('email', this.login.get('email').value);
     fd.append('password', this.login.get('password').value);
 
-    this.http.post<any>('http://localhost/login-usuario.php', fd).subscribe(data =>{
+    this.http.post<any>('http://34.206.59.221/login-usuario.php', fd).subscribe(data =>{
       if(data != 0){ // Si encuentra el usuario y la pass coincide
         this.existe = data[0];
         console.log(data)
@@ -124,7 +124,7 @@ export class ReservasRegistrarComponent implements OnInit {
 
 
                   //Envío de variables a archivo PHP
-                  this.http.post < any > ('http://localhost/registro-usuario.php', fd).subscribe(data => {
+                  this.http.post < any > ('http://34.206.59.221/registro-usuario.php', fd).subscribe(data => {
                     //console.log(data);
                      if(data == 'email'){ //Si no se pudo registrar el usuario (dni, telefono o email repetido u otro error ajeno a los datos)
 

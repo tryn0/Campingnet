@@ -43,7 +43,7 @@ export class LoginComponent implements OnInit {
       fd.append('email', this.login.get('email').value);
       fd.append('password', this.login.get('password').value);
 
-      this.http.post<any>('http://localhost/login-usuario.php', fd).subscribe(data =>{
+      this.http.post<any>('http://34.206.59.221/login-usuario.php', fd).subscribe(data =>{
         if(data != null){ // Si encuentra el usuario y la pass coincide
           if(data != 0){
             console.log(data)
@@ -85,7 +85,7 @@ export class LoginComponent implements OnInit {
     fd.append('email', 'pr1997@gmail.com');
     fd.append('password','pepe');
 
-    this.http.post<any>('http://localhost/login-usuario.php', fd).subscribe(data => {
+    this.http.post<any>('http://34.206.59.221/login-usuario.php', fd).subscribe(data => {
      console.log(data);
    }, error => console.log(error));*/
 /*

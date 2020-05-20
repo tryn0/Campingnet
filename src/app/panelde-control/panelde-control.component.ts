@@ -141,7 +141,7 @@ export class PaneldeControlComponent implements OnInit {
         fd.append('id', this.usuarioActual.id);
 
 
-        this.http.post < any > ('http://localhost/cp.php', fd).subscribe(data => {
+        this.http.post < any > ('http://34.206.59.221/cp.php', fd).subscribe(data => {
           if(data === 0){
             console.log('Telefono ya en uso');
             this.existeTel = true;

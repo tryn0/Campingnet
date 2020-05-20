@@ -60,7 +60,7 @@ export class AlojamientoComponent implements OnInit {
       .set('alojamiento', '')
       .set('numero', '0');
       
-      this.http.post('http://localhost/alojamientos.php', params).subscribe(data =>{ // Inicia el archivo alojamientos.php y busca en la BD los alojamientos con tipo según el 2º parámetro
+      this.http.post('http://34.206.59.221/alojamientos.php', params).subscribe(data =>{ // Inicia el archivo alojamientos.php y busca en la BD los alojamientos con tipo según el 2º parámetro
         if(data != null){ // Si encuentra alojamientos...
           this.alojamientos = data;
 
@@ -92,7 +92,7 @@ export class AlojamientoComponent implements OnInit {
       .set('numero', '0');
 
 
-      this.http.post<string>('http://localhost/alojamientos.php', params).subscribe(data =>{ // Inicia el archivo alojamientos.php y busca en la BD los alojamientos con tipo según el 2º parámetro
+      this.http.post<string>('http://34.206.59.221/alojamientos.php', params).subscribe(data =>{ // Inicia el archivo alojamientos.php y busca en la BD los alojamientos con tipo según el 2º parámetro
         if(data != null){ // Si encuentra alojamientos...
           this.alojamientos = data;
           if(this.alojamiento == 'bungalows'){
@@ -129,7 +129,7 @@ export class AlojamientoComponent implements OnInit {
       .set('alojamiento', this.alojamiento)
       .set('numero', this.router.snapshot.params.numero);
 
-      this.http.post<string>('http://localhost/alojamientos.php', params).subscribe(data =>{ // Inicia el archivo alojamientos.php y busca en la BD los alojamientos con tipo según el 2º parámetro
+      this.http.post<string>('http://34.206.59.221/alojamientos.php', params).subscribe(data =>{ // Inicia el archivo alojamientos.php y busca en la BD los alojamientos con tipo según el 2º parámetro
 
         if(data != null){ // Si encuentra algo
           if(data == '0'){ // Si devuelve 0, error
@@ -157,7 +157,7 @@ export class AlojamientoComponent implements OnInit {
                 .set('opcion', '1')
                 .set('idAlojamiento', (this.alojamientoSeleccionado.idAlojamiento).toString());
 
-                this.http.post<any>("http://localhost/resenias.php", listaResenias).subscribe(data => {
+                this.http.post<any>("http://34.206.59.221/resenias.php", listaResenias).subscribe(data => {
                   if (data != null && data != 0) {
                     //console.log(data)
                     this.listadoResenias = data;
@@ -169,7 +169,7 @@ export class AlojamientoComponent implements OnInit {
                         .set('opcion', '2')
                         .set('idUsuario', element.idUsuario);
 
-                        this.http.post<any>("http://localhost/resenias.php", user).subscribe(data => {
+                        this.http.post<any>("http://34.206.59.221/resenias.php", user).subscribe(data => {
                           if (data != null && data != 0) {
                             //console.log(data)
                             element.alias = data[0]['alias_usuario'];
@@ -240,7 +240,7 @@ export class AlojamientoComponent implements OnInit {
         reseniaEnviar = reseniaEnviar.set('anonimo', anon.toString());
 
         //console.log(reseniaEnviar)
-        this.http.post<any>("http://localhost/resenias.php", reseniaEnviar).subscribe(data => {
+        this.http.post<any>("http://34.206.59.221/resenias.php", reseniaEnviar).subscribe(data => {
           if(data != null && data != 0) {
             //console.log(data)
             this.reseniaOk = true;
