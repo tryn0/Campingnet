@@ -247,7 +247,7 @@ export class DashboardComponent implements OnInit {
     .set('opcion', '8')
     .set('idResenia', idResenia);
 
-    this.http.post<any>("http://localhost/dashboard.php", aprobado).subscribe(data =>{ // Aprobar reseña
+    this.http.post<any>("http://34.206.59.221/dashboard.php", aprobado).subscribe(data =>{ // Aprobar reseña
       if(data != null){
         if (data == 1){
           for (let x = 0; x < this.listadoResenias.length; x++) {
@@ -270,7 +270,7 @@ export class DashboardComponent implements OnInit {
     .set('opcion', '9')
     .set('idResenia', idResenia);
 
-    this.http.post<any>("http://localhost/dashboard.php", denegado).subscribe(data =>{ // Denegar reseña
+    this.http.post<any>("http://34.206.59.221/dashboard.php", denegado).subscribe(data =>{ // Denegar reseña
       if(data != null){
         for (let x = 0; x < this.listadoResenias.length; x++) {
           const element = this.listadoResenias[x];
@@ -318,7 +318,7 @@ export class DashboardComponent implements OnInit {
     .set('fechaEntrada', fecha)
     .set('idReserva', idReserva)
     .set('dni', dni);
-    this.http.post<any>("http://localhost/dashboard.php", params).subscribe(data => {
+    this.http.post<any>("http://34.206.59.221/dashboard.php", params).subscribe(data => {
       this.buscado = true;
       if (data != null && data != 0) {
         this.listadoBuscado = data;
@@ -329,7 +329,7 @@ export class DashboardComponent implements OnInit {
           let nombreUser = new HttpParams()
           .set('opcion', '6')
           .set('idUsuario', element['idUsuario']);
-          this.http.post < any > ("http://localhost/dashboard.php", nombreUser).subscribe(data => { // Obtener los datos del cliente
+          this.http.post < any > ("http://34.206.59.221/dashboard.php", nombreUser).subscribe(data => { // Obtener los datos del cliente
             if (data != null && data != 0) {
               this.listadoBuscado[i].alias_usuario = data[0]['alias_usuario'];
               this.listadoBuscado[i].nif = data[0]['nif_usuario'];
@@ -344,7 +344,7 @@ export class DashboardComponent implements OnInit {
           let idAlojamientoSalidasHoy = new HttpParams()
           .set('opcion', '11')
           .set('idReserva', element['idReserva']);
-          this.http.post < any > ("http://localhost/dashboard.php", idAlojamientoSalidasHoy).subscribe(data => { // Obtener los datos de los alojamientos de la reserva
+          this.http.post < any > ("http://34.206.59.221/dashboard.php", idAlojamientoSalidasHoy).subscribe(data => { // Obtener los datos de los alojamientos de la reserva
             if (data != null && data != 0) {
               this.listadoBuscado[i].tipo_alojamiento = data[0]['nombre'];
               this.listadoBuscado[i].idAlojamiento = data[0]['idAlojamiento'];
@@ -353,7 +353,7 @@ export class DashboardComponent implements OnInit {
               let numeAlojamiento = new HttpParams()
               .set('opcion', '12')
               .set('idAlojamiento', data[0]['idAlojamiento']);
-              this.http.post < any > ("http://localhost/dashboard.php", numeAlojamiento).subscribe(data => { // Obtener el número del alojamiento
+              this.http.post < any > ("http://34.206.59.221/dashboard.php", numeAlojamiento).subscribe(data => { // Obtener el número del alojamiento
                 if (data != null && data != 0) {
                   this.listadoBuscado[i].numeroAlojamiento = data[0]['numeroAlojamiento'];
                   if(data[0]['tipo'] == 'bungalow'){
@@ -390,7 +390,7 @@ export class DashboardComponent implements OnInit {
           let servicios = new HttpParams()
           .set('opcion', '13')
           .set('idReserva', element['idReserva']);
-          this.http.post<any>("http://localhost/dashboard.php", servicios).subscribe(data => { // Obtener los datos de los servicios contratados
+          this.http.post<any>("http://34.206.59.221/dashboard.php", servicios).subscribe(data => { // Obtener los datos de los servicios contratados
             if (data != null && data != 0) {
               for (let i = 0; i < data.length; i++) {
                 const element = data[i];
@@ -428,7 +428,7 @@ export class DashboardComponent implements OnInit {
     .set('idResenia', idResenia)
     .set('dniUsuario', dni)
     .set('idAlojamiento', idAlojamiento);
-    this.http.post<any>("http://localhost/dashboard.php", params).subscribe(data => {
+    this.http.post<any>("http://34.206.59.221/dashboard.php", params).subscribe(data => {
       this.buscado = true;
       if (data != null && data != 0) {
         this.listadoBuscado = data;
@@ -439,7 +439,7 @@ export class DashboardComponent implements OnInit {
           let nombreUser = new HttpParams()
           .set('opcion', '6')
           .set('idUsuario', element['idUsuario']);
-          this.http.post < any > ("http://localhost/dashboard.php", nombreUser).subscribe(data => { // Obtener los datos del cliente
+          this.http.post < any > ("http://34.206.59.221/dashboard.php", nombreUser).subscribe(data => { // Obtener los datos del cliente
             if (data != null && data != 0) {
               this.listadoBuscado[i].alias_usuario = data[0]['alias_usuario'];
               this.listadoBuscado[i].nif = data[0]['nif_usuario'];
@@ -452,7 +452,7 @@ export class DashboardComponent implements OnInit {
           let userResenia = new HttpParams()
           .set('opcion', '19')
           .set('idResenia', element['idResenia']);
-          this.http.post < any > ("http://localhost/dashboard.php", userResenia).subscribe(data => { // Obtener los datos del cliente
+          this.http.post < any > ("http://34.206.59.221/dashboard.php", userResenia).subscribe(data => { // Obtener los datos del cliente
             if (data != null && data != 0) {
               this.listadoBuscado[i].tipo_alojamiento = data[0]['tipo'].charAt(0).toUpperCase()+data[0]['tipo'].slice(1);
               this.listadoBuscado[i].idAlojamiento = data[0]['idAlojamiento'];
@@ -511,7 +511,7 @@ export class DashboardComponent implements OnInit {
     .set('alias', alias)
     .set('dniUsuario', dni)
     .set('email', email);
-    this.http.post<any>("http://localhost/dashboard.php", params).subscribe(data => {
+    this.http.post<any>("http://34.206.59.221/dashboard.php", params).subscribe(data => {
       this.buscado = true;
       if (data != null && data != 0) {
         this.listadoBuscado = data;
@@ -599,7 +599,7 @@ export class DashboardComponent implements OnInit {
       .set('multiplicador', this.agregarTemporadas.get('multiplicador').value)
       .set('insert', '1');
 
-      this.http.post<any>("http://localhost/dashboard.php", tempParams).subscribe(data => {
+      this.http.post<any>("http://34.206.59.221/dashboard.php", tempParams).subscribe(data => {
         if(data != null && data != 0) {
           location.reload();
           //console.log(data)
@@ -653,7 +653,7 @@ export class DashboardComponent implements OnInit {
     .set('antiguoMultiplicativo', this.multiplicativoTemp)
     .set('update', '1');
 
-    this.http.post<any>("http://localhost/dashboard.php", tempParams).subscribe(data => {
+    this.http.post<any>("http://34.206.59.221/dashboard.php", tempParams).subscribe(data => {
       if(data != null && data != 0) {
         location.reload();
       }else{
@@ -672,7 +672,7 @@ export class DashboardComponent implements OnInit {
       .set('opcion', '12')
       .set('idAlojamiento', servicio.idAlojamiento);
 
-      this.http.post<any>("http://localhost/dashboard.php", alojamiento).subscribe(data =>{ // Obtener las entradas al camping del día
+      this.http.post<any>("http://34.206.59.221/dashboard.php", alojamiento).subscribe(data =>{ // Obtener las entradas al camping del día
         if(data != null && data != 0){
           this.servicioEditar = data[0];
           this.servicioAlojamiento = true;
@@ -705,7 +705,7 @@ export class DashboardComponent implements OnInit {
       .set('idServicio', this.edicionServicios.get('idServicio').value);
 
       console.log(servicio)
-      this.http.post<any>("http://localhost/dashboard.php", servicio).subscribe(data =>{ // Obtener las entradas al camping del día
+      this.http.post<any>("http://34.206.59.221/dashboard.php", servicio).subscribe(data =>{ // Obtener las entradas al camping del día
         if(data != null && data != 0){
           location.reload();
         }else{
@@ -787,7 +787,7 @@ export class DashboardComponent implements OnInit {
         insertAlojamiento = insertAlojamiento.set('maximo_personas', this.addAlojamientoForm.get('maximo_personas').value);
       }
 
-      this.http.post<any>("http://localhost/dashboard.php", insertAlojamiento).subscribe(data =>{ // Obtener las entradas al camping del día
+      this.http.post<any>("http://34.206.59.221/dashboard.php", insertAlojamiento).subscribe(data =>{ // Obtener las entradas al camping del día
       if(data != null && data != 0){
         console.log(data)
       }else{
@@ -811,12 +811,12 @@ export class DashboardComponent implements OnInit {
     if(localStorage.getItem('usuarioActual') != null){ // Comprobación de que tiene autorización para entrar a la administración
       this.usuarioActual = desencriptar(localStorage.getItem('usuarioActual'));
       if(this.usuarioActual['rol'] == 'cliente'){
-        window.location.href = 'http://localhost:4200/';
+        window.location.href = 'http://34.206.59.221:4200/';
       }else{
         this.trabajador = true;
       }
     }else{
-      window.location.href = 'http://localhost:4200/';
+      window.location.href = 'http://34.206.59.221:4200/';
     }
 
     if (this.router.snapshot.url.length == 1 && this.router.snapshot.url[0].path == 'dashboard'){
@@ -845,7 +845,7 @@ export class DashboardComponent implements OnInit {
       let entrada = new HttpParams()
       .set('opcion', '1');
 
-      this.http.post<any>("http://localhost/dashboard.php", entrada).subscribe(data =>{ // Obtener las entradas al camping del día
+      this.http.post<any>("http://34.206.59.221/dashboard.php", entrada).subscribe(data =>{ // Obtener las entradas al camping del día
         if(data != null){
           this.reservasHoy = data[0]['COUNT(*)'];
         }
@@ -855,7 +855,7 @@ export class DashboardComponent implements OnInit {
       let salida = new HttpParams()
       .set('opcion', '2');
 
-      this.http.post<any>("http://localhost/dashboard.php", salida).subscribe(data =>{ // Obtener las salidas del camping del día
+      this.http.post<any>("http://34.206.59.221/dashboard.php", salida).subscribe(data =>{ // Obtener las salidas del camping del día
         if(data != null){
           this.reservasHoySalidas = data[0]['COUNT(*)'];
         }
@@ -865,7 +865,7 @@ export class DashboardComponent implements OnInit {
       let resenias = new HttpParams()
       .set('opcion', '3');
 
-      this.http.post<any>("http://localhost/dashboard.php", resenias).subscribe(data =>{ // Obtener las reseñas que está por ser publicadas
+      this.http.post<any>("http://34.206.59.221/dashboard.php", resenias).subscribe(data =>{ // Obtener las reseñas que está por ser publicadas
         if(data != null){
           this.revisarResenias = data[0]['COUNT(*)'];
         }
@@ -875,7 +875,7 @@ export class DashboardComponent implements OnInit {
       let reservas = new HttpParams()
       .set('opcion', '4');
 
-      this.http.post<any>("http://localhost/dashboard.php", reservas).subscribe(data =>{ // Obtener las últimas 10 reservas
+      this.http.post<any>("http://34.206.59.221/dashboard.php", reservas).subscribe(data =>{ // Obtener las últimas 10 reservas
         if(data != null){
           this.reservasList = data;
         }
@@ -911,7 +911,7 @@ export class DashboardComponent implements OnInit {
       let reseniasAprobar = new HttpParams()
       .set('opcion', '5');
 
-      this.http.post < any > ("http://localhost/dashboard.php", reseniasAprobar).subscribe(data => { // Obtener las reseñas que están por ser aprobadas para ser publicadas
+      this.http.post < any > ("http://34.206.59.221/dashboard.php", reseniasAprobar).subscribe(data => { // Obtener las reseñas que están por ser aprobadas para ser publicadas
         if (data!= null && data != 0) {
           this.listadoResenias = data;
           this.listadoReseniasAlgo = false;
@@ -923,7 +923,7 @@ export class DashboardComponent implements OnInit {
               .set('opcion', '6')
               .set('idUsuario', element['idUsuario']);
 
-            this.http.post < any > ("http://localhost/dashboard.php", nombreUser).subscribe(data => { // Obtener los nombres de todas las reseñas por aprobar
+            this.http.post < any > ("http://34.206.59.221/dashboard.php", nombreUser).subscribe(data => { // Obtener los nombres de todas las reseñas por aprobar
               if (data != null && data != 0) {
                 this.listadoResenias[i].alias_usuario = data[0]['alias_usuario'];
               }
@@ -933,7 +933,7 @@ export class DashboardComponent implements OnInit {
               .set('opcion', '7')
               .set('idResenia', element['idResenia']);
 
-            this.http.post < any > ("http://localhost/dashboard.php", idAlojamientoResenia).subscribe(data => { // Obtener el idAlojamiento de todas las reseñas por aprobar
+            this.http.post < any > ("http://34.206.59.221/dashboard.php", idAlojamientoResenia).subscribe(data => { // Obtener el idAlojamiento de todas las reseñas por aprobar
               if (data != null && data != 0) {
                 this.listadoResenias[i].idAlojamiento = data[0]['idAlojamiento'];
               }
@@ -977,7 +977,7 @@ export class DashboardComponent implements OnInit {
       let salidasHoy = new HttpParams()
       .set('opcion', '10');
 
-      this.http.post < any > ("http://localhost/dashboard.php", salidasHoy).subscribe(data => { // Obtener las reservas que saldrán hoy
+      this.http.post < any > ("http://34.206.59.221/dashboard.php", salidasHoy).subscribe(data => { // Obtener las reservas que saldrán hoy
         if (data != null && data != 0) {
           this.listadoSalidasHoy = data;
           
@@ -992,7 +992,7 @@ export class DashboardComponent implements OnInit {
             let nombreUser = new HttpParams()
             .set('opcion', '6')
             .set('idUsuario', element['idUsuario']);
-            this.http.post < any > ("http://localhost/dashboard.php", nombreUser).subscribe(data => { // Obtener los datos del cliente
+            this.http.post < any > ("http://34.206.59.221/dashboard.php", nombreUser).subscribe(data => { // Obtener los datos del cliente
               if (data != null && data != 0) {
                 this.listadoSalidasHoy[i].alias_usuario = data[0]['alias_usuario'];
                 this.listadoSalidasHoy[i].nif = data[0]['nif_usuario'];
@@ -1007,7 +1007,7 @@ export class DashboardComponent implements OnInit {
             let idAlojamientoSalidasHoy = new HttpParams()
             .set('opcion', '11')
             .set('idReserva', element['idReserva']);
-            this.http.post < any > ("http://localhost/dashboard.php", idAlojamientoSalidasHoy).subscribe(data => { // Obtener los datos de los alojamientos de la reserva
+            this.http.post < any > ("http://34.206.59.221/dashboard.php", idAlojamientoSalidasHoy).subscribe(data => { // Obtener los datos de los alojamientos de la reserva
               if (data != null && data != 0) {
                 this.listadoSalidasHoy[i].tipo_alojamiento = data[0]['nombre'];
                 this.listadoSalidasHoy[i].idAlojamiento = data[0]['idAlojamiento'];
@@ -1020,7 +1020,7 @@ export class DashboardComponent implements OnInit {
                 let numeAlojamiento = new HttpParams()
                 .set('opcion', '12')
                 .set('idAlojamiento', data[0]['idAlojamiento']);
-                this.http.post < any > ("http://localhost/dashboard.php", numeAlojamiento).subscribe(data => { // Obtener el número del alojamiento
+                this.http.post < any > ("http://34.206.59.221/dashboard.php", numeAlojamiento).subscribe(data => { // Obtener el número del alojamiento
                   if (data != null && data != 0) {
                     this.listadoSalidasHoy[i].numeroAlojamiento = data[0]['numeroAlojamiento'];
                     if(data[0]['tipo'] == 'bungalow'){
@@ -1058,7 +1058,7 @@ export class DashboardComponent implements OnInit {
             .set('opcion', '14')
             .set('idReserva', element['idReserva']);
             let cantidadFinal: any;
-            this.http.post<any>("http://localhost/dashboard.php", cantidadServicios).subscribe(data => { // Obtener la cantidad de servicios contratados
+            this.http.post<any>("http://34.206.59.221/dashboard.php", cantidadServicios).subscribe(data => { // Obtener la cantidad de servicios contratados
               if (data != null && data != 0) {
                 cantidadFinal = data;
               }
@@ -1067,7 +1067,7 @@ export class DashboardComponent implements OnInit {
             let servicios = new HttpParams()
             .set('opcion', '13')
             .set('idReserva', element['idReserva']);
-            this.http.post<any>("http://localhost/dashboard.php", servicios).subscribe(data => { // Obtener los datos de los servicios contratados
+            this.http.post<any>("http://34.206.59.221/dashboard.php", servicios).subscribe(data => { // Obtener los datos de los servicios contratados
               if (data != null && data != 0) {
                 for (let i = 0; i < data.length; i++) {
                   const element = data[i];
@@ -1124,7 +1124,7 @@ export class DashboardComponent implements OnInit {
       let entradasHoy = new HttpParams()
       .set('opcion', '15');
 
-      this.http.post < any > ("http://localhost/dashboard.php", entradasHoy).subscribe(data => { // Obtener las reservas que saldrán hoy
+      this.http.post < any > ("http://34.206.59.221/dashboard.php", entradasHoy).subscribe(data => { // Obtener las reservas que saldrán hoy
         if (data != null && data != 0) {
           this.listadoEntradasHoy = data;
           for (let i = 0; i < this.listadoEntradasHoy.length; i++) {
@@ -1134,7 +1134,7 @@ export class DashboardComponent implements OnInit {
             let nombreUser = new HttpParams()
             .set('opcion', '6')
             .set('idUsuario', element['idUsuario']);
-            this.http.post < any > ("http://localhost/dashboard.php", nombreUser).subscribe(data => { // Obtener los datos del cliente
+            this.http.post < any > ("http://34.206.59.221/dashboard.php", nombreUser).subscribe(data => { // Obtener los datos del cliente
               if (data != null && data != 0) {
                 this.listadoEntradasHoy[i].alias_usuario = data[0]['alias_usuario'];
                 this.listadoEntradasHoy[i].nif = data[0]['nif_usuario'];
@@ -1149,7 +1149,7 @@ export class DashboardComponent implements OnInit {
             let idAlojamientoSalidasHoy = new HttpParams()
             .set('opcion', '11')
             .set('idReserva', element['idReserva']);
-            this.http.post < any > ("http://localhost/dashboard.php", idAlojamientoSalidasHoy).subscribe(data => { // Obtener los datos de los alojamientos de la reserva
+            this.http.post < any > ("http://34.206.59.221/dashboard.php", idAlojamientoSalidasHoy).subscribe(data => { // Obtener los datos de los alojamientos de la reserva
               if (data != null && data != 0) {
                 this.listadoEntradasHoy[i].tipo_alojamiento = data[0]['nombre'];
                 this.listadoEntradasHoy[i].idAlojamiento = data[0]['idAlojamiento'];
@@ -1158,7 +1158,7 @@ export class DashboardComponent implements OnInit {
                 let numeAlojamiento = new HttpParams()
                 .set('opcion', '12')
                 .set('idAlojamiento', data[0]['idAlojamiento']);
-                this.http.post < any > ("http://localhost/dashboard.php", numeAlojamiento).subscribe(data => { // Obtener el número del alojamiento
+                this.http.post < any > ("http://34.206.59.221/dashboard.php", numeAlojamiento).subscribe(data => { // Obtener el número del alojamiento
                   if (data != null && data != 0) {
                     this.listadoEntradasHoy[i].numeroAlojamiento = data[0]['numeroAlojamiento'];
                     if(data[0]['tipo'] == 'bungalow'){
@@ -1196,7 +1196,7 @@ export class DashboardComponent implements OnInit {
               .set('idReserva', element['idReserva']);
 
             let cantidadFinal: any;
-            this.http.post<any>("http://localhost/dashboard.php", cantidadServicios).subscribe(data => { // Obtener la cantidad de servicios contratados
+            this.http.post<any>("http://34.206.59.221/dashboard.php", cantidadServicios).subscribe(data => { // Obtener la cantidad de servicios contratados
               if (data != null && data != 0) {
                 cantidadFinal = data;
               }
@@ -1205,7 +1205,7 @@ export class DashboardComponent implements OnInit {
             let servicios = new HttpParams()
             .set('opcion', '13')
             .set('idReserva', element['idReserva']);
-            this.http.post<any>("http://localhost/dashboard.php", servicios).subscribe(data => { // Obtener los datos de los servicios contratados
+            this.http.post<any>("http://34.206.59.221/dashboard.php", servicios).subscribe(data => { // Obtener los datos de los servicios contratados
               if (data != null && data != 0) {
                 for (let i = 0; i < data.length; i++) {
                   const element = data[i];
@@ -1260,7 +1260,7 @@ export class DashboardComponent implements OnInit {
       let reservas = new HttpParams()
       .set('opcion', '4');
 
-      this.http.post<any>("http://localhost/dashboard.php", reservas).subscribe(data => {
+      this.http.post<any>("http://34.206.59.221/dashboard.php", reservas).subscribe(data => {
         if(data != null && data != 0){
           this.reservasList = data;
         }
@@ -1299,7 +1299,7 @@ export class DashboardComponent implements OnInit {
       let reseniasBuscar = new HttpParams()
       .set('opcion', '17');
 
-      this.http.post<any>("http://localhost/dashboard.php", reseniasBuscar).subscribe(data => { // Últimas 10 reseñas
+      this.http.post<any>("http://34.206.59.221/dashboard.php", reseniasBuscar).subscribe(data => { // Últimas 10 reseñas
         if(data != null && data != 0){
           this.reseniasList = data;
           for (let k = 0; k < this.reseniasList.length; k++) {
@@ -1313,7 +1313,7 @@ export class DashboardComponent implements OnInit {
             .set('opcion', '6')
             .set('idUsuario', element.idUsuario);
 
-            this.http.post<any>("http://localhost/dashboard.php", usuarioResenia).subscribe(data => { // Datos de usuario de cada reseña
+            this.http.post<any>("http://34.206.59.221/dashboard.php", usuarioResenia).subscribe(data => { // Datos de usuario de cada reseña
               if(data != null && data != 0) {
                 this.reseniasList[k].nombre_usuario = data[0]['nombre_usuario'];
                 this.reseniasList[k].nif_usuario = data[0]['nif_usuario'];
@@ -1355,8 +1355,8 @@ export class DashboardComponent implements OnInit {
 
       let users = new HttpParams()
       .set('opcion', '20');
-      this.http.post<any>("http://localhost/dashboard.php", users).subscribe(data => {
-        console.log(data)
+      this.http.post<any>("http://34.206.59.221/dashboard.php", users).subscribe(data => {
+        //console.log(data)
         if (data != null && data != 0) {
           this.listadoUsuarios = data;
         }
@@ -1395,7 +1395,7 @@ export class DashboardComponent implements OnInit {
       let todosServicios = new HttpParams()
       .set('opcion', '22');
 
-      this.http.post<any>("http://localhost/dashboard.php", todosServicios).subscribe(data => {
+      this.http.post<any>("http://34.206.59.221/dashboard.php", todosServicios).subscribe(data => {
         if(data != null && data != 0) {
           this.listadoServicios = data;
           for (let i = 0; i < this.listadoServicios.length; i++) {
@@ -1406,7 +1406,7 @@ export class DashboardComponent implements OnInit {
               .set('opcion', '12')
               .set('idAlojamiento', element['idAlojamiento']);
 
-              this.http.post<any>("http://localhost/dashboard.php", datosAlojamiento).subscribe(data => {
+              this.http.post<any>("http://34.206.59.221/dashboard.php", datosAlojamiento).subscribe(data => {
                 if(data != null && data != 0) {
                   if (data[0]['tipo'] == 'parcela') {
                     switch (data[0]['sombra']) {
@@ -1473,7 +1473,7 @@ export class DashboardComponent implements OnInit {
       let temporadas = new HttpParams()
       .set('opcion', '23');
 
-      this.http.post<any>("http://localhost/dashboard.php", temporadas).subscribe(data => {
+      this.http.post<any>("http://34.206.59.221/dashboard.php", temporadas).subscribe(data => {
         if(data != null && data != 0) {
           //console.log(data)
           this.listadoTemporadas = data;
@@ -1511,7 +1511,7 @@ export class DashboardComponent implements OnInit {
       let todosServicios = new HttpParams()
       .set('opcion', '22');
 
-      this.http.post<any>("http://localhost/dashboard.php", todosServicios).subscribe(data => {
+      this.http.post<any>("http://34.206.59.221/dashboard.php", todosServicios).subscribe(data => {
         if(data != null && data != 0) {
           this.listadoServicios = data;
         }
@@ -1541,7 +1541,7 @@ export class confirmacion {
     .set('opcion', '25')
     .set('nombre', e);
 
-    this.http.post<any>("http://localhost/dashboard.php", temporadas).subscribe(data => {
+    this.http.post<any>("http://34.206.59.221/dashboard.php", temporadas).subscribe(data => {
       if(data != null && data != 0) {
         location.reload();
       }
