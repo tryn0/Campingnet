@@ -440,6 +440,7 @@ export class DashboardComponent implements OnInit {
           .set('opcion', '6')
           .set('idUsuario', element['idUsuario']);
           this.http.post < any > ("http://34.206.59.221/dashboard.php", nombreUser).subscribe(data => { // Obtener los datos del cliente
+          console.log(data)
             if (data != null && data != 0) {
               this.listadoBuscado[i].alias_usuario = data[0]['alias_usuario'];
               this.listadoBuscado[i].nif = data[0]['nif_usuario'];
@@ -1300,6 +1301,7 @@ export class DashboardComponent implements OnInit {
       .set('opcion', '17');
 
       this.http.post<any>("http://34.206.59.221/dashboard.php", reseniasBuscar).subscribe(data => { // Últimas 10 reseñas
+      console.log(data)
         if(data != null && data != 0){
           this.reseniasList = data;
           for (let k = 0; k < this.reseniasList.length; k++) {
@@ -1474,6 +1476,7 @@ export class DashboardComponent implements OnInit {
       .set('opcion', '23');
 
       this.http.post<any>("http://34.206.59.221/dashboard.php", temporadas).subscribe(data => {
+        console.log(data)
         if(data != null && data != 0) {
           //console.log(data)
           this.listadoTemporadas = data;

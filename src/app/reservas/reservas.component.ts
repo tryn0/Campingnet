@@ -554,6 +554,7 @@ export class ReservasComponent implements OnInit {
   }
 
   reserva() { // Si confirma la reserva, y tiene una sesión iniciada
+    console.log(this.alojamiento.get('tipo').value)
     if(this.usuarioActual != null) {
       let params2: any;
       let totalPersonas: number;
@@ -567,7 +568,9 @@ export class ReservasComponent implements OnInit {
           persExtras = 0;
           totalPersonas = this.valor2;
         } else {
-          totalPersonas = this.personas + persExtras + this.serviciosExtras.get('num6').value + this.serviciosExtras.get('num7').value;
+          let mayor = null ? this.serviciosExtras.get('num6').value : 0;
+          let menor = null ? this.serviciosExtras.get('num7').value : 0;
+          totalPersonas = this.personas + persExtras + mayor + menor;
         }
         params2 = new HttpParams()
           .set('opcion', '7')
