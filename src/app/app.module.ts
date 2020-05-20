@@ -22,10 +22,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule } from '@angular/material/core';
+import { MatNativeDateModule, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/material/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { IgxCarouselModule } from 'igniteui-angular';
-import { MatMomentDateModule } from '@angular/material-moment-adapter';
+import { MatMomentDateModule, MomentDateAdapter, MAT_MOMENT_DATE_FORMATS } from '@angular/material-moment-adapter';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MaterialModule } from './material.module';
@@ -103,7 +103,7 @@ import { ReservasRegistrarComponent } from './reservas-registrar/reservas-regist
     NgbModule
   ],
   providers: [
-    MatDatepickerModule
+    MatDatepickerModule,
   ],
   bootstrap: [AppComponent],
   entryComponents: [ReservasLoginComponent, confirmacion],

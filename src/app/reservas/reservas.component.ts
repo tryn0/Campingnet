@@ -554,7 +554,6 @@ export class ReservasComponent implements OnInit {
   }
 
   reserva() { // Si confirma la reserva, y tiene una sesión iniciada
-    console.log(this.alojamiento.get('tipo').value)
     if(this.usuarioActual != null) {
       let params2: any;
       let totalPersonas: number;

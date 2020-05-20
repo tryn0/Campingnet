@@ -15,7 +15,7 @@ import { CommonModule } from '@angular/common';
 
 export const DD_MM_YYYY_Format = {
   parse: {
-      dateInput: 'LL',
+      dateInput: 'DD/MM/YYYY',
   },
   display: {
       dateInput: 'DD/MM/YYYY',
@@ -29,7 +29,9 @@ export const DD_MM_YYYY_Format = {
   selector: 'app-dashboard',
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
-  providers: [{
+  providers: [
+    { provide: MAT_DATE_LOCALE, useValue: 'es-ES' },
+    {
     provide: DateAdapter,
     useClass: MomentDateAdapter,
     deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]
@@ -540,6 +542,7 @@ export class DashboardComponent implements OnInit {
       this.agregarTemporada = false;
     }else if (this.router.snapshot.url.length > 1 && this.router.snapshot.url[0].path == 'dashboard' && this.router.snapshot.url[1].path == 'admin' && this.router.snapshot.url[2].path == 'temporadas') {
       this.dashboardAdminTemporadasEditar = false;
+      this.agregarTemporada = false;
     }else if (this.router.snapshot.url.length > 1 && this.router.snapshot.url[0].path == 'dashboard' && this.router.snapshot.url[1].path == 'admin' && this.router.snapshot.url[2].path == 'servicios' && this.dashboardServiciosEditar == true) {
       this.dashboardServiciosEditar = false;
       this.addAlojamientoForm.get('tipo').setValue('');

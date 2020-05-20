@@ -282,6 +282,7 @@
                         <!-- Paginación de las reseñas por revisar -->
                         <pagination-controls [id]="'pagination'" (pageChange)="onChangePage($event)" autoHide="true" nextLabel="Siguiente" previousLabel="Anterior"></pagination-controls>
                     </ng-template>
+                    <p class="puntero importante text-center" [routerLink]="'/dashboard'">Volver</p>
                 </div>
             </div>
         </div>
@@ -353,6 +354,7 @@
                         <!-- Paginación de las reseñas por revisar -->
                         <pagination-controls [id]="'pagination'" (pageChange)="onChangePage($event)" autoHide="true" nextLabel="Siguiente" previousLabel="Anterior"></pagination-controls>
                     </ng-template>
+                    <p class="puntero importante text-center" [routerLink]="'/dashboard'">Volver</p>
                 </div>
             </div>
         </div>
@@ -750,6 +752,7 @@
         <!-- MODIFICAR, AÑADIR TEMPORADAS Y AÑADIR O EDITAR SERVICIOS, NUNCA ELIMINAR, YA QUE PUEDEN DAR ERRORES -->
         <div *ngIf="dashboardAdmin == true">
             <div *ngIf="dashboardAdminTemporadas == true">
+                <!-- Temporadas -->
                 <div *ngIf="dashboardAdminTemporadasEditar == false; else temporadaEditar" class="container">
                     <div *ngIf="agregarTemporada == false; else addTemp">
                         <div class="mt-5">
@@ -780,12 +783,13 @@
                                 </mat-card>
                             </div>
                             <pagination-controls class="text-center" [id]="'pagination'" (pageChange)="onChangePage($event)" autoHide="true" nextLabel="Siguiente" previousLabel="Anterior"></pagination-controls>
+                            <p class="puntero importante text-center" [routerLink]="'/dashboard'">Volver</p>
                         </div>
                     </div>
                 </div>
                 <ng-template #addTemp>
                     <h4 class="text-center">Añadir temporada</h4>
-                    <form [formGroup]="agregarTemporadas" novalidate class="mt-5" (keyup.enter)="addTemporada()">
+                    <form [formGroup]="agregarTemporadas" novalidate class="mt-5">
                         <mat-form-field class="d-flex justify-content-center mt-3">
                             <mat-label>Nombre de la temporada</mat-label>
                             <input matInput formControlName="nombre" type="text">
@@ -832,6 +836,7 @@
                             <button mat-raised-button color="accent" (click)="addTemporada()">Añadir</button>
                         </div>
                     </form>
+                    <p class="puntero text-center" (click)="atrasBusqueda()">Volver</p>
                 </ng-template>
                     
                 <ng-template #temporadaEditar>
@@ -867,10 +872,11 @@
                             <button mat-raised-button color="accent" (click)="guardarTemporada()">Guardar</button>
                         </div>
                     </form>
+                    <p class="puntero text-center" (click)="atrasBusqueda()">Volver</p>
                 </ng-template>
-                <p class="puntero importante text-center" [routerLink]="'/dashboard'">Volver</p>
             </div>
 
+            <!-- Servicios -->
             <div *ngIf="dashboardAdminServicios == true">
                 <div *ngIf="dashboardServiciosEditar == false; else editarServices">
                     <div class="container">
