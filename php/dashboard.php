@@ -24,102 +24,102 @@
     }
 
     // Salidas del camping
-    if($opcion == '"2"'){
+    else if($opcion == '"2"'){
         $hoy = date('Y-m-d');
         $sql = "SELECT COUNT(*) FROM reserva WHERE fecha_salida = '$hoy'";
         print json_encode(consulta($conn, $sql));
     }
 
     // Número de reseñas por revisar
-    if($opcion == '"3"'){
+    else if($opcion == '"3"'){
         $sql = "SELECT COUNT(*) FROM resenia WHERE publicado = 0";
         print json_encode(consulta($conn, $sql));
     }
 
     // Últimas 10 reservas
-    if($opcion == '"4"'){
+    else if($opcion == '"4"'){
         $sql = "SELECT * FROM reserva ORDER BY idReserva DESC LIMIT 10";
         print json_encode(consulta($conn, $sql));
     }
 
     // Obtiene las reseñas por aprobar
-    if($opcion == '"5"'){
+    else if($opcion == '"5"'){
         $sql = "SELECT * FROM resenia WHERE publicado = 0;";
         print json_encode(consulta($conn, $sql));
     }
 
     // Datos de las personas
-    if($opcion == '"6"'){
+    else if($opcion == '"6"'){
         $idUsuario = json_encode($_POST['idUsuario']);
         $sql = "SELECT * FROM usuario WHERE idUsuario = $idUsuario;";
         print json_encode(consulta($conn, $sql));
     }
 
     // idAlojamiento de la reseña
-    if($opcion == '"7"'){
+    else if($opcion == '"7"'){
         $idResenia = json_encode($_POST['idResenia']);
         $sql = "SELECT idAlojamiento FROM resenias WHERE idResenia = $idResenia;";
         print json_encode(consulta($conn, $sql));
     }
 
     // Aprobar reseña
-    if($opcion == '"8"'){
+    else if($opcion == '"8"'){
         $idResenia = json_encode($_POST['idResenia']);
         $sql = "UPDATE resenia SET publicado = 1 WHERE idResenia = $idResenia;";
         print json_encode(update($conn, $sql));
     }
 
     // Denegar reseña
-    if($opcion == '"9"'){
+    else if($opcion == '"9"'){
         $idResenia = json_encode($_POST['idResenia']);
         $sql = "UPDATE resenia SET publicado = 2 WHERE idResenia = $idResenia;";
         print json_encode(update($conn, $sql));
     }
 
     // Salidas del día
-    if($opcion == '"10"'){
+    else if($opcion == '"10"'){
         $hoy = date('Y-m-d');
         $sql = "SELECT * FROM reserva WHERE fecha_salida = '$hoy'";
         print json_encode(consulta($conn, $sql));
     }
 
     // Datos de alojamientos en servicio desde reserva
-    if($opcion == '"11"'){
+    else if($opcion == '"11"'){
         $idReserva = json_encode($_POST['idReserva']);
         $sql = "SELECT * FROM servicio WHERE idAlojamiento IS NOT NULL AND idServicio IN (SELECT idServicio FROM servicios_reserva WHERE idReserva = $idReserva)";
         print json_encode(consulta($conn, $sql));
     }
 
     // Datos del alojamiento
-    if($opcion == '"12"'){
+    else if($opcion == '"12"'){
         $idAlojamiento = json_encode($_POST['idAlojamiento']);
         $sql = "SELECT * FROM alojamiento WHERE idAlojamiento = $idAlojamiento";
         print json_encode(consulta($conn, $sql));
     }
 
     // Servicios de la reserva
-    if($opcion == '"13"'){
+    else if($opcion == '"13"'){
         $idReserva = json_encode($_POST['idReserva']);
         $sql = "SELECT * FROM servicio WHERE idAlojamiento IS NULL AND idServicio IN (SELECT idServicio FROM servicios_reserva WHERE idReserva = $idReserva)";
         print json_encode(consulta($conn, $sql));
     }
 
     // Cantidad de servicios de la reserva
-    if($opcion == '"14"'){
+    else if($opcion == '"14"'){
         $idReserva = json_encode($_POST['idReserva']);
         $sql = "SELECT idServicio, cantidad FROM servicios_reserva WHERE idReserva = $idReserva AND idServicio IN (SELECT idServicio FROM servicio WHERE idAlojamiento IS NULL AND idServicio IN (SELECT idServicio FROM servicios_reserva WHERE idReserva = $idReserva))";
         print json_encode(consulta($conn, $sql));
     }
 
     // Entradas del día
-    if($opcion == '"15"'){
+    else if($opcion == '"15"'){
         $hoy = date('Y-m-d');
         $sql = "SELECT * FROM reserva WHERE fecha_entrada = '$hoy'";
         print json_encode(consulta($conn, $sql));
     }
 
     // Búsqueda de reservas
-    if($opcion == '"16"'){
+    else if($opcion == '"16"'){
 
         $fecha = json_encode($_POST['fechaEntrada']);
         $idReserva = json_encode($_POST['idReserva']);
@@ -152,13 +152,13 @@
     }
 
     // Últimas 10 reseñas (que están publicadas)
-    if($opcion == '"17"') {
+    else if($opcion == '"17"') {
         $sql = "SELECT * FROM resenia WHERE publicado = 1 ORDER BY idResenia DESC LIMIT 10";
         print json_encode(consulta($conn, $sql));
     }
 
     // Búsqueda de reseñas por alguno de los 3 campos
-    if($opcion == '"18"') {
+    else if($opcion == '"18"') {
         $idResenia = json_encode($_POST['idResenia']);
         $dni = json_encode($_POST['dniUsuario']);
         $idAlojamiento = json_encode($_POST['idAlojamiento']);
@@ -176,20 +176,20 @@
     }
 
     // Datos de alojamientos
-    if($opcion == '"19"') {
+    else if($opcion == '"19"') {
         $idResenia = json_encode($_POST['idResenia']);
         $sql = "SELECT * FROM alojamiento WHERE idAlojamiento IN (SELECT idAlojamiento FROM resenias WHERE idResenia = $idResenia)";
         print json_encode(consulta($conn, $sql));
     }
 
     // Datos de usuarios
-    if($opcion == '"20"') {
+    else if($opcion == '"20"') {
         $sql = "SELECT alias_usuario, email, idUsuario, nif_usuario, nombre_usuario, rol, telefono FROM usuario WHERE rol = 'cliente'";
         print json_encode(consulta($conn, $sql));
     }
 
     // Búsqueda de usuario
-    if($opcion == '"21"') {
+    else if($opcion == '"21"') {
         $alias = json_encode($_POST['alias']);
         $dni = json_encode($_POST['dniUsuario']);
         $email = json_encode($_POST['email']);
@@ -219,19 +219,19 @@
     }
 
     // Todos los servicios
-    if($opcion == '"22"') {
+    else if($opcion == '"22"') {
         $sql = "SELECT * FROM servicio";
         print json_encode(consulta($conn, $sql));
     }
 
     // Temporadas
-    if($opcion == '"23"') {
+    else if($opcion == '"23"') {
         $sql = "SELECT * FROM temporadas ORDER BY multiplicador";
         print json_encode(consulta($conn, $sql));
     }
 
     // Edición/agregado temporadas
-    if($opcion == '"24"') {
+    else if($opcion == '"24"') {
         $nombre = substr(json_encode($_POST['nombre']), 1,-1);
         $fechaInicio = json_encode($_POST['fechaInicio']);
         $fechaFin = json_encode($_POST['fechaFin']);
@@ -277,7 +277,7 @@
     }
 
     // Eliminar emporadas
-    if($opcion == '"25"') {
+    else if($opcion == '"25"') {
         $nombre = json_encode($_POST['nombre']);
 
         $sql = "DELETE FROM temporadas WHERE nombre_temporada = $nombre";
@@ -285,7 +285,7 @@
     }
 
     // Editar/añadir servicios
-    if($opcion == '"26"') {
+    else if($opcion == '"26"') {
         $nombre = json_encode($_POST['nombre']);
         $precio = json_encode($_POST['precio']);
         if($_POST['idServicio']) {
@@ -311,7 +311,7 @@
     }
 
     // Añadir alojamiento y su respectivo servicio
-    if($opcion == '"27"') {
+    else if($opcion == '"27"') {
         $nombre = substr(json_encode($_POST['nombre']),1,-1);
         $precio = json_encode($_POST['precio']);
         $tipo = substr(json_encode($_POST['tipo']),1,-1);

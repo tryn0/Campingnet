@@ -203,7 +203,7 @@
     }
 
     if($opcion == '"9"'){ // Precio alojamiento
-        $idAlojamientoRandom = json_encode($_POST['idAlojamiento']);
+        $idAlojamientoRandom = substr(json_encode($_POST['idAlojamiento']),1,-1);
         $sql = "SELECT precio FROM servicio WHERE idAlojamiento = $idAlojamientoRandom";
         print json_encode(consulta($conn, $sql));
     }
