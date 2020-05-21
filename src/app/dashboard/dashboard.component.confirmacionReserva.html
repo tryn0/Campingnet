@@ -1,0 +1,3 @@
+<p class="text-center">¿Seguro que desea borrar la reserva con <strong>ID {{data.reserva.idReserva}}</strong> del <strong>usuario {{data.reserva.nombre_usuario}}</strong> con <strong>DNI {{data.reserva.nif}}</strong>?</p>
+<button mat-raised-button color="accent" (click)="confirmadoReserva(data.reserva.idReserva)">Sí</button>
+<button mat-raised-button color="accent" class="float-right" (click)="cancelar()">Cancelar</button>

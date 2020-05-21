@@ -22,10 +22,10 @@ import { MatFormFieldModule } from '@angular/material/form-field';
 import { MatInputModule } from '@angular/material/input';
 import { MatSelectModule } from '@angular/material/select';
 import { MatDatepickerModule } from '@angular/material/datepicker';
-import { MatNativeDateModule, DateAdapter, MAT_DATE_LOCALE, MAT_DATE_FORMATS } from '@angular/material/core';
+import { MatNativeDateModule } from '@angular/material/core';
 import { FlexLayoutModule } from '@angular/flex-layout';
 import { IgxCarouselModule } from 'igniteui-angular';
-import { MatMomentDateModule, MomentDateAdapter, MAT_MOMENT_DATE_FORMATS } from '@angular/material-moment-adapter';
+import { MatMomentDateModule } from '@angular/material-moment-adapter';
 import { MatCheckboxModule } from '@angular/material/checkbox';
 import { MatDialogModule } from '@angular/material/dialog';
 import { MaterialModule } from './material.module';
@@ -46,7 +46,7 @@ import { UsuarioComponent } from './usuario/usuario.component';
 import { AlojamientoComponent } from './alojamiento/alojamiento.component';
 import { NoencontradoComponent } from './noencontrado/noencontrado.component';
 import { PaneldeControlComponent } from './panelde-control/panelde-control.component';
-import { DashboardComponent, confirmacion } from './dashboard/dashboard.component';
+import { DashboardComponent, confirmacion, confirmacionReserva } from './dashboard/dashboard.component';
 import { ReservasLoginComponent } from './reservas-login/reservas-login.component';
 import { ReservasRegistrarComponent } from './reservas-registrar/reservas-registrar.component';
 
@@ -65,6 +65,7 @@ import { ReservasRegistrarComponent } from './reservas-registrar/reservas-regist
     PaneldeControlComponent,
     DashboardComponent,
     confirmacion,
+    confirmacionReserva,
     ReservasLoginComponent,
     ReservasRegistrarComponent,
     
@@ -106,7 +107,7 @@ import { ReservasRegistrarComponent } from './reservas-registrar/reservas-regist
     MatDatepickerModule,
   ],
   bootstrap: [AppComponent],
-  entryComponents: [ReservasLoginComponent, confirmacion],
+  entryComponents: [ReservasLoginComponent, confirmacion, confirmacionReserva],
   exports: [AlojamientoComponent]
 })
 export class AppModule {

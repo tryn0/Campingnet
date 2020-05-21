@@ -214,6 +214,10 @@ export class DashboardComponent implements OnInit {
     this._popUp.open(confirmacion, {data: {nombre}});
   }
 
+  openBottomSheet2(reserva): void {
+    this._popUp.open(confirmacionReserva, {data: {reserva}});
+  }
+
   onChangePage($event, lista?) {    
     if (lista) { // Si se le pasa una lista por parámetro..
       if ($event*10 > lista.length) { // Comprueba si la página actual * 10(reseñas de cada página) es mayor a la cantidad de reseñas restantes si es mayor significa que hay más páginas que reseñas, redirige a la página anterior
@@ -572,14 +576,15 @@ export class DashboardComponent implements OnInit {
      * TODO: Copiar lo del popup de eliminacion pero para reserva, primero eliminar servicios_reserva y luego la reserva en sí
      */
     console.log(r)
+    this.openBottomSheet2(r);
   }
 
   agregarTemp() {
     this.agregarTemporada = true;
   }
 
-  addTemporada() { //Añadir temporada
-    // Si no hay algún campo vacío
+  addTemporada() { // Añadir temporada
+    // Si no hay algún campo vacío y cumplen los requisitos (Validators)
     if(this.agregarTemporadas.get('fechaInicio').value != '' && this.agregarTemporadas.get('fechaInicio').value != null) { 
       this.agregarTemporadas.get('fechaInicio').setErrors(null);
     }else {
@@ -1556,6 +1561,33 @@ export class confirmacion {
     .set('nombre', e);
 
     this.http.post<any>("http://34.206.59.221/dashboard.php", temporadas).subscribe(data => {
+      if(data != null && data != 0) {
+        location.reload();
+      }
+    });
+  }
+  cancelar() {
+    this._popUp.dismiss();
+  }
+}
+
+/**
+ * ? POPUP para confirmar eliminación de temporada
+ */
+@Component({
+  selector: 'confirmacionReserva',
+  templateUrl: 'dashboard.component.confirmacionReserva.html',
+})
+export class confirmacionReserva {
+  constructor(private _popUp: MatBottomSheetRef<confirmacionReserva>, @Inject(MAT_BOTTOM_SHEET_DATA) public data: any, private http: HttpClient) {}
+  confirmadoReserva(e) {
+    this._popUp.dismiss();
+    //console.log(e)
+    let reserva = new HttpParams()
+    .set('opcion', '28')
+    .set('idReserva', e);
+
+    this.http.post<any>("http://34.206.59.221/dashboard.php", reserva).subscribe(data => {
       if(data != null && data != 0) {
         location.reload();
       }
