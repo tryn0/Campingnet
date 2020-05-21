@@ -46,7 +46,7 @@ import { UsuarioComponent } from './usuario/usuario.component';
 import { AlojamientoComponent } from './alojamiento/alojamiento.component';
 import { NoencontradoComponent } from './noencontrado/noencontrado.component';
 import { PaneldeControlComponent } from './panelde-control/panelde-control.component';
-import { DashboardComponent, confirmacion, confirmacionReserva } from './dashboard/dashboard.component';
+import { DashboardComponent, confirmacion, confirmacionReserva, confirmacionServicio } from './dashboard/dashboard.component';
 import { ReservasLoginComponent } from './reservas-login/reservas-login.component';
 import { ReservasRegistrarComponent } from './reservas-registrar/reservas-registrar.component';
 
@@ -66,6 +66,7 @@ import { ReservasRegistrarComponent } from './reservas-registrar/reservas-regist
     DashboardComponent,
     confirmacion,
     confirmacionReserva,
+    confirmacionServicio,
     ReservasLoginComponent,
     ReservasRegistrarComponent,
     
@@ -107,7 +108,7 @@ import { ReservasRegistrarComponent } from './reservas-registrar/reservas-regist
     MatDatepickerModule,
   ],
   bootstrap: [AppComponent],
-  entryComponents: [ReservasLoginComponent, confirmacion, confirmacionReserva],
+  entryComponents: [ReservasLoginComponent, confirmacion, confirmacionReserva, confirmacionServicio],
   exports: [AlojamientoComponent]
 })
 export class AppModule {

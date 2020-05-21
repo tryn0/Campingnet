@@ -11,8 +11,9 @@ import * as moment from 'moment/moment';
 import { MatBottomSheet, MatBottomSheetRef, MAT_BOTTOM_SHEET_DATA } from '@angular/material/bottom-sheet';
 
 import { encriptar, desencriptar } from '../crypto-storage';
-import { CommonModule } from '@angular/common';
+import { CommonModule } from '@angular/common'; // Prevenir errors *ngIf
 
+// Configuración Datepicker
 export const DD_MM_YYYY_Format = {
   parse: {
       dateInput: 'DD/MM/YYYY',
@@ -30,7 +31,7 @@ export const DD_MM_YYYY_Format = {
   templateUrl: './dashboard.component.html',
   styleUrls: ['./dashboard.component.css'],
   providers: [
-    { provide: MAT_DATE_LOCALE, useValue: 'es-ES' },
+    { provide: MAT_DATE_LOCALE, useValue: 'es-ES' }, // Configuración Datepicker
     {
     provide: DateAdapter,
     useClass: MomentDateAdapter,
@@ -141,6 +142,7 @@ export class DashboardComponent implements OnInit {
   public errorGuardarServicio: boolean = false;
   public agregarAlojamiento: boolean = false;
   public addAlojamientoForm: FormGroup;
+  public errorAgregarAlojamiento: boolean = false;
   
 
   constructor( private http: HttpClient, private route: Router, private router: ActivatedRoute, breakpointObserver: BreakpointObserver, public fb: FormBuilder, private _popUp: MatBottomSheet) {
@@ -207,8 +209,6 @@ export class DashboardComponent implements OnInit {
       precio: ['', [Validators.required]],
     });
 
-
-    
     // Obtiene el tamaño de la pantalla, para 
     breakpointObserver.observe([
       Breakpoints.HandsetLandscape,
@@ -222,15 +222,19 @@ export class DashboardComponent implements OnInit {
   }
 
   
-  openBottomSheet(nombre): void {
+  openBottomSheet(nombre): void { // Popup eliminar temporada
     this._popUp.open(confirmacion, {data: {nombre}});
   }
 
-  openBottomSheet2(reserva): void {
+  openBottomSheet2(reserva): void { // Popup eliminar reserva
     this._popUp.open(confirmacionReserva, {data: {reserva}});
   }
 
-  onChangePage($event, lista?) {    
+  openBottomSheet3(servicio): void { // Popup eliminar servicio (alojamiento)
+    this._popUp.open(confirmacionServicio, {data: {servicio}});
+  }
+
+  onChangePage($event, lista?) { // Paginación
     if (lista) { // Si se le pasa una lista por parámetro..
       if ($event*10 > lista.length) { // Comprueba si la página actual * 10(reseñas de cada página) es mayor a la cantidad de reseñas restantes si es mayor significa que hay más páginas que reseñas, redirige a la página anterior
         this.p -= 1;
@@ -310,7 +314,7 @@ export class DashboardComponent implements OnInit {
     } catch(err) { }                 
   }
 
-  ngAfterViewChecked() {        
+  ngAfterViewChecked() { // Listado de servicios extras
     this.scrollToBottom();
   }
 
@@ -458,7 +462,6 @@ export class DashboardComponent implements OnInit {
           .set('opcion', '6')
           .set('idUsuario', element['idUsuario']);
           this.http.post < any > ("http://34.206.59.221/dashboard.php", nombreUser).subscribe(data => { // Obtener los datos del cliente
-          //console.log(data)
             if (data != null && data != 0) {
               this.listadoBuscado[i].alias_usuario = data[0]['alias_usuario'];
               this.listadoBuscado[i].nif = data[0]['nif_usuario'];
@@ -510,7 +513,6 @@ export class DashboardComponent implements OnInit {
   }
 
   buscarUsuarios() { // Busca usuarios por el alias del usuario, el DNI o el email
-
     let alias: any = '0';
     let dni: any = '0';
     let email: any = '0';
@@ -579,6 +581,8 @@ export class DashboardComponent implements OnInit {
      * TODO: Añadir al formulario tantos checkbox e inputs como servicios haya, y los servicios que tenga contratado checkados y con la cantidad en los inputs, si se quiere añadir un servicio checkar el checkbox e introducir una cantidad y creo que ya
      */
     this.reservaEditar = null;
+    this.serviciosReservaEditar = [];
+    this.allServices = [];
     this.reservaEditar = r;
 
     // Obtención de todos los servicios de la reserva y sus cantidades
@@ -684,13 +688,22 @@ export class DashboardComponent implements OnInit {
   edicionReserva() {
     // Codigo de edicio reserva
     // todo: comprobar que no haya reservas de ese alojamiento en las fechas que se ha introducido, si solo se modifican los servicios, actualizarlos sin más
+    let reserva = new HttpParams()
+    .set('opcion', '29')
+    .set('idReserva', '');
+
+    this.http.post<any>("http://34.206.59.221/dashboard.php", reserva).subscribe(data => {
+      if(data != null && data != 0) {
+        console.log(data)
+      }
+    });
   }
 
   eliminar(r) { // Eliminación de reserva
     this.openBottomSheet2(r);
   }
 
-  agregarTemp() {
+  agregarTemp() { // Cambia la vista para agregar temporada
     this.agregarTemporada = true;
   }
 
@@ -813,6 +826,10 @@ export class DashboardComponent implements OnInit {
     }
   }
 
+  eliminarServicio(servicio) {
+    this.openBottomSheet3(servicio);
+  }
+
   guardarServicio() { // Guardar servicio en BD (Editar)
     this.errorGuardarServicio = false;
     if(this.edicionServicios.get('nombre').value != null && this.edicionServicios.get('nombre').value != '') {
@@ -842,12 +859,12 @@ export class DashboardComponent implements OnInit {
       });
   }
 
-  addAlojamiento() {
+  addAlojamiento() { // Cambia la vista para agregar alojamiento
     this.dashboardServiciosEditar = true;
     this.agregarAlojamiento = true;
   }
 
-  guardarAlojamiento() {
+  guardarAlojamiento() { // Guarda el alojamiento en la BD
     if(this.addAlojamientoForm.get('nombre').value != null && this.addAlojamientoForm.get('nombre').value != '') {
       this.addAlojamientoForm.get('nombre').setErrors(null);
     }else{
@@ -893,10 +910,8 @@ export class DashboardComponent implements OnInit {
     let ok = false;
     if(!this.addAlojamientoForm.get('nombre').hasError('noNombre') && !this.addAlojamientoForm.get('precio').hasError('noPrecio') && !this.addAlojamientoForm.get('tipo').hasError('noTipo') ){
       if(this.addAlojamientoForm.get('tipo').value == 'parcela' && !this.addAlojamientoForm.get('sombra').hasError('noSombra') && !this.addAlojamientoForm.get('dimension').hasError('noDimension')){
-        //console.log('parcela SIN errores')
         ok = true;
       }else if(this.addAlojamientoForm.get('tipo').value == 'bungalow' && !this.addAlojamientoForm.get('habitaciones').hasError('noHabitaciones') && !this.addAlojamientoForm.get('maximo_personas').hasError('noMaximo')){
-        //console.log('bungalow SIN errores')
         ok = true;
       }
     }
@@ -917,15 +932,12 @@ export class DashboardComponent implements OnInit {
 
       this.http.post<any>("http://34.206.59.221/dashboard.php", insertAlojamiento).subscribe(data =>{ // Obtener las entradas al camping del día
       if(data != null && data != 0){
-        //console.log(data)
+        location.reload();
       }else{
-        console.log(data+' error')
+        this.errorAgregarAlojamiento = true;
       }
     });
-      //console.log(insertAlojamiento)
     }
-
-    //console.log(this.addAlojamientoForm.errors)
   }
 
   addServicio() {
@@ -1696,6 +1708,32 @@ export class confirmacionReserva {
     .set('idReserva', e);
 
     this.http.post<any>("http://34.206.59.221/dashboard.php", reserva).subscribe(data => {
+      if(data != null && data != 0) {
+        location.reload();
+      }
+    });
+  }
+  cancelar() {
+    this._popUp.dismiss();
+  }
+}
+
+/**
+ * ? POPUP para confirmar eliminación de servicio (alojamiento)
+ */
+@Component({
+  selector: 'confirmacionServicio',
+  templateUrl: 'dashboard.component.confirmacionServicio.html',
+})
+export class confirmacionServicio {
+  constructor(private _popUp: MatBottomSheetRef<confirmacionServicio>, @Inject(MAT_BOTTOM_SHEET_DATA) public data: any, private http: HttpClient) {}
+  confirmadoServicio(e) {
+    this._popUp.dismiss();
+    let alojamiento = new HttpParams()
+    .set('opcion', '30')
+    .set('idAlojamiento', e);
+
+    this.http.post<any>("http://34.206.59.221/dashboard.php", alojamiento).subscribe(data => {
       if(data != null && data != 0) {
         location.reload();
       }

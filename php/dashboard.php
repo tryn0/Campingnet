@@ -318,7 +318,7 @@
         $tipo = substr(json_encode($_POST['tipo']),1,-1);
 
         // Último número del alojamiento de su tipo
-        $sql1 = "SELECT numeroAlojamiento FROM alojamiento WHERE tipo = 'parcela' ORDER BY numeroAlojamiento DESC LIMIT 1";
+        $sql1 = "SELECT numeroAlojamiento FROM alojamiento WHERE tipo = '$tipo' ORDER BY numeroAlojamiento DESC LIMIT 1";
         $numero = consulta($conn, $sql1)[0]['numeroAlojamiento']+1;
         $conn = conexion();
         
@@ -328,18 +328,35 @@
             $sql = "INSERT INTO alojamiento (tipo, sombra, dimension, habitaciones, maximo_personas, numeroAlojamiento) VALUES ('$tipo', $sombra, '$dimension', NULL, NULL, $numero)";
             $alojamiento = insert($conn, $sql);
 
-            $sql2 = "SELECT idAlojamiento FROM alojamiento WHERE tipo = '$tipo' AND sombra = $sombra AND dimension = '$dimension' AND numeroAlojamiento = $numero";
-            $conn = conexion();
-            $idAlojamiento = consulta($conn, $sql2)[0]['idAlojamiento'];
+            if($alojamiento) {
+                $sql2 = "SELECT idAlojamiento FROM alojamiento WHERE tipo = '$tipo' AND sombra = $sombra AND dimension = '$dimension' AND numeroAlojamiento = $numero";
+                $conn = conexion();
+                $idAlojamiento = consulta($conn, $sql2)[0]['idAlojamiento'];
 
-            $conn = conexion();
-            $sql3 = "INSERT INTO servicio (nombre, precio, idAlojamiento) VALUES('$nombre', $precio, $idAlojamiento)";
-            print json_encode(insert($conn, $sql3));
-        }else { // Inserts de alojamiento y servicio tipo bungalow
-            $habitaciones = json_encode($_POST['habitaciones']);
-            $maximo_personas = json_encode($_POST['maximo_personas']);
+                if($idAlojamiento) {
+                    $conn = conexion();
+                    $sql3 = "INSERT INTO servicio (nombre, precio, idAlojamiento) VALUES('$nombre', $precio, $idAlojamiento)";
+                    print json_encode(insert($conn, $sql3));
+                }
+            }
+            
+        }else { // Inserta de alojamiento y servicio tipo bungalow
+            $habitaciones = substr(json_encode($_POST['habitaciones']),1,-1);
+            $maximo_personas = substr(json_encode($_POST['maximo_personas']),1,-1);
             $sql = "INSERT INTO alojamiento (tipo, sombra, dimension, habitaciones, maximo_personas, numeroAlojamiento) VALUES ('$tipo', NULL, NULL, $habitaciones, $maximo_personas, $numero)";
-            print json_encode(insert($conn, $sql));
+            $insercion = insert($conn, $sql);
+
+            if($insercion) {
+                $sql2 = "SELECT idAlojamiento FROM alojamiento WHERE tipo = '$tipo' AND habitaciones = $habitaciones AND maximo_personas = $maximo_personas AND numeroAlojamiento = $numero";
+                $conn = conexion();
+                $idAlojamiento = consulta($conn, $sql2)[0]['idAlojamiento'];
+
+                if($idAlojamiento) {
+                    $conn = conexion();
+                    $sql3 = "INSERT INTO servicio (nombre, precio, idAlojamiento) VALUES('$nombre', $precio, $idAlojamiento)";
+                    print json_encode(insert($conn, $sql3));
+                }
+            }
         }
     }
     // Eliminar reserva
@@ -365,6 +382,19 @@
         if($delete1) {
             $conn = conexion();
             $sql2 = "DELETE FROM reserva WHERE idReserva = $idReserva";
+            print json_encode(delete($conn, $sql2));
+        }else{
+            print json_encode(0);
+        }
+    }
+    // Eliminar alojamiento
+    else if($opcion == '"30"') {
+        $idAlojamiento = json_encode($_POST['idAlojamiento']);
+        $sql = "DELETE FROM servicio WHERE idAlojamiento = $idAlojamiento";
+        $delete1 = delete($conn, $sql);
+        if($delete1) {
+            $conn = conexion();
+            $sql2 = "DELETE FROM alojamiento WHERE idAlojamiento = $idAlojamiento";
             print json_encode(delete($conn, $sql2));
         }else{
             print json_encode(0);

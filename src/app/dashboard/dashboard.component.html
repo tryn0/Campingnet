@@ -518,37 +518,44 @@
                                             </div>
                                         </div>
                                         
-
-                                        <p *ngIf="(12-totalPersonas) >= 0; else noPersonas ">{{12-totalPersonas}} personas restantes.</p>
-                                        <ng-template #noPersonas>
-                                            <p>No quedan plazas para más personas.</p>
-                                        </ng-template>
-                                        <p *ngIf="editarReserva.get('numePersonasAlojamiento').hasError('muchaGente')">El número máximo de personas es de 12.</p>
-
-                                        <div *ngFor="let servicio of allServices" class="mt-3 d-flex justify-content-center">
-                                            <div class="col-6 mt-3" *ngIf="reservaEditar.tipo_alojamiento != 'Bungalow'; else bungalow">
-                                                <mat-checkbox formControlName="servicio{{servicio.idServicio}}" (change)="onChange(servicio)">{{servicio.nombre}}</mat-checkbox>
-                                            </div>
-                                            <div class="col-6" *ngIf="servicio.idServicio != 1">
-                                                <mat-form-field>
-                                                    <input matInput type="number" formControlName="num{{servicio.idServicio}}">
-                                                </mat-form-field>
-                                            </div>
-
-                                            <ng-template #bungalow>
-                                                <div *ngIf="servicio.idServicio != 1 && servicio.idServicio != 2  && servicio.idServicio != 3  && servicio.idServicio != 4">
-                                                    <div class="col-6 mt-3">
-                                                        <mat-checkbox formControlName="servicio{{servicio.idServicio}}" (change)="onChange(servicio)">{{servicio.nombre}}</mat-checkbox>
-                                                    </div>
-                                                    <div class="col-6" *ngIf="servicio.idServicio != 1">
-                                                        <mat-form-field>
-                                                            <input matInput type="number" formControlName="num{{servicio.idServicio}}">
-                                                        </mat-form-field>
-                                                    </div>
-                                                </div>
-                                                
+                                        <div *ngIf="reservaEditar.tipo_alojamiento == 'Parcela'">
+                                            <p *ngIf="(12-totalPersonas) >= 0; else noPersonas ">{{12-totalPersonas}} personas restantes.</p>
+                                            <ng-template #noPersonas>
+                                                <p>No quedan plazas para más personas.</p>
                                             </ng-template>
+                                            <p *ngIf="editarReserva.get('numePersonasAlojamiento').hasError('muchaGente')">El número máximo de personas es de 12.</p>
                                         </div>
+
+                                        <!-- Servicios si es parcela -->
+                                        <div *ngIf="reservaEditar.tipo_alojamiento == 'Parcela'; else bungalow">
+                                            <div *ngFor="let servicio of allServices" class="mt-3 d-flex justify-content-center">
+                                                <div class="col-6 mt-3">
+                                                    <mat-checkbox formControlName="servicio{{servicio.idServicio}}" (change)="onChange(servicio)">{{servicio.nombre}}</mat-checkbox>
+                                                </div>
+                                                <div class="col-6" *ngIf="servicio.idServicio != 1">
+                                                    <mat-form-field>
+                                                        <input matInput type="number" formControlName="num{{servicio.idServicio}}">
+                                                    </mat-form-field>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <!-- Servicios si no es parcela -->
+                                        <ng-template #bungalow>
+                                            <div *ngFor="let servicio of allServices" class="mt-3 d-flex justify-content-center">
+
+                                                <div class="col-6 mt-3" *ngIf="servicio.idServicio != 1 && servicio.idServicio != 2  && servicio.idServicio != 3  && servicio.idServicio != 4">
+                                                    <mat-checkbox formControlName="servicio{{servicio.idServicio}}" (change)="onChange(servicio)">{{servicio.nombre}}</mat-checkbox>
+                                                </div>
+                                                <div class="col-6" *ngIf="servicio.idServicio != 1 && servicio.idServicio != 2  && servicio.idServicio != 3  && servicio.idServicio != 4">
+                                                    <mat-form-field>
+                                                        <input matInput type="number" formControlName="num{{servicio.idServicio}}">
+                                                    </mat-form-field>
+                                                </div>
+
+                                            </div>
+                                        </ng-template>
+                                        
                                         <p><mat-icon class="icon">info</mat-icon>Si la fecha se cambia se comprobará si está disponible el alojamiento en dicha fecha.</p>
                                         <div class="d-flex justify-content-center mt-2 pb-2">
                                             <button mat-raised-button color="accent" (click)="edicionReserva()">Guardar</button>
@@ -981,6 +988,7 @@
                                 </mat-card-header>
     
                                 <mat-card-actions>
+                                    <button *ngIf="servicio.idAlojamiento" mat-button class="float-left" (click)="eliminarServicio(servicio)">Eliminar</button>
                                     <button mat-button class="float-right" (click)="editarServicio(servicio)">Editar</button>
                                 </mat-card-actions>
                             </mat-card>
@@ -1003,7 +1011,7 @@
                             </mat-form-field>
 
                             <div class="d-flex justify-content-center">
-                                <span class="text-danger" *ngIf="errorGuardarServicio == true">No se pudo añadir/editar el servicio comprubea los datos (nombre del servicio)</span>
+                                <span class="text-danger" *ngIf="errorGuardarServicio == true">No se pudo añadir/editar el servicio comprueba los datos o inténtelo más tarde.</span>
                             </div>
                             
                             <div class="d-flex justify-content-center">
@@ -1015,7 +1023,8 @@
                     <ng-template #agregarAlojamientoview>
                         <form [formGroup]="addAlojamientoForm" novalidate class="mt-5" (keyup.enter)="guardarAlojamiento()">
                             <mat-form-field class="d-flex justify-content-center mt-3">
-                                <mat-label>Nombre del servicio</mat-label>
+                                <mat-label>Nombre del alojamiento</mat-label>
+                                <mat-hint>Parcela o Bungalow</mat-hint>
                                 <input matInput formControlName="nombre" type="text">
                             </mat-form-field>
 
@@ -1058,7 +1067,7 @@
                             </div>
 
                             <div class="d-flex justify-content-center">
-                                <span class="text-danger" *ngIf="errorGuardarServicio == true">No se pudo añadir/editar el servicio comprubea los datos (nombre del servicio)</span>
+                                <span class="text-danger" *ngIf="errorAgregarAlojamiento == true">No se pudo añadir el alojamiento comprueba los datos o inténtelo más tarde.</span>
                             </div>
                             
                             <div class="d-flex justify-content-center">

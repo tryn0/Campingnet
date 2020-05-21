@@ -1,0 +1,3 @@
+<p class="text-center">¿Seguro que desea borrar el alojamiento con <strong>ID {{data.servicio.idAlojamiento}}</strong>, es un/a <strong>{{data.servicio.nombre}}</strong> con <strong>precio {{data.servicio.precio}}</strong>?</p>
+<button mat-raised-button color="accent" (click)="confirmadoServicio(data.servicio.idAlojamiento)">Sí</button>
+<button mat-raised-button color="accent" class="float-right" (click)="cancelar()">Cancelar</button>
