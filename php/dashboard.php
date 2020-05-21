@@ -237,15 +237,16 @@
         $fechaFin = json_encode($_POST['fechaFin']);
         $multiplicativo = floatval(substr(json_encode($_POST['multiplicador']), 1,-1));
 
-        if($_POST['update']) {
+        if($_POST['update']) { // Edición
             $nombreAntiguo = substr(json_encode($_POST['antiguoNombre']), 1,-1);
             $fechaInicioAntiguo = json_encode($_POST['antiguoFecha1']);
             $fechaFinAntiguo = json_encode($_POST['antiguoFecha2']);
             $multiplicativoAntiguo = floatval(substr(json_encode($_POST['antiguoMultiplicativo']), 1,-1));
         }
 
+        $editarTemp = null;
         if($nombre == $nombreAntiguo && $fechaInicio == $fechaInicioAntiguo && $fechaFin == $fechaFinAntiguo) { // Solo cambia el multiplicador
-            $editarTemp = 0;
+            $editarTemp = 1;
         }else if ($nombre == $nombreAntiguo && $fechaInicio == $fechaInicioAntiguo){ // Fecha fin y/o multiplicador
             $sql = "SELECT * FROM temporadas WHERE fecha_salida = $fechaFin";
             $editarTemp = consulta($conn, $sql);
@@ -260,12 +261,12 @@
             $editarTemp = consulta($conn, $sql);
         }
         
-        if (!$editarTemp) {
+        if ($editarTemp == null) {
             $conn = conexion();
-            if($_POST['update']) {
+            if($_POST['update']) { // Edición
                 $sql2 = "UPDATE temporadas SET nombre_temporada = '$nombre', fecha_entrada = $fechaInicio, fecha_salida = $fechaFin, multiplicador = $multiplicativo WHERE nombre_temporada = '$nombreAntiguo' AND fecha_entrada = $fechaInicioAntiguo AND fecha_salida = $fechaFinAntiguo AND multiplicador = $multiplicativoAntiguo";
                 print json_encode(update($conn, $sql2));
-            }else if ($_POST['insert']) {
+            }else if ($_POST['insert']) { // Inserción
                 $sql2 = "INSERT INTO temporadas (fecha_entrada, fecha_salida, nombre_temporada, multiplicador) VALUES ($fechaInicio, $fechaFin, '$nombre', $multiplicativo)";
                 print json_encode(insert($conn, $sql2));
             }else{
@@ -276,7 +277,7 @@
         }
     }
 
-    // Eliminar emporadas
+    // Eliminar temporadas
     else if($opcion == '"25"') {
         $nombre = json_encode($_POST['nombre']);
 
@@ -321,7 +322,7 @@
         $numero = consulta($conn, $sql1)[0]['numeroAlojamiento']+1;
         $conn = conexion();
         
-    if($tipo == 'parcela') { // Inserts de alojamiento y servicio tipo parcela
+        if($tipo == 'parcela') { // Inserts de alojamiento y servicio tipo parcela
             $sombra = substr(json_encode($_POST['sombra']),1,-1);
             $dimension = substr(json_encode($_POST['dimension']),1,-1);
             $sql = "INSERT INTO alojamiento (tipo, sombra, dimension, habitaciones, maximo_personas, numeroAlojamiento) VALUES ('$tipo', $sombra, '$dimension', NULL, NULL, $numero)";
@@ -339,6 +340,34 @@
             $maximo_personas = json_encode($_POST['maximo_personas']);
             $sql = "INSERT INTO alojamiento (tipo, sombra, dimension, habitaciones, maximo_personas, numeroAlojamiento) VALUES ('$tipo', NULL, NULL, $habitaciones, $maximo_personas, $numero)";
             print json_encode(insert($conn, $sql));
+        }
+    }
+    // Eliminar reserva
+    else if($opcion == '"28"') {
+        $idReserva = json_encode($_POST['idReserva']);
+
+        $sql = "DELETE FROM servicios_reserva WHERE idReserva = $idReserva";
+        $delete1 = delete($conn, $sql);
+        if($delete1) {
+            $conn = conexion();
+            $sql2 = "DELETE FROM reserva WHERE idReserva = $idReserva";
+            print json_encode(delete($conn, $sql2));
+        }else{
+            print json_encode(0);
+        }
+    }
+    // Edición de una reserva
+    else if($opcion == '"29"') {
+        $idReserva = json_encode($_POST['idReserva']);
+
+        $sql = "DELETE FROM servicios_reserva WHERE idReserva = $idReserva";
+        $delete1 = delete($conn, $sql);
+        if($delete1) {
+            $conn = conexion();
+            $sql2 = "DELETE FROM reserva WHERE idReserva = $idReserva";
+            print json_encode(delete($conn, $sql2));
+        }else{
+            print json_encode(0);
         }
     }
 ?>
