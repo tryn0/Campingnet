@@ -1,7 +1,7 @@
 import { Component, OnInit, ViewChild, ElementRef, Inject } from '@angular/core';
 import { Router, ActivatedRoute } from '@angular/router';
 import { HttpClient, HttpParams } from '@angular/common/http';
-import { FormGroup, Validators, FormBuilder } from '@angular/forms';
+import { FormGroup, Validators, FormBuilder, FormControl, ValidationErrors } from '@angular/forms';
 import { Usuario } from '../usuario/usuario';
 import { MatDrawer } from '@angular/material/sidenav';
 import { BreakpointObserver, Breakpoints } from '@angular/cdk/layout';
@@ -100,11 +100,16 @@ export class DashboardComponent implements OnInit {
 
   // Variables reservas
   public buscarReserva: FormGroup;
+  public editarReserva: FormGroup;
   public buscado: boolean = false;
   public listadoBuscado: any = [];
   public reservaSeleccionada: boolean = false;
+  public reservaEditar: any;
+  public serviciosReservaEditar: any = [];
+  public allServices: any = [];
+  public totalPersonas: number = 0;
 
-  // Variables reservas
+  // Variables reseñas
   public buscarResenia: FormGroup;
   public reseniasList: any = [];
 
@@ -147,6 +152,13 @@ export class DashboardComponent implements OnInit {
       dniUsuario: ['', [Validators.pattern('^[0-9]{8,8}[A-Za-z]$')]],
     });
 
+    // Inicializar FormBuilder de editar reservas
+    this.editarReserva = this.fb.group({
+      fechaEntrada: ['', [Validators.required]],
+      fechaSalida: ['', [Validators.required]],
+      numePersonasAlojamiento: ['', [Validators.required, Validators.min(0)]],
+    });
+
     // Inicializar FormBuilder de buscar reservas
     this.buscarResenia = this.fb.group({
       idResenia: ['', ],
@@ -173,7 +185,7 @@ export class DashboardComponent implements OnInit {
     this.agregarTemporadas = this.fb.group({
       fechaInicio: ['', [Validators.required]],
       fechaFin: ['', [Validators.required]],
-      nombre: ['', [Validators.required, Validators.maxLength(20), Validators.pattern('[a-zA-Z]+')]],
+      nombre: ['', [Validators.required, Validators.maxLength(20), Validators.pattern('^[a-zA-Z-,]+(\s{0,1}[a-zA-Z-, ])*$')]],
       multiplicador: ['', [Validators.required, Validators.max(2)]],
     });
 
@@ -566,16 +578,115 @@ export class DashboardComponent implements OnInit {
      * TODO: Cargar un formulario con los datos de la reserva, las fechas han cambiado comprobar si hay alguna reserva de ese alojamiento entre las fechas de entrada y salida, lo mismo que al reservas pero especificamente del alojamiento
      * TODO: Añadir al formulario tantos checkbox e inputs como servicios haya, y los servicios que tenga contratado checkados y con la cantidad en los inputs, si se quiere añadir un servicio checkar el checkbox e introducir una cantidad y creo que ya
      */
+    this.reservaEditar = null;
+    this.reservaEditar = r;
+
+    // Obtención de todos los servicios de la reserva y sus cantidades
+    let servicios = new HttpParams()
+    .set('opcion', '13')
+    .set('idReserva', r.idReserva);
+    this.http.post<any>("http://34.206.59.221/dashboard.php", servicios).subscribe(data => {
+      if(data != null && data != 0) {
+        this.serviciosReservaEditar = data;
+        let cantidades = new HttpParams()
+        .set('opcion', '14')
+        .set('idReserva', r.idReserva);
+        this.http.post<any>("http://34.206.59.221/dashboard.php", cantidades).subscribe(data => {
+          if(data != null && data != 0) {
+            for (let i = 0; i < this.serviciosReservaEditar.length; i++) {
+              const element = this.serviciosReservaEditar[i];
+              for (let x = 0; x < data.length; x++) {
+                const elemento = data[x];
+                if(element.idServicio == elemento.idServicio) {
+                  this.serviciosReservaEditar[i].cantidad = elemento.cantidad;
+                }
+              }
+            }
+          }
+
+          let todosServicios = new HttpParams()
+          .set('opcion', '22');
+          this.http.post<any>("http://34.206.59.221/dashboard.php", todosServicios).subscribe(data => {
+            if(data != null && data != 0) {
+              for (let k = 0; k < data.length; k++) {
+                const element = data[k];
+                if(element.idAlojamiento == null) {
+                  this.allServices.push(element);
+                }
+              }
+              for (let z = 0; z < this.serviciosReservaEditar.length; z++) {
+                const element = this.serviciosReservaEditar[z];
+                for (let j = 0; j < this.allServices.length; j++) {
+                  const elemento = this.allServices[j];
+                  this.editarReserva.addControl('servicio'+this.allServices[j]['idServicio'], new FormControl(false,[]));
+                  this.editarReserva.addControl('num'+this.allServices[j]['idServicio'], new FormControl({value: '', disabled: true},[]));
+                  if(element.idServicio == elemento.idServicio) {
+                    this.allServices[j].cantidad = element.cantidad;
+                    this.editarReserva.get('servicio'+this.allServices[j]['idServicio']).setValue(true);
+                    this.editarReserva.get('num'+this.allServices[j]['idServicio']).enable();
+                    this.editarReserva.get('num'+this.allServices[j]['idServicio']).setValue(element.cantidad);
+                    if(element.idServicio == 2 || element.idServicio == 3 || element.idServicio == 4) {
+                      this.editarReserva.get('numePersonasAlojamiento').setValue(2);
+                    }
+                  }/*else if(element.idServicio < elemento.idServicio && element.idServicio != elemento.idServicio){
+                    this.allServices[j].cantidad = null;
+                  }*/
+                }
+              }
+            }
+          });
+        });
+      }
+    });
+
+    if(this.reservaEditar.tipo_alojamiento == 'Parcela') {
+      this.editarReserva.setValidators(this.maximoPersonas());
+    }
+    
+
     this.reservaSeleccionada = true;
-    //console.log(this.reservaSeleccionada)
-    //console.log(r);
+    console.log(this.reservaEditar);
+  }
+
+  onChange(servicio){
+    if(this.editarReserva.get('servicio'+servicio.idServicio).value) {
+      this.editarReserva.get('num'+servicio.idServicio).enable();
+    }else{
+      this.editarReserva.get('num'+servicio.idServicio).disable();
+    }
+  }
+
+  maximoPersonas(){
+    return (): ValidationErrors => {
+      if(this.editarReserva.get('num4')) {
+        let adultoExtra = !null ? this.editarReserva.get('num2').value : 0;
+        let menorExtra = !null ? this.editarReserva.get('num3').value : 0;
+        let mayorExtra = !null ? this.editarReserva.get('num4').value : 0;
+        let personasAlojamiento = !null ? this.editarReserva.get('numePersonasAlojamiento').value : 0
+
+        this.totalPersonas = Number(adultoExtra) + Number(menorExtra) + Number(mayorExtra) + personasAlojamiento;
+        let total = Number(adultoExtra) + Number(menorExtra) + Number(mayorExtra) + personasAlojamiento;
+
+        if(this.editarReserva.get('numePersonasAlojamiento').value != null && this.editarReserva.get('numePersonasAlojamiento').value > 0 && this.editarReserva.get('numePersonasAlojamiento').value < 13) {
+          if(total > 12) {
+            this.editarReserva.get('numePersonasAlojamiento').setErrors({'muchaGente': true});
+          }else{
+            this.editarReserva.get('numePersonasAlojamiento').setErrors(null);
+          }
+        }else{
+          this.editarReserva.get('numePersonasAlojamiento').setErrors({'noGente': true});
+        }
+      }
+      return;
+    };
+  }
+
+  edicionReserva() {
+    // Codigo de edicio reserva
+    // todo: comprobar que no haya reservas de ese alojamiento en las fechas que se ha introducido, si solo se modifican los servicios, actualizarlos sin más
   }
 
   eliminar(r) { // Eliminación de reserva
-    /**
-     * TODO: Copiar lo del popup de eliminacion pero para reserva, primero eliminar servicios_reserva y luego la reserva en sí
-     */
-    console.log(r)
     this.openBottomSheet2(r);
   }
 
@@ -1539,10 +1650,8 @@ export class DashboardComponent implements OnInit {
        /**
         * ? Acaba aquí
         */
-
     }
   }
-
 }
 
 /**
@@ -1572,7 +1681,7 @@ export class confirmacion {
 }
 
 /**
- * ? POPUP para confirmar eliminación de temporada
+ * ? POPUP para confirmar eliminación de reserva
  */
 @Component({
   selector: 'confirmacionReserva',
@@ -1582,7 +1691,6 @@ export class confirmacionReserva {
   constructor(private _popUp: MatBottomSheetRef<confirmacionReserva>, @Inject(MAT_BOTTOM_SHEET_DATA) public data: any, private http: HttpClient) {}
   confirmadoReserva(e) {
     this._popUp.dismiss();
-    //console.log(e)
     let reserva = new HttpParams()
     .set('opcion', '28')
     .set('idReserva', e);

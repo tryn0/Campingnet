@@ -16,7 +16,7 @@ interface DialogData {
 
 export const DD_MM_YYYY_Format = {
   parse: {
-      dateInput: 'LL',
+      dateInput: 'DD/MM/YYYY',
   },
   display: {
       dateInput: 'DD/MM/YYYY',
@@ -152,7 +152,7 @@ export class ReservasComponent implements OnInit {
           let diff = Math.floor((new Date(this.fechas.get('fechaSalida').value).getTime() - new Date(this.fechas.get('fechaEntrada').value).getTime())/86400000);
 
           if(data != 0){
-            //console.log(data)
+            console.log(data)
             let data2: any = data;
 
             // Seteo de la variable calculo usada para el multiplicador
@@ -176,22 +176,22 @@ export class ReservasComponent implements OnInit {
                 }              
                 if(finTemporada >= salida){ // sale del camping antes de que acabe la temporada
                   let total = Math.abs(salida.diff(inicioTemporada, 'days'));
-                  //console.log('1 Entra al camping '+diasAntes+' dias antes de que empiece la temporada '+element['nombre_temporada']+', está '+total+' días en la temporada '+element['nombre_temporada']);
+                  console.log('1 Entra al camping '+diasAntes+' dias antes de que empiece la temporada '+element['nombre_temporada']+', está '+total+' días en la temporada '+element['nombre_temporada']);
                   calculo = ((diasAntes*1)+(total*element['multiplicador']));
                   calculo = calculo/diff;
                   // Seteo del multiplicador a la variable del principio, para guardarla luego en la BD
                   this.multiplicador = parseFloat(calculo.toFixed(2));
-                  //console.log('Por lo que su multiplicativo será: ('+diasAntes+'*1+'+total+'*'+element['multiplicador']+')/'+diff+' = '+ calculo.toFixed(2));
+                  console.log('Por lo que su multiplicativo será: ('+diasAntes+'*1+'+total+'*'+element['multiplicador']+')/'+diff+' = '+ calculo.toFixed(2));
                   
                 }else{ // sale del camping después de que acabe la temporada
                   let total = Math.abs(finTemporada.diff(inicioTemporada, 'days'));
                   let dias = Math.abs(salida.diff(finTemporada, 'days'));
                   if(data2.length < 2){ // Si hay solo 1 temporada (a parte de la temporada media)
-                    //console.log('2 Entra al camping '+diasAntes+' dias antes de la temporada '+element['nombre_temporada']+' pasa '+total+' días en la temporada '+element['nombre_temporada']+' y sale '+dias+' dias despues de que acabe la temporada');
+                    console.log('2 Entra al camping '+diasAntes+' dias antes de la temporada '+element['nombre_temporada']+' pasa '+total+' días en la temporada '+element['nombre_temporada']+' y sale '+dias+' dias despues de que acabe la temporada');
                     calculo = ((diasAntes*1)+(total*element['multiplicador'])+(dias*1))/diff;
                     // Seteo del multiplicador a la variable del principio, para guardarla luego en la BD
                     this.multiplicador = parseFloat(calculo.toFixed(2));
-                    //console.log('Por lo que su multiplicativo será: ('+diasAntes+'*1+'+total+'*'+element['multiplicador']+'+'+dias+'*1)/'+diff+' = '+ calculo.toFixed(2));
+                    console.log('Por lo que su multiplicativo será: ('+diasAntes+'*1+'+total+'*'+element['multiplicador']+'+'+dias+'*1)/'+diff+' = '+ calculo.toFixed(2));
                
                   }else{ // Si hay más de 1 temporada (cambios de temporada, a parte de la temporada media)
                     let dias2Temp: any;
@@ -201,9 +201,9 @@ export class ReservasComponent implements OnInit {
                       dias2Temp = Math.floor((new Date(salida).getTime() - new Date(element['fecha_salida']).getTime())/86400000);
                     }
                     // Multiplicador
-                    //console.log('3 Está '+diasAntes+' días antes en el camping, pasa '+total+' días de la temporada '+element['nombre_temporada']+ ' y está '+dias2Temp+' en temp media');
+                    console.log('3 Está '+diasAntes+' días antes en el camping, pasa '+total+' días de la temporada '+element['nombre_temporada']+ ' y está '+dias2Temp+' en temp media');
                     calculo += ((diasAntes*1)+(total*element['multiplicador']));
-                    //console.log('Por lo que su multiplicativo será: ('+diasAntes+'*1+'+total+'*'+element['multiplicador']+') = '+calculo);
+                    console.log('Por lo que su multiplicativo será: ('+diasAntes+'*1+'+total+'*'+element['multiplicador']+') = '+calculo);
                
                   }
                 }
@@ -211,11 +211,11 @@ export class ReservasComponent implements OnInit {
                 let dias: any;
                 if(finTemporada >= salida){ // sale del camping antes de que acabe la temporada y...
                   dias = Math.floor((new Date(salida).getTime() - new Date(entrada).getTime())/86400000);
-                  //console.log('4 Entra al camping el día '+(this.fechas.get('fechaEntrada').value).format('YYYY-MM-DD')+' y sale el día '+(this.fechas.get('fechaSalida').value).format('YYYY-MM-DD')+' un total de '+dias+' días en la temporada '+element['nombre_temporada']);
+                  console.log('4 Entra al camping el día '+(this.fechas.get('fechaEntrada').value).format('YYYY-MM-DD')+' y sale el día '+(this.fechas.get('fechaSalida').value).format('YYYY-MM-DD')+' un total de '+dias+' días en la temporada '+element['nombre_temporada']);
                   calculo = (dias*element['multiplicador'])/diff
                   // Seteo del multiplicador a la variable del principio, para guardarla luego en la BD
                   this.multiplicador = parseFloat(calculo.toFixed(2));
-                  //console.log('Lo cual su multiplicador es: ('+dias+'*'+element['multiplicador']+')/'+diff+' = '+calculo.toFixed(2));
+                  console.log('Lo cual su multiplicador es: ('+dias+'*'+element['multiplicador']+')/'+diff+' = '+calculo.toFixed(2));
              
                 }else{ // sale del camping después de que acabe la temporada
                   dias = Math.floor((new Date(element['fecha_salida']).getTime() - new Date(entrada).getTime())/86400000);
@@ -223,10 +223,10 @@ export class ReservasComponent implements OnInit {
                     let diasSalida = Math.floor((new Date(salida).getTime() - new Date(element['fecha_salida']).getTime())/86400000);
                     calculo = ((dias*element['multiplicador'])+(diasSalida*1))/diff;
                     this.multiplicador = parseFloat(calculo.toFixed(2));
-                    //console.log('Entro durante la temporada '+element['nombre_temporada']+' y estuvo '+dias+' en dicha temporada, luego estuvo '+diasSalida+' en temporada media');
+                    console.log('Entro durante la temporada '+element['nombre_temporada']+' y estuvo '+dias+' en dicha temporada, luego estuvo '+diasSalida+' en temporada media');
                
                   }else{
-                    //console.log('Ha entrado durante la temporada y ha estado '+dias+' días en la temporada '+element['nombre_temporada']);
+                    console.log('Ha entrado durante la temporada y ha estado '+dias+' días en la temporada '+element['nombre_temporada']);
                     calculo += dias*element['multiplicador'];
                   }                 
                 }
@@ -235,7 +235,7 @@ export class ReservasComponent implements OnInit {
           }else{ // Si lo que devuelve reserva.php es 0, significa que las fechas no están en ninguna temporada, lo que significa que todos los días de la estancia son en temporada media
             // Seteo del multiplicador a la variable del principio, para guardarla luego en la BD
             this.multiplicador = (diff*1)/diff;
-            //console.log('Pasa '+diff+' días en temporada media por lo que el multiplicativo de la reserva es: '+diff+'*1/'+diff+' = '+this.multiplicador);
+            console.log('Pasa '+diff+' días en temporada media por lo que el multiplicativo de la reserva es: '+diff+'*1/'+diff+' = '+this.multiplicador);
           }
         }
       }, error => console.log(error));

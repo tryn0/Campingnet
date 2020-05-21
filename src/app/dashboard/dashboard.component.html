@@ -369,7 +369,6 @@
                             <mat-form-field class="d-flex justify-content-center mt-3">
                                 <mat-label>Fecha de entrada</mat-label>
                                 <input matInput formControlName="fechaEntrada" [matDatepicker]="fechas1">
-                                <mat-hint align="start"><strong>Con hora de entrada 12:00</strong></mat-hint>
                                 <mat-datepicker-toggle matSuffix [for]="fechas1"></mat-datepicker-toggle>
                                 <mat-datepicker touchUi #fechas1></mat-datepicker>
                             </mat-form-field><br>
@@ -486,8 +485,78 @@
                         <p class="puntero text-center" (click)="atrasBusqueda()">Volver</p>
                     </div>
 
+                    <!-- Edición de RESERVA-->
                     <ng-template #reservaElegida>
-                        hola
+                        <div class="container">
+                            <div class="justify-content-center mt-4">
+                                <h4 class="text-center mb-4">Editar reserva con ID: {{reservaEditar.idReserva}}</h4>
+                                <div class="d-flex justify-content-center">
+                                    <form [formGroup]="editarReserva" novalidate class="col-12 col-lg-6 mb-1 mt-1 border border-dark border rounded">
+
+                                        <mat-form-field class="d-flex justify-content-center mt-3">
+                                            <mat-label>Fecha de entrada</mat-label>
+                                            <input matInput formControlName="fechaEntrada" [matDatepicker]="fechas1">
+                                            <mat-datepicker-toggle matSuffix [for]="fechas1"></mat-datepicker-toggle>
+                                            <mat-datepicker touchUi #fechas1></mat-datepicker>
+                                        </mat-form-field><br>
+
+                                        <mat-form-field class="d-flex justify-content-center mt-3">
+                                            <mat-label>Fecha de salida</mat-label>
+                                            <input matInput formControlName="fechaSalida" [matDatepicker]="fechas2">
+                                            <mat-datepicker-toggle matSuffix [for]="fechas2"></mat-datepicker-toggle>
+                                            <mat-datepicker touchUi #fechas2></mat-datepicker>
+                                        </mat-form-field><br>
+
+                                        <div class="d-flex justify-content-center" *ngIf="reservaEditar.tipo_alojamiento == 'Parcela'">
+                                            <div class="col-6 mt-3">
+                                                <p>Personas en el alojamiento</p>
+                                            </div>
+                                            <div class="col-6 mt-3">
+                                                <mat-form-field>
+                                                    <input matInput type="number" formControlName="numePersonasAlojamiento">
+                                                </mat-form-field>
+                                            </div>
+                                        </div>
+                                        
+
+                                        <p *ngIf="(12-totalPersonas) >= 0; else noPersonas ">{{12-totalPersonas}} personas restantes.</p>
+                                        <ng-template #noPersonas>
+                                            <p>No quedan plazas para más personas.</p>
+                                        </ng-template>
+                                        <p *ngIf="editarReserva.get('numePersonasAlojamiento').hasError('muchaGente')">El número máximo de personas es de 12.</p>
+
+                                        <div *ngFor="let servicio of allServices" class="mt-3 d-flex justify-content-center">
+                                            <div class="col-6 mt-3" *ngIf="reservaEditar.tipo_alojamiento != 'Bungalow'; else bungalow">
+                                                <mat-checkbox formControlName="servicio{{servicio.idServicio}}" (change)="onChange(servicio)">{{servicio.nombre}}</mat-checkbox>
+                                            </div>
+                                            <div class="col-6" *ngIf="servicio.idServicio != 1">
+                                                <mat-form-field>
+                                                    <input matInput type="number" formControlName="num{{servicio.idServicio}}">
+                                                </mat-form-field>
+                                            </div>
+
+                                            <ng-template #bungalow>
+                                                <div *ngIf="servicio.idServicio != 1 && servicio.idServicio != 2  && servicio.idServicio != 3  && servicio.idServicio != 4">
+                                                    <div class="col-6 mt-3">
+                                                        <mat-checkbox formControlName="servicio{{servicio.idServicio}}" (change)="onChange(servicio)">{{servicio.nombre}}</mat-checkbox>
+                                                    </div>
+                                                    <div class="col-6" *ngIf="servicio.idServicio != 1">
+                                                        <mat-form-field>
+                                                            <input matInput type="number" formControlName="num{{servicio.idServicio}}">
+                                                        </mat-form-field>
+                                                    </div>
+                                                </div>
+                                                
+                                            </ng-template>
+                                        </div>
+                                        <p><mat-icon class="icon">info</mat-icon>Si la fecha se cambia se comprobará si está disponible el alojamiento en dicha fecha.</p>
+                                        <div class="d-flex justify-content-center mt-2 pb-2">
+                                            <button mat-raised-button color="accent" (click)="edicionReserva()">Guardar</button>
+                                        </div>
+                                    </form>
+                                </div>
+                            </div>
+                        </div>
                         <p class="puntero text-center" (click)="atrasBusqueda()">Volver</p>
                     </ng-template>
                 </ng-template>
