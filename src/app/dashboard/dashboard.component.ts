@@ -109,6 +109,7 @@ export class DashboardComponent implements OnInit {
   public serviciosReservaEditar: any = [];
   public allServices: any = [];
   public totalPersonas: number = 0;
+  public fechaVal: boolean = null;
 
   // Variables reseñas
   public buscarResenia: FormGroup;
@@ -584,6 +585,15 @@ export class DashboardComponent implements OnInit {
     this.serviciosReservaEditar = [];
     this.allServices = [];
     this.reservaEditar = r;
+    this.editarReserva.reset();
+
+    // Seteo de fechas por defecto
+    let fecha1 = this.reservaEditar.fecha_entrada.split('/');
+    let fecha2 = this.reservaEditar.fecha_salida.split('/');
+
+    this.editarReserva.get('fechaEntrada').setValue(new Date(fecha1[2], fecha1[1]-1, fecha1[0]));
+    this.editarReserva.get('fechaSalida').setValue(new Date(fecha2[2], fecha2[1]-1, fecha2[0]));
+
 
     // Obtención de todos los servicios de la reserva y sus cantidades
     let servicios = new HttpParams()
@@ -631,10 +641,12 @@ export class DashboardComponent implements OnInit {
                     this.editarReserva.get('num'+this.allServices[j]['idServicio']).setValue(element.cantidad);
                     if(element.idServicio == 2 || element.idServicio == 3 || element.idServicio == 4) {
                       this.editarReserva.get('numePersonasAlojamiento').setValue(2);
+                    }if(this.reservaEditar.tipo_alojamiento == 'Parcela') {
+                      if(this.reservaEditar.num_personas < 3) {
+                        this.editarReserva.get('numePersonasAlojamiento').setValue(this.reservaEditar.num_personas);
+                      }
                     }
-                  }/*else if(element.idServicio < elemento.idServicio && element.idServicio != elemento.idServicio){
-                    this.allServices[j].cantidad = null;
-                  }*/
+                  }
                 }
               }
             }
@@ -644,15 +656,33 @@ export class DashboardComponent implements OnInit {
     });
 
     if(this.reservaEditar.tipo_alojamiento == 'Parcela') {
-      this.editarReserva.setValidators(this.maximoPersonas());
+      this.editarReserva.setValidators([this.validacionFecha(),this.maximoPersonas()]);
+    }else{
+      this.editarReserva.setValidators([this.validacionFecha()]);
     }
-    
 
     this.reservaSeleccionada = true;
-    console.log(this.reservaEditar);
   }
 
-  onChange(servicio){
+  validacionFecha(){ // Validación de las fechas
+    return (): ValidationErrors => {
+      if(this.editarReserva.get('fechaSalida').value != ''){
+        this.editarReserva.get('fechaSalida').setErrors(null);
+        this.fechaVal = false;
+        let diff = Math.floor((new Date(this.editarReserva.get('fechaSalida').value).getTime() - new Date(this.editarReserva.get('fechaEntrada').value).getTime())/86400000);
+        if (diff <= 0) {
+          this.editarReserva.get('fechaSalida').setErrors({fecha2Mayor: true});
+        }else if(diff > 0){
+          this.editarReserva.get('fechaSalida').setErrors(null);
+        } 
+      }else{
+        this.editarReserva.get('fechaSalida').setErrors({vacio: true});
+      }
+    return;
+  };
+}
+
+  onChange(servicio){ // Habilitar el respectivo input del checkbox
     if(this.editarReserva.get('servicio'+servicio.idServicio).value) {
       this.editarReserva.get('num'+servicio.idServicio).enable();
     }else{
@@ -660,22 +690,34 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  maximoPersonas(){
+  maximoPersonas(){ // Validación de las personas
     return (): ValidationErrors => {
       if(this.editarReserva.get('num4')) {
-        let adultoExtra = !null ? this.editarReserva.get('num2').value : 0;
-        let menorExtra = !null ? this.editarReserva.get('num3').value : 0;
-        let mayorExtra = !null ? this.editarReserva.get('num4').value : 0;
+        let adultoExtra = this.editarReserva.get('servicio2').value == true && this.editarReserva.get('num2').value != null && this.editarReserva.get('num2').value > 0 ? this.editarReserva.get('num2').value : 0;
+        let menorExtra = this.editarReserva.get('servicio3').value == true && this.editarReserva.get('num3').value != null && this.editarReserva.get('num3').value > 0 ? this.editarReserva.get('num3').value : 0;
+        let mayorExtra = this.editarReserva.get('servicio4').value == true && this.editarReserva.get('num4').value != null && this.editarReserva.get('num4').value > 0 ? this.editarReserva.get('num4').value : 0;
         let personasAlojamiento = !null ? this.editarReserva.get('numePersonasAlojamiento').value : 0
 
-        this.totalPersonas = Number(adultoExtra) + Number(menorExtra) + Number(mayorExtra) + personasAlojamiento;
-        let total = Number(adultoExtra) + Number(menorExtra) + Number(mayorExtra) + personasAlojamiento;
+        this.totalPersonas = Number(adultoExtra) + Number(menorExtra) + Number(mayorExtra) + Number(personasAlojamiento);
+        let total = Number(adultoExtra) + Number(menorExtra) + Number(mayorExtra) + Number(personasAlojamiento);
 
         if(this.editarReserva.get('numePersonasAlojamiento').value != null && this.editarReserva.get('numePersonasAlojamiento').value > 0 && this.editarReserva.get('numePersonasAlojamiento').value < 13) {
-          if(total > 12) {
-            this.editarReserva.get('numePersonasAlojamiento').setErrors({'muchaGente': true});
+          if(this.editarReserva.get('num2').value != null && this.editarReserva.get('num2').value > 0 && this.editarReserva.get('num2').value < 13) {
+            if(this.editarReserva.get('num3').value != null && this.editarReserva.get('num3').value > 0 && this.editarReserva.get('num3').value < 13) {
+              if(this.editarReserva.get('num4').value != null && this.editarReserva.get('num4').value > 0 && this.editarReserva.get('num4').value < 13) {
+                if(total > 12) {
+                  this.editarReserva.get('numePersonasAlojamiento').setErrors({'muchaGente': true});
+                }else{
+                  this.editarReserva.get('numePersonasAlojamiento').setErrors(null);
+                }
+              }else{
+                this.editarReserva.get('num4').setErrors({'muchaGente': true});
+              }
+            }else{
+              this.editarReserva.get('num3').setErrors({'muchaGente': true});
+            }
           }else{
-            this.editarReserva.get('numePersonasAlojamiento').setErrors(null);
+            this.editarReserva.get('num2').setErrors({'muchaGente': true});
           }
         }else{
           this.editarReserva.get('numePersonasAlojamiento').setErrors({'noGente': true});
@@ -688,8 +730,9 @@ export class DashboardComponent implements OnInit {
   edicionReserva() {
     // Codigo de edicio reserva
     // todo: comprobar que no haya reservas de ese alojamiento en las fechas que se ha introducido, si solo se modifican los servicios, actualizarlos sin más
+    this.reservaEditar;
     let reserva = new HttpParams()
-    .set('opcion', '29')
+    .set('opcion', '')
     .set('idReserva', '');
 
     this.http.post<any>("http://34.206.59.221/dashboard.php", reserva).subscribe(data => {
@@ -740,13 +783,10 @@ export class DashboardComponent implements OnInit {
       .set('insert', '1');
 
       this.http.post<any>("http://34.206.59.221/dashboard.php", tempParams).subscribe(data => {
-        //console.log(data)
         if(data != null && data != 0) {
           location.reload();
-          //console.log(data)
         }else{
           this.errorTemp = true;
-          //console.log(data)
         }
       });
     }
@@ -849,7 +889,6 @@ export class DashboardComponent implements OnInit {
       .set('precio', this.edicionServicios.get('precio').value)
       .set('idServicio', this.edicionServicios.get('idServicio').value);
 
-      //console.log(servicio)
       this.http.post<any>("http://34.206.59.221/dashboard.php", servicio).subscribe(data =>{ // Obtener las entradas al camping del día
         if(data != null && data != 0){
           location.reload();

@@ -495,7 +495,7 @@
 
                                         <mat-form-field class="d-flex justify-content-center mt-3">
                                             <mat-label>Fecha de entrada</mat-label>
-                                            <input matInput formControlName="fechaEntrada" [matDatepicker]="fechas1">
+                                            <input matInput formControlName="fechaEntrada" [matDatepicker]="fechas1" [value]="reservaEditar.fecha_entrada">
                                             <mat-datepicker-toggle matSuffix [for]="fechas1"></mat-datepicker-toggle>
                                             <mat-datepicker touchUi #fechas1></mat-datepicker>
                                         </mat-form-field><br>
@@ -519,11 +519,11 @@
                                         </div>
                                         
                                         <div *ngIf="reservaEditar.tipo_alojamiento == 'Parcela'">
-                                            <p *ngIf="(12-totalPersonas) >= 0; else noPersonas ">{{12-totalPersonas}} personas restantes.</p>
+                                            <p *ngIf="(12-totalPersonas) >= 0 && !editarReserva.get('numePersonasAlojamiento').errors; else noPersonas ">{{12-totalPersonas}} personas restantes.</p>
                                             <ng-template #noPersonas>
                                                 <p>No quedan plazas para más personas.</p>
                                             </ng-template>
-                                            <p *ngIf="editarReserva.get('numePersonasAlojamiento').hasError('muchaGente')">El número máximo de personas es de 12.</p>
+                                            <p *ngIf="editarReserva.get('numePersonasAlojamiento').errors">El número máximo total de personas es de 12.</p>
                                         </div>
 
                                         <!-- Servicios si es parcela -->
