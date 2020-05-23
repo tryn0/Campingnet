@@ -152,7 +152,7 @@ export class ReservasComponent implements OnInit {
           let diff = Math.floor((new Date(this.fechas.get('fechaSalida').value).getTime() - new Date(this.fechas.get('fechaEntrada').value).getTime())/86400000);
 
           if(data != 0){
-            console.log(data)
+            //console.log(data)
             let data2: any = data;
 
             // Seteo de la variable calculo usada para el multiplicador

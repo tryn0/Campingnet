@@ -373,19 +373,9 @@
             print json_encode(0);
         }
     }
-    // Edición de una reserva
+    // Actualización de la reserva
     else if($opcion == '"29"') {
-        $idReserva = json_encode($_POST['idReserva']);
-
-        $sql = "DELETE FROM servicios_reserva WHERE idReserva = $idReserva";
-        $delete1 = delete($conn, $sql);
-        if($delete1) {
-            $conn = conexion();
-            $sql2 = "DELETE FROM reserva WHERE idReserva = $idReserva";
-            print json_encode(delete($conn, $sql2));
-        }else{
-            print json_encode(0);
-        }
+        print json_encode($_POST);
     }
     // Eliminar alojamiento
     else if($opcion == '"30"') {
@@ -398,6 +388,99 @@
             print json_encode(delete($conn, $sql2));
         }else{
             print json_encode(0);
+        }
+    }
+    // Insertar servicio en reserva
+    else if($opcion == '"31"') {
+        $idReserva = $_POST['idReserva'];
+        $cantidades = 0;
+        $servicios = array();
+        $i = 0;
+        foreach($_POST as $key => $value) {
+            if($i > 1) {
+                $servicios[] = $value;
+            }
+            $i++;
+        }
+        
+        $valido = 1;
+        $x = explode(',',$servicios[0]);
+        for ($j=0; $j < count($x); $j = $j+2) { 
+            if($valido == 1) {
+                $conn = conexion();
+                $idServicio = $x[$j];
+                $cantidad = $x[$j+1];
+                $sql = "INSERT INTO servicios_reserva (idReserva, idServicio, cantidad) VALUES ($idReserva, $idServicio, $cantidad)";
+                $resultado = insert($conn, $sql);
+                if($resultado) {
+                    $valido = 1;
+                    $cantidades += $cantidad;
+                }else{
+                    $valido = 0;
+                }
+            }else{
+                print json_encode(0);
+                break;
+            }
+        }
+
+        if($valido == 1) {
+             $conn = conexion();
+            $sql = "SELECT num_personas FROM reserva WHERE idReserva = $idReserva";
+            $cantidadOriginal = consulta($conn, $sql)[0]['num_personas'];
+
+            $conn = conexion();
+            $cantidadFinal = $cantidadOriginal + $cantidad;
+            $sql = "UPDATE reserva SET num_personas = $cantidadFinal WHERE idReserva = $idReserva";
+            print json_encode(update($conn, $sql));
+        }
+    }
+    // Eliminar servicio de reserva
+    else if($opcion == '"32"') {
+        $idReserva = $_POST['idReserva'];
+        $cantidad = 0;
+        $servicios = array();
+        $i = 0;
+        foreach($_POST as $key => $value) {
+            if($i > 1) {
+                $servicios[] = $value;
+            }
+            $i++;
+        }
+
+        $valido = 1;
+        $x = explode(',',$servicios[0]);
+        for ($j=0; $j < count($x); $j++) {
+            if($valido == 1) {
+                $idServicio = $x[$j];
+                if($idServicio == 2 || $idServicio == 3 || $idServicio == 4){
+                    $conn = conexion();
+                    $sqlCantidad = "SELECT * FROM servicios_reserva WHERE idServicio = $idServicio AND idReserva = $idReserva";
+                    $cantidad = $cantidad + consulta($conn, $sqlCantidad)[0]['cantidad'];
+                }
+                $conn = conexion();
+                $sql = "DELETE FROM servicios_reserva WHERE idServicio = $idServicio AND idReserva = $idReserva";
+                $resultado = delete($conn, $sql);
+                if($resultado) {
+                    $valido = 1;
+                }else{
+                    $valido = 0;
+                }
+            }else{
+                print json_encode(0);
+                break;
+            }
+        }
+        
+        if($valido == 1) {
+            $conn = conexion();
+            $sql = "SELECT num_personas FROM reserva WHERE idReserva = $idReserva";
+            $cantidadOriginal = consulta($conn, $sql)[0]['num_personas'];
+
+            $conn = conexion();
+            $cantidadFinal = $cantidadOriginal - $cantidad;
+            $sql = "UPDATE reserva SET num_personas = $cantidadFinal WHERE idReserva = $idReserva";
+            print json_encode(update($conn, $sql));
         }
     }
 ?>

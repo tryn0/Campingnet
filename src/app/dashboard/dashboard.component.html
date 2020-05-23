@@ -519,11 +519,12 @@
                                         </div>
                                         
                                         <div *ngIf="reservaEditar.tipo_alojamiento == 'Parcela'">
-                                            <p *ngIf="(12-totalPersonas) >= 0 && !editarReserva.get('numePersonasAlojamiento').errors; else noPersonas ">{{12-totalPersonas}} personas restantes.</p>
+                                            <p *ngIf="(12-totalPersonas) >= 0; else noPersonas ">{{12-totalPersonas}} personas restantes.</p>
                                             <ng-template #noPersonas>
-                                                <p>No quedan plazas para más personas.</p>
+                                                <p>No quedan plazas para más personas. Revise la cantidad de personas.</p>
                                             </ng-template>
-                                            <p *ngIf="editarReserva.get('numePersonasAlojamiento').errors">El número máximo total de personas es de 12.</p>
+                                            <p *ngIf="editarReserva.get('numePersonasAlojamiento').errors">Personas en el alojamiento es el número de personas de la reserva que entran dentro de la propia reserva (gratis), no puede ser mayor a 2. El número máximo de personas en total no puede superar las 12 personas. Tampoco pueden haber personas extras si aun queda sitio en personas en el alojamiento (gratis).</p>
+
                                         </div>
 
                                         <!-- Servicios si es parcela -->
@@ -555,7 +556,7 @@
 
                                             </div>
                                         </ng-template>
-                                        
+                                        <p *ngIf="errorEdicionReserva" class="text-danger">Hubo un error, inténtelo de nuevo más tarde</p>
                                         <p><mat-icon class="icon">info</mat-icon>Si la fecha se cambia se comprobará si está disponible el alojamiento en dicha fecha.</p>
                                         <div class="d-flex justify-content-center mt-2 pb-2">
                                             <button mat-raised-button color="accent" (click)="edicionReserva()">Guardar</button>

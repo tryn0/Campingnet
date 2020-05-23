@@ -110,6 +110,7 @@ export class DashboardComponent implements OnInit {
   public allServices: any = [];
   public totalPersonas: number = 0;
   public fechaVal: boolean = null;
+  public errorEdicionReserva: boolean = false;
 
   // Variables reseñas
   public buscarResenia: FormGroup;
@@ -687,6 +688,7 @@ export class DashboardComponent implements OnInit {
       this.editarReserva.get('num'+servicio.idServicio).enable();
     }else{
       this.editarReserva.get('num'+servicio.idServicio).disable();
+      this.editarReserva.get('num'+servicio.idServicio).setValue('');
     }
   }
 
@@ -701,10 +703,15 @@ export class DashboardComponent implements OnInit {
         this.totalPersonas = Number(adultoExtra) + Number(menorExtra) + Number(mayorExtra) + Number(personasAlojamiento);
         let total = Number(adultoExtra) + Number(menorExtra) + Number(mayorExtra) + Number(personasAlojamiento);
 
-        if(this.editarReserva.get('numePersonasAlojamiento').value != null && this.editarReserva.get('numePersonasAlojamiento').value > 0 && this.editarReserva.get('numePersonasAlojamiento').value < 13) {
-          if(this.editarReserva.get('num2').value != null && this.editarReserva.get('num2').value > 0 && this.editarReserva.get('num2').value < 13) {
-            if(this.editarReserva.get('num3').value != null && this.editarReserva.get('num3').value > 0 && this.editarReserva.get('num3').value < 13) {
-              if(this.editarReserva.get('num4').value != null && this.editarReserva.get('num4').value > 0 && this.editarReserva.get('num4').value < 13) {
+        if(this.editarReserva.get('numePersonasAlojamiento').value != null && this.editarReserva.get('numePersonasAlojamiento').value > 0 && this.editarReserva.get('numePersonasAlojamiento').value < 3) {
+          if(this.editarReserva.get('numePersonasAlojamiento').value == 1 && (this.editarReserva.get('num2').value > 0 || this.editarReserva.get('num3').value > 0 || this.editarReserva.get('num4').value > 0)) {
+            this.editarReserva.get('numePersonasAlojamiento').setErrors({'muchaGente': true});
+          }else{
+            this.editarReserva.get('numePersonasAlojamiento').setErrors(null);
+          }
+          if(this.editarReserva.get('num2').value != null && this.editarReserva.get('num2').value > 0 && this.editarReserva.get('num2').value < 12) {
+            if(this.editarReserva.get('num3').value != null && this.editarReserva.get('num3').value > 0 && this.editarReserva.get('num3').value < 12) {
+              if(this.editarReserva.get('num4').value != null && this.editarReserva.get('num4').value > 0 && this.editarReserva.get('num4').value < 12) {
                 if(total > 12) {
                   this.editarReserva.get('numePersonasAlojamiento').setErrors({'muchaGente': true});
                 }else{
@@ -722,24 +729,159 @@ export class DashboardComponent implements OnInit {
         }else{
           this.editarReserva.get('numePersonasAlojamiento').setErrors({'noGente': true});
         }
+
       }
       return;
     };
   }
 
-  edicionReserva() {
-    // Codigo de edicio reserva
-    // todo: comprobar que no haya reservas de ese alojamiento en las fechas que se ha introducido, si solo se modifican los servicios, actualizarlos sin más
-    this.reservaEditar;
-    let reserva = new HttpParams()
-    .set('opcion', '')
-    .set('idReserva', '');
+  edicionReserva() { // Comprobación del formulario y envío de datos al php para guardar en BD si en php valida las fechas, en caso de solo añadir servicios update directamente
 
-    this.http.post<any>("http://34.206.59.221/dashboard.php", reserva).subscribe(data => {
-      if(data != null && data != 0) {
-        console.log(data)
+    // Comprobación de campos, checkbox activado input relleno, sino no hace la función
+    let validado: number = 1;
+
+    if(this.editarReserva.get('numePersonasAlojamiento').value > 2) {
+      validado = 0;
+    }
+    Object.entries(this.editarReserva.value).forEach(entries => {
+      if(entries[0] != 'num1' && entries[0] != 'numePersonasAlojamiento' && entries[1] == true){
+        let idServicio = String(entries[0]).substring(String(entries[0]).length-1);
+        if(idServicio != '1' && this.editarReserva.get('num'+idServicio).value && (this.editarReserva.get('num'+idServicio).value == '' || this.editarReserva.get('num'+idServicio).value < 1)){
+          console.log(idServicio+' está mal')
+          validado = 0;
+        }
       }
-    });
+
+      if(entries[0] != 'num1' && entries[1] == true){
+        let idServicio = String(entries[0]).substring(String(entries[0]).length-1);
+        if(idServicio == '2' || idServicio == '3' || idServicio == '4'){
+          if(this.editarReserva.get('numePersonasAlojamiento').value == 1 && this.editarReserva.get('num'+idServicio).value > 0) {
+            validado = 0;
+          }
+        }
+        
+      }
+    }); 
+
+    // Si formulario está validado se mandan los datos al php y comprueba las fechas y datos
+    if(validado == 1 && this.totalPersonas > 0 && this.totalPersonas < 13) {
+      //console.log(this.reservaEditar);
+
+      let updateReserva = new HttpParams()
+      .set('opcion', '29')
+      .set('idReserva', this.reservaEditar.idReserva);
+
+      let insertReserva = new HttpParams()
+      .set('opcion', '31')
+      .set('idReserva', this.reservaEditar.idReserva);
+
+      let deleteReserva = new HttpParams()
+      .set('opcion', '32')
+      .set('idReserva', this.reservaEditar.idReserva);;
+
+      let fecha1 = new Date(this.editarReserva.get('fechaEntrada').value);
+      let fecha2 = new Date(this.editarReserva.get('fechaSalida').value);
+
+      let insert = 0;
+      let update = 0;
+      let deletee = 0;
+
+      if(fecha1.toLocaleDateString('es-ES',{day: '2-digit', month: '2-digit', year: 'numeric'}) != this.reservaEditar.fecha_entrada) {
+        update = 1;
+        updateReserva = updateReserva.set('fechaEntrada', fecha1.getFullYear()+'-'+fecha1.getMonth()+'-'+fecha1.getDate());
+      }
+      if(fecha2.toLocaleDateString('es-ES',{day: '2-digit', month: '2-digit', year: 'numeric'}) != this.reservaEditar.fecha_salida) {
+        update = 1;
+        updateReserva = updateReserva.set('fechaSalida', fecha2.getFullYear()+'-'+fecha2.getMonth()+'-'+fecha2.getDate());
+      }
+
+      let listaeditarReserva: any = [];
+      let listaupdateReserva: any = [];
+      let listadeleteReserva: any = [];
+
+      Object.entries(this.editarReserva.value).forEach(entries => {
+        if(entries[0] != 'num1'){
+          for (let i = 0; i < this.allServices.length; i++) {
+            const element = this.allServices[i];
+            if(entries[0] == 'servicio'+element['idServicio'] && entries[1] == true){
+              let cant = this.editarReserva.get('num'+element['idServicio']).value ? this.editarReserva.get('num'+element['idServicio']).value : 0;
+              for (let z = 0; z < this.serviciosReservaEditar.length; z++) {
+                const elemento = this.serviciosReservaEditar[z];
+                if(element.idServicio == elemento.idServicio && this.editarReserva.get('num'+element.idServicio).value != '0'){
+                  if(Number(element.cantidad) == Number(cant)) {
+                    //console.log('Servicio '+element.idServicio+' tiene la misma cantidad, no hacer nada')
+                    break;
+                  }else{
+                    //console.log('Servicio '+element.idServicio+' tiene cantidad ACTUALIZADA, METER EN PARAMS PA ACTUALIZAR')
+                    update = 1;
+                    listaupdateReserva.push(element.idServicio,this.editarReserva.get('num'+element.idServicio).value)
+                    break;
+                  }
+                }else if(z == this.serviciosReservaEditar.length-1 && element.idServicio != elemento.idServicio && this.editarReserva.get('num'+element.idServicio).value != '0'){
+                  insert = 1;
+                  //console.log('Servicio '+element.idServicio+' es NUEVO, meter en params para insert')
+                  listaeditarReserva.push(element.idServicio,this.editarReserva.get('num'+element.idServicio).value);
+                  break;
+                }
+              }
+              break;
+            }else if(entries[0] == 'servicio'+element['idServicio']){
+              // todo: comprobar si estaba en la lista this.serviciosReservaEditar, y si estaba significa que se ha eliminado, sino estaba pues NADA
+              for (let j = 0; j < this.serviciosReservaEditar.length; j++) {
+                const elemento = this.serviciosReservaEditar[j];
+                if(element.idServicio == elemento.idServicio && this.editarReserva.get('num'+element.idServicio).value != '0') {
+                  deletee = 1;
+                  //console.log('El servicio con ID: '+element.idServicio+' ya no está contratado, meter en params pa delete')
+                  listadeleteReserva.push(element.idServicio);
+                }
+                
+              }
+            }
+          }
+        }
+      });
+
+      /*console.log(updateReserva)
+      console.log(insertReserva)
+      console.log(deleteReserva)*/
+
+      //34.206.59.221
+      if(deletee) {
+        deleteReserva = deleteReserva.set('servicios', listadeleteReserva);
+        this.http.post<any>("http://34.206.59.221/dashboard.php", deleteReserva).subscribe(data => { // Delete
+        //console.log(data)
+        if(data == null && data == 0) {
+            this.errorEdicionReserva = true;
+          }
+        });
+      }
+      
+      if(update) {
+        // todo: comprobar que no haya reservas de ese alojamiento en las fechas que se ha introducido, si solo se modifican los servicios, actualizarlos sin más.
+        updateReserva = updateReserva.set('servicios',listaupdateReserva);
+        this.http.post<any>("http://34.206.59.221/dashboard.php", updateReserva).subscribe(data => { // Update
+        //console.log(data)
+        if(data == null && data == 0) {
+            this.errorEdicionReserva = true;
+          }
+        });
+      }
+      
+      if(insert) {
+        insertReserva = insertReserva.set('servicios',listaeditarReserva);
+        this.http.post<any>("http://34.206.59.221/dashboard.php", insertReserva).subscribe(data => { // Insert
+        //console.log(data)
+          if(data == null && data == 0) {
+            this.errorEdicionReserva = true;
+          }
+        });
+      }
+      
+
+      if(!this.errorEdicionReserva) {
+        location.reload();
+      }
+    }
   }
 
   eliminar(r) { // Eliminación de reserva
