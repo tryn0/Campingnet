@@ -178,14 +178,14 @@
                             <ng-template #parcela>
                                 <p>Sombra: {{valor1}}</p>
                                 <p>Dimensiones de la parcela: {{valor2}}</p>
-                                <p>Número de personas: {{personas}}</p>
+                                <p>Número de personas en total: {{totalPersonasparcela}}</p>
                             </ng-template>
                             <p>Precio del alojamiento: {{precioAlojamiento}}€</p>
                         </div>
     
-                        <div class="col-md-6" *ngIf="personasExtras != null || personasExtrasMenor != null || personasExtrasMayor != null || extras[0]">
+                        <div class="col-md-6" *ngIf="extras?.length > 0">
                             <!-- Servicios extras -->
-                            <p >Servicios extras:</p>
+                            <p>Servicios extras:</p>
                             <div *ngFor="let extra of extras">
                                 <div *ngFor="let precio of preciosServicios">
                                     <div *ngIf="extra[1] == '1'; else extras">

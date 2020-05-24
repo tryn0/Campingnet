@@ -841,9 +841,6 @@ export class DashboardComponent implements OnInit {
         }
       });
 
-      /*console.log(updateReserva)
-      console.log(insertReserva)
-      console.log(deleteReserva)*/
 
       //34.206.59.221
       if(deletee) {

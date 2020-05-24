@@ -112,7 +112,10 @@ export class ReservasComponent implements OnInit {
   }
 
   // Obtiene listado de alojamientos si las fechas introducidas están correctas
-  guardarFechas(){ 
+  guardarFechas(){
+    this.alojamiento.reset();
+    this.serviciosExtras.reset();
+    
     this.fechaVal = true;
     if(this.fechas.get('fechaEntrada').value != '' && this.fechas.get('fechaSalida').value != '' && !this.fechas.get('fechaEntrada').errors && !this.fechas.get('fechaSalida').errors){
       this.tipos2 = [];
@@ -152,7 +155,6 @@ export class ReservasComponent implements OnInit {
           let diff = Math.floor((new Date(this.fechas.get('fechaSalida').value).getTime() - new Date(this.fechas.get('fechaEntrada').value).getTime())/86400000);
 
           if(data != 0){
-            //console.log(data)
             let data2: any = data;
 
             // Seteo de la variable calculo usada para el multiplicador
@@ -379,7 +381,7 @@ export class ReservasComponent implements OnInit {
     }, error => console.log(error));
   }
 
-  alojamientoElegido(){
+  alojamientoElegido(){ // Seteo de cantidad personas en la reserva
     if(this.alojamiento.get('tipo').value == 'Parcela'){
       let personasTotal = this.alojamiento.get('numPersonas').value;
       if(personasTotal > 2){
@@ -389,6 +391,7 @@ export class ReservasComponent implements OnInit {
         this.personas =  this.alojamiento.get('numPersonas').value;
         this.personasExtras = null;
       }
+      this.totalPersonasparcela = 0 + this.personas; // Refrescar personas disponibles en la reserva
     }else{
       this.personasExtras = null;
     }
@@ -436,7 +439,9 @@ export class ReservasComponent implements OnInit {
     if(this.serviciosExtras.get('servicio'+a['idServicio']).value){
       this.serviciosExtras.get('num'+a['idServicio']).enable();
     }else{
-      this.serviciosExtras.get('num'+a['idServicio']).disable()
+      this.serviciosExtras.get('num'+a['idServicio']).disable();
+      this.serviciosExtras.get('num'+a['idServicio']).setValue('');
+      this.totalPersonasparcela = 0 + this.personas; // Refrescar personas disponibles en la reserva
     }    
   }
 
@@ -448,7 +453,7 @@ export class ReservasComponent implements OnInit {
       let totalPersonasparcela2: number = 0;
       Object.entries(this.serviciosExtras.value).forEach(entries => {
         if(entries[0].slice(0,3) == 'num' && entries[0] != 'num1'){
-          if(entries[0] == 'num2' || entries[0] == 'num6' || entries[0] == 'num7'){
+          if(entries[0] == 'num2' || entries[0] == 'num3' || entries[0] == 'num4'){
             totalPersonasparcela2 += (entries[1] as number);
             this.totalPersonasparcela = totalPersonasparcela2 + this.personas;
           }
@@ -456,11 +461,15 @@ export class ReservasComponent implements OnInit {
             this.serviciosExtras.get(entries[0]).setErrors({'noCantidad': true});
           }else if(entries[1] <= 0 || entries[1] > 12) { // Si el servicio elegido no está entre 0 y 12
             this.serviciosExtras.get(entries[0]).setErrors({'muchaCantidad': true});
-          }else { // Toodo correcto
+          }else { // Tó correcto
             if((this.personas+totalPersonasparcela2) > 12) { // La suma de todas las personas
               this.serviciosExtras.get(entries[0]).setErrors({'muchaGente': true});
             }else{
-              this.serviciosExtras.get(entries[0]).setErrors(null);
+              if(this.alojamiento.get('numPersonas').value == 1 && this.serviciosExtras.get('num2').value > 0 || this.serviciosExtras.get('num3').value > 0 || this.serviciosExtras.get('num4').value > 0) {
+                this.serviciosExtras.get(entries[0]).setErrors({'noGente': true});
+              }else{
+                this.serviciosExtras.get(entries[0]).setErrors(null);
+              }
             }
           }
         }
@@ -504,7 +513,6 @@ export class ReservasComponent implements OnInit {
 
     // Obtención de los precios
     this.http.post('http://34.206.59.221/reserva.php', params2).subscribe(data =>{
-      //console.log(data)
       if(data != null && data!= 0){ // Si recibe algún alojamiento
         this.idAlojamientoRandom = data[0]['idAlojamiento'];
         let precioAlojamiento2 = new HttpParams()
@@ -513,7 +521,7 @@ export class ReservasComponent implements OnInit {
         let k = new HttpParams()
         .set('opcion','10');
         this.http.post('http://34.206.59.221/reserva.php', precioAlojamiento2).subscribe(data =>{
-          //console.log(data)
+  
           if(data != null && data != 0){ // Si recibe algún dato
             this.precioAlojamiento = data[0]['precio'];
             for (let i = 0; i < this.extras.length; i++) {
@@ -523,7 +531,6 @@ export class ReservasComponent implements OnInit {
             this.precioAlojamientoFinal = ((this.precioAlojamiento*this.dias)*this.multiplicador);
             //console.log('Precio alojamiento final = ('+this.precioAlojamiento+'*'+this.dias+')*'+this.multiplicador);
             this.http.post('http://34.206.59.221/reserva.php', k).subscribe(data =>{
-              //console.log(data)
               if(data != null && data != 0){ // Si recibe algún dato
                 this.preciosServicios = data;
                 for (let i = 0; i < this.extras.length; i++) {
@@ -567,8 +574,8 @@ export class ReservasComponent implements OnInit {
           persExtras = 0;
           totalPersonas = this.valor2;
         } else {
-          let mayor = null ? this.serviciosExtras.get('num6').value : 0;
-          let menor = null ? this.serviciosExtras.get('num7').value : 0;
+          let mayor = null ? this.serviciosExtras.get('num3').value : 0;
+          let menor = null ? this.serviciosExtras.get('num4').value : 0;
           totalPersonas = this.personas + persExtras + mayor + menor;
         }
         params2 = new HttpParams()
@@ -590,7 +597,7 @@ export class ReservasComponent implements OnInit {
           .set('dni', this.usuarioActual['nif'])
           .set('alias', this.usuarioActual['alias'])
 
-          // detalles de la reserva
+          // Detalles de la reserva
           .set('numPersonas', totalPersonas.toString()) // Entre 12 y 64
           .set('multiplicativo', this.multiplicador.toString());
         for (let i = 0; i < this.extras.length; i++) {
@@ -618,7 +625,6 @@ export class ReservasComponent implements OnInit {
   }
 
   /**
-   * ? FUNCIONA
    * * Popup para iniciar sesión y hacer la reserva
    */
   logIn(){ // Si confirma la reserva, NO tiene una sesión iniciada y tiene una cuenta creada
@@ -643,6 +649,9 @@ export class ReservasComponent implements OnInit {
     });
   }
 
+  /**
+   * * Popup para registrarse y hacer la reserva
+   */
   signIn(){// Si confirma la reserva, NO tiene una sesión iniciada y NO tiene una cuenta creada
     const dialogRef = this.dialog.open(ReservasRegistrarComponent, {
       data: {}
@@ -665,8 +674,8 @@ export class ReservasComponent implements OnInit {
     });
   }
 
-  ngOnInit(): void {
 
+  ngOnInit(): void {
     // Compruebo si hay un usuario con sesión iniciada
     if (this.usuarioActual == null) {
       if(localStorage.getItem('usuarioActual') != null){
