@@ -580,7 +580,6 @@ export class DashboardComponent implements OnInit {
   editar(r) { // Editar reserva
     /**
      * TODO: Cargar un formulario con los datos de la reserva, las fechas han cambiado comprobar si hay alguna reserva de ese alojamiento entre las fechas de entrada y salida, lo mismo que al reservas pero especificamente del alojamiento
-     * TODO: Añadir al formulario tantos checkbox e inputs como servicios haya, y los servicios que tenga contratado checkados y con la cantidad en los inputs, si se quiere añadir un servicio checkar el checkbox e introducir una cantidad y creo que ya
      */
     this.reservaEditar = null;
     this.serviciosReservaEditar = [];
@@ -594,7 +593,6 @@ export class DashboardComponent implements OnInit {
 
     this.editarReserva.get('fechaEntrada').setValue(new Date(fecha1[2], fecha1[1]-1, fecha1[0]));
     this.editarReserva.get('fechaSalida').setValue(new Date(fecha2[2], fecha2[1]-1, fecha2[0]));
-
 
     // Obtención de todos los servicios de la reserva y sus cantidades
     let servicios = new HttpParams()
@@ -661,7 +659,6 @@ export class DashboardComponent implements OnInit {
     }else{
       this.editarReserva.setValidators([this.validacionFecha()]);
     }
-
     this.reservaSeleccionada = true;
   }
 
@@ -729,7 +726,6 @@ export class DashboardComponent implements OnInit {
         }else{
           this.editarReserva.get('numePersonasAlojamiento').setErrors({'noGente': true});
         }
-
       }
       return;
     };
@@ -759,13 +755,11 @@ export class DashboardComponent implements OnInit {
             validado = 0;
           }
         }
-        
       }
     }); 
 
     // Si formulario está validado se mandan los datos al php y comprueba las fechas y datos
     if(validado == 1 && this.totalPersonas > 0 && this.totalPersonas < 13) {
-      //console.log(this.reservaEditar);
 
       let updateReserva = new HttpParams()
       .set('opcion', '29')
@@ -808,18 +802,15 @@ export class DashboardComponent implements OnInit {
               for (let z = 0; z < this.serviciosReservaEditar.length; z++) {
                 const elemento = this.serviciosReservaEditar[z];
                 if(element.idServicio == elemento.idServicio && this.editarReserva.get('num'+element.idServicio).value != '0'){
-                  if(Number(element.cantidad) == Number(cant)) {
-                    //console.log('Servicio '+element.idServicio+' tiene la misma cantidad, no hacer nada')
+                  if(Number(element.cantidad) == Number(cant)) { // Si la cantidad del servicio extra no se ha actualizado
                     break;
-                  }else{
-                    //console.log('Servicio '+element.idServicio+' tiene cantidad ACTUALIZADA, METER EN PARAMS PA ACTUALIZAR')
+                  }else{ // Si la cantidad del servicio extra ha sido actualizada
                     update = 1;
                     listaupdateReserva.push(element.idServicio,this.editarReserva.get('num'+element.idServicio).value)
                     break;
                   }
-                }else if(z == this.serviciosReservaEditar.length-1 && element.idServicio != elemento.idServicio && this.editarReserva.get('num'+element.idServicio).value != '0'){
+                }else if(z == this.serviciosReservaEditar.length-1 && element.idServicio != elemento.idServicio && this.editarReserva.get('num'+element.idServicio).value != '0'){ // Si el servicio extra es nuevo
                   insert = 1;
-                  //console.log('Servicio '+element.idServicio+' es NUEVO, meter en params para insert')
                   listaeditarReserva.push(element.idServicio,this.editarReserva.get('num'+element.idServicio).value);
                   break;
                 }
@@ -829,21 +820,18 @@ export class DashboardComponent implements OnInit {
               // todo: comprobar si estaba en la lista this.serviciosReservaEditar, y si estaba significa que se ha eliminado, sino estaba pues NADA
               for (let j = 0; j < this.serviciosReservaEditar.length; j++) {
                 const elemento = this.serviciosReservaEditar[j];
-                if(element.idServicio == elemento.idServicio && this.editarReserva.get('num'+element.idServicio).value != '0') {
+                if(element.idServicio == elemento.idServicio && this.editarReserva.get('num'+element.idServicio).value != '0') { // Si se ha eliminado el servicio extra
                   deletee = 1;
-                  //console.log('El servicio con ID: '+element.idServicio+' ya no está contratado, meter en params pa delete')
                   listadeleteReserva.push(element.idServicio);
                 }
-                
               }
             }
           }
         }
       });
 
-
       //34.206.59.221
-      if(deletee) {
+      if(deletee) { // Si hay algún servicio extra eliminado
         deleteReserva = deleteReserva.set('servicios', listadeleteReserva);
         this.http.post<any>("http://34.206.59.221/dashboard.php", deleteReserva).subscribe(data => { // Delete
         //console.log(data)
@@ -853,7 +841,7 @@ export class DashboardComponent implements OnInit {
         });
       }
       
-      if(update) {
+      if(update) { // Si hay alguna actualización de servicio extra
         // todo: comprobar que no haya reservas de ese alojamiento en las fechas que se ha introducido, si solo se modifican los servicios, actualizarlos sin más.
         updateReserva = updateReserva.set('servicios',listaupdateReserva);
         this.http.post<any>("http://34.206.59.221/dashboard.php", updateReserva).subscribe(data => { // Update
@@ -864,7 +852,7 @@ export class DashboardComponent implements OnInit {
         });
       }
       
-      if(insert) {
+      if(insert) { // Si hay algún servicio extra nuevo
         insertReserva = insertReserva.set('servicios',listaeditarReserva);
         this.http.post<any>("http://34.206.59.221/dashboard.php", insertReserva).subscribe(data => { // Insert
         //console.log(data)
@@ -873,8 +861,8 @@ export class DashboardComponent implements OnInit {
           }
         });
       }
-      
 
+      // Si todas las operaciones de la edición de reserva han sido satisfactorias, recarga la página
       if(!this.errorEdicionReserva) {
         location.reload();
       }
@@ -1005,7 +993,7 @@ export class DashboardComponent implements OnInit {
     }
   }
 
-  eliminarServicio(servicio) {
+  eliminarServicio(servicio) { // Muestra el popup para confirmar la eliminación del servicio a eliminar
     this.openBottomSheet3(servicio);
   }
 
@@ -1028,13 +1016,13 @@ export class DashboardComponent implements OnInit {
       .set('precio', this.edicionServicios.get('precio').value)
       .set('idServicio', this.edicionServicios.get('idServicio').value);
 
-      this.http.post<any>("http://34.206.59.221/dashboard.php", servicio).subscribe(data =>{ // Obtener las entradas al camping del día
-        if(data != null && data != 0){
-          location.reload();
-        }else{
-          this.errorGuardarServicio = true;
-        }
-      });
+    this.http.post<any>("http://34.206.59.221/dashboard.php", servicio).subscribe(data =>{ // Obtener las entradas al camping del día
+      if(data != null && data != 0){
+        location.reload();
+      }else{
+        this.errorGuardarServicio = true;
+      }
+    });
   }
 
   addAlojamiento() { // Cambia la vista para agregar alojamiento
@@ -1124,7 +1112,6 @@ export class DashboardComponent implements OnInit {
 
 
   ngOnInit(): void {
-
     this.scrollToBottom();
     if(localStorage.getItem('usuarioActual') != null){ // Comprobación de que tiene autorización para entrar a la administración
       this.usuarioActual = desencriptar(localStorage.getItem('usuarioActual'));
@@ -1159,7 +1146,7 @@ export class DashboardComponent implements OnInit {
 
       this.atrasBusqueda();
 
-      // Entradas
+      // Entradas hoy
       let entrada = new HttpParams()
       .set('opcion', '1');
 
@@ -1169,7 +1156,7 @@ export class DashboardComponent implements OnInit {
         }
       });
       
-      // Salidas
+      // Salidas hoy
       let salida = new HttpParams()
       .set('opcion', '2');
 
@@ -1189,7 +1176,7 @@ export class DashboardComponent implements OnInit {
         }
       });
 
-      // últimas 10 reservas
+      // Últimas 10 reservas
       let reservas = new HttpParams()
       .set('opcion', '4');
 
@@ -1224,7 +1211,6 @@ export class DashboardComponent implements OnInit {
       this.dashboardAdminServicios = false;
 
       this.atrasBusqueda();
-
 
       let reseniasAprobar = new HttpParams()
       .set('opcion', '5');
@@ -1394,7 +1380,6 @@ export class DashboardComponent implements OnInit {
                     const elemento = cantidadFinal[x];
                     if(elemento.idServicio == element.idServicio){
                       element.cantidad = elemento.cantidad;
-
                       // Precio de todos los servicios, para que el trabajador de recepción cobre al cliente
                       this.totalPagar += (parseFloat(element.precio)*parseInt(element.cantidad));
                     }
@@ -1484,22 +1469,19 @@ export class DashboardComponent implements OnInit {
                       this.listadoEntradasHoy[i].maximo_personas = data[0]['maximo_personas'];
                     }else{
                       this.listadoEntradasHoy[i].dimension = data[0]['dimension'];
-                      switch (data[0]['sombra']) {
+                      switch (data[0]['sombra']) { // Sombra de la parcela
                         case '0':
                           this.listadoEntradasHoy[i].sombra = "Nada";
                           break;
                         case '1':
                           this.listadoEntradasHoy[i].sombra = "Media";
                           break;
-
                         case '2':
                           this.listadoEntradasHoy[i].sombra = "Bastante";
                           break;
-
                         case '3':
                           this.listadoEntradasHoy[i].sombra = 'Mucha';
                           break;
-
                         default:
                           this.listadoEntradasHoy[i].sombra = "Desconocido";
                           break;
@@ -1509,16 +1491,6 @@ export class DashboardComponent implements OnInit {
                 });
               }
             });
-            /*let cantidadServicios = new HttpParams()
-              .set('opcion', '14')
-              .set('idReserva', element['idReserva']);
-
-            let cantidadFinal: any;
-            this.http.post<any>("http://34.206.59.221/dashboard.php", cantidadServicios).subscribe(data => { // Obtener la cantidad de servicios contratados
-              if (data != null && data != 0) {
-                cantidadFinal = data;
-              }
-            });*/
 
             let servicios = new HttpParams()
             .set('opcion', '13')
@@ -1528,18 +1500,10 @@ export class DashboardComponent implements OnInit {
                 for (let i = 0; i < data.length; i++) {
                   const element = data[i];
                   delete element.idAlojamiento;
-                  /*for (let x = 0; x < cantidadFinal.length; x++) { // Por cada servicio si coincide el id con el de la lista se le agrega a ese mismo la cantidad en la reserva
-                    const elemento = cantidadFinal[x];
-                    if(elemento.idServicio == element.idServicio){
-                      element.cantidad = elemento.cantidad;
-                      this.totalPagar += (parseFloat(element.precio)*parseInt(element.cantidad));
-                    }
-                  }*/
                   this.serviciosExtras.push(element);
                 }
                 this.serviciosExtras.idReserva = element['idReserva'];
               }
-              //this.listadoEntradasHoy[i].total_pagar = this.totalPagar.toFixed(2);
             });
           }
         }
@@ -1618,7 +1582,6 @@ export class DashboardComponent implements OnInit {
       .set('opcion', '17');
 
       this.http.post<any>("http://34.206.59.221/dashboard.php", reseniasBuscar).subscribe(data => { // Últimas 10 reseñas
-      //console.log(data)
         if(data != null && data != 0){
           this.reseniasList = data;
           for (let k = 0; k < this.reseniasList.length; k++) {
@@ -1675,7 +1638,6 @@ export class DashboardComponent implements OnInit {
       let usuariosDatos = new HttpParams()
       .set('opcion', '20');
       this.http.post<any>("http://34.206.59.221/dashboard.php", usuariosDatos).subscribe(data => {
-        //console.log(data)
         if (data != null && data != 0) {
           this.listadoUsuarios = data;
         }
@@ -1728,22 +1690,19 @@ export class DashboardComponent implements OnInit {
               this.http.post<any>("http://34.206.59.221/dashboard.php", datosAlojamiento).subscribe(data => {
                 if(data != null && data != 0) {
                   if (data[0]['tipo'] == 'parcela') {
-                    switch (data[0]['sombra']) {
+                    switch (data[0]['sombra']) { // Sombra de la parcela
                       case '0':
                         this.listadoServicios[i].sombra = "Nada";
                         break;
                       case '1':
                         this.listadoServicios[i].sombra = "Media";
                         break;
-
                       case '2':
                         this.listadoServicios[i].sombra = "Bastante";
                         break;
-
                       case '3':
                         this.listadoServicios[i].sombra = 'Mucha';
                         break;
-
                       default:
                         this.listadoServicios[i].sombra = "Desconocido";
                         break;
@@ -1793,9 +1752,7 @@ export class DashboardComponent implements OnInit {
       .set('opcion', '23');
 
       this.http.post<any>("http://34.206.59.221/dashboard.php", temporadas).subscribe(data => {
-        //console.log(data)
         if(data != null && data != 0) {
-          //console.log(data)
           this.listadoTemporadas = data;
         }
       });
@@ -1853,6 +1810,7 @@ export class DashboardComponent implements OnInit {
 })
 export class confirmacion {
   constructor(private _popUp: MatBottomSheetRef<confirmacion>, @Inject(MAT_BOTTOM_SHEET_DATA) public data: any, private http: HttpClient) {}
+  
   confirmado(e) {
     this._popUp.dismiss();
     let temporadas = new HttpParams()
@@ -1865,6 +1823,7 @@ export class confirmacion {
       }
     });
   }
+
   cancelar() {
     this._popUp.dismiss();
   }
@@ -1879,6 +1838,7 @@ export class confirmacion {
 })
 export class confirmacionReserva {
   constructor(private _popUp: MatBottomSheetRef<confirmacionReserva>, @Inject(MAT_BOTTOM_SHEET_DATA) public data: any, private http: HttpClient) {}
+
   confirmadoReserva(e) {
     this._popUp.dismiss();
     let reserva = new HttpParams()
@@ -1891,6 +1851,7 @@ export class confirmacionReserva {
       }
     });
   }
+
   cancelar() {
     this._popUp.dismiss();
   }
@@ -1905,8 +1866,10 @@ export class confirmacionReserva {
 })
 export class confirmacionServicio {
   constructor(private _popUp: MatBottomSheetRef<confirmacionServicio>, @Inject(MAT_BOTTOM_SHEET_DATA) public data: any, private http: HttpClient) {}
+
   confirmadoServicio(e) {
     this._popUp.dismiss();
+
     let alojamiento = new HttpParams()
     .set('opcion', '30')
     .set('idAlojamiento', e);
@@ -1917,6 +1880,7 @@ export class confirmacionServicio {
       }
     });
   }
+
   cancelar() {
     this._popUp.dismiss();
   }
