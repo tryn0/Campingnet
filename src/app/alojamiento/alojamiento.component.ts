@@ -59,10 +59,9 @@ export class AlojamientoComponent implements OnInit {
   public reseniaOk: boolean = false;
 
   constructor(private router: ActivatedRoute, private http: HttpClient, public fb: FormBuilder, private route: Router) {
-    
     if(this.router.snapshot.url.length == 1 && this.router.snapshot.url[0].path == 'alojamiento'){ // Si la url solo tiene 1 parámetro y es alojamiento que muestre una página para ver parcelas o bungalows (para asegurarme de que va bien)
       this.situacion = 0;
-
+      
       // Parámetros a enviar al archivo PHP
       let params = new HttpParams()
       .set('alojamiento', '')
@@ -71,17 +70,13 @@ export class AlojamientoComponent implements OnInit {
       this.http.post('http://34.206.59.221/alojamientos.php', params).subscribe(data =>{ // Inicia el archivo alojamientos.php y busca en la BD los alojamientos con tipo según el 2º parámetro
         if(data != null){ // Si encuentra alojamientos...
           this.alojamientos = data;
-
-          // Bungalows
-          for (let i = 0; i < this.alojamientos['bungalows'].length; i++) {
+          for (let i = 0; i < this.alojamientos['bungalows'].length; i++) { // Bungalows
             this.bungalows = null;
             const element = this.alojamientos['bungalows'][i];
             this.bungalows = new Alojamiento(element.idAlojamiento, element.tipo, element.numeroAlojamiento, null, null, element.habitaciones, element.maximo_personas);
             this.arrayBungalows.push(this.bungalows);
           }
-
-          // Parcelas
-          for (let i = 0; i < this.alojamientos['parcelas'].length; i++) {
+          for (let i = 0; i < this.alojamientos['parcelas'].length; i++) { // Parcelas
             this.parcelas = null;
             const element = this.alojamientos['parcelas'][i];
             this.parcelas = new Alojamiento(element.idAlojamiento, element.tipo, element.numeroAlojamiento, element.sombra, element.dimension, null, null);
@@ -89,7 +84,6 @@ export class AlojamientoComponent implements OnInit {
           }
         }
       }, error => console.log(error));
-
     }else if(this.router.snapshot.url.length == 2 && (this.router.snapshot.url[1].path == 'bungalows' || this.router.snapshot.url[1].path == 'parcelas')){ // Si hay 2 parámetros y es bungalows o parcelas que vaya al archivo php y busque en la BD
       this.situacion = 1;
       this.alojamiento = this.router.snapshot.url[1].path; // 2º parámetro (parcelas o bungalows)
@@ -103,18 +97,14 @@ export class AlojamientoComponent implements OnInit {
       this.http.post<string>('http://34.206.59.221/alojamientos.php', params).subscribe(data =>{ // Inicia el archivo alojamientos.php y busca en la BD los alojamientos con tipo según el 2º parámetro
         if(data != null){ // Si encuentra alojamientos...
           this.alojamientos = data;
-          if(this.alojamiento == 'bungalows'){
-            // Bungalows
+          if(this.alojamiento == 'bungalows'){ // Bungalows
             for (let i = 0; i < this.alojamientos.length; i++) {
               this.bungalows = null;
               const element = this.alojamientos[i];
               this.bungalows = new Alojamiento(element.idAlojamiento, element.tipo, element.numeroAlojamiento, null, null, element.habitaciones, element.maximo_personas);
               this.arrayBungalows.push(this.bungalows);
-
-
             }
-          }else if(this.alojamiento == 'parcelas'){
-            // Parcelas
+          }else if(this.alojamiento == 'parcelas'){ // Parcelas
             for (let i = 0; i < this.alojamientos.length; i++) {
               this.parcelas = null;
               const element = this.alojamientos[i];
@@ -128,7 +118,6 @@ export class AlojamientoComponent implements OnInit {
       // Si entra con URL con longitud de 3 (/alojamiento/parcelas/3, por ejemplo) el 2º path de la URL es bungalows o parcelas y existe el parámetro id
     }else if(this.router.snapshot.url.length == 3 && (this.router.snapshot.url[1].path == 'bungalows' || this.router.snapshot.url[1].path == 'parcelas') && this.router.snapshot.params.numero){ 
       this.numero = this.router.snapshot.params.numero;
-
       this.situacion = 2;
       this.alojamiento = this.router.snapshot.url[1].path; // 2º parámetro (parcelas o bungalows)
 
@@ -138,24 +127,17 @@ export class AlojamientoComponent implements OnInit {
       .set('numero', this.router.snapshot.params.numero);
 
       this.http.post<string>('http://34.206.59.221/alojamientos.php', params).subscribe(data =>{ // Inicia el archivo alojamientos.php y busca en la BD los alojamientos con tipo según el 2º parámetro
-
         if(data != null){ // Si encuentra algo
           if(data == '0'){ // Si devuelve 0, error
-
             this.errorExiste = true;
-
           }else{ // si no...
-
             this.alojamientos = data[0];
             if(this.alojamientos != 0){ // Si la consulta no devuelve 0 
-
               this.errorExiste = null;
               if(this.alojamiento == 'bungalows' || this.alojamiento == 'parcelas'){ // Si el alojamiento es pacerla o bungalow
-                
                 const element = this.alojamientos;
                 if(this.alojamiento == 'bungalows'){ // Si es bungalow creo un Alojamiento con los datos del bungalow
                   this.alojamientoSeleccionado = new Alojamiento(element.idAlojamiento, element.tipo, element.numeroAlojamiento, null, null, element.habitaciones, element.maximo_personas);
-
                 }else{ // Si es parcela creo un Alojamiento con los datos de la parcela
                   this.alojamientoSeleccionado = new Alojamiento(element.idAlojamiento, element.tipo, element.numeroAlojamiento, element.sombra, element.dimension, null, null);
                 }
@@ -209,7 +191,6 @@ export class AlojamientoComponent implements OnInit {
 
   anonimo(e){ // Función para contorlar si es anónimo o no
     this.anonimoCheck = e.checked;
-    //console.log(this.anonimoCheck);
   }
 
   onChangePage($event) {    
