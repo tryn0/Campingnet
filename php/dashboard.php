@@ -403,6 +403,7 @@
             $i++;
         }
         
+
         $valido = 1;
         $x = explode(',',$servicios[0]);
         for ($j=0; $j < count($x); $j = $j+2) { 
@@ -436,6 +437,7 @@
         }
     }
     // Eliminar servicio de reserva
+    // todo: AL BORRAR PERSONAS EXTRAS ACTUALIZAR NUM_PERSONAS, SOLO ES CONSULTA DE NUM_PERSONAS - LA CANTIDAD DEL SERVICIO DE LAS PERSONAS, Y ESTO POR CADA SERVICIO A ELIMINAR DE PERSONAS
     else if($opcion == '"32"') {
         $idReserva = $_POST['idReserva'];
         $cantidad = 0;

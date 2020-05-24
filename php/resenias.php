@@ -40,4 +40,3 @@
         $sql3 = "INSERT INTO resenias (idResenia, idAlojamiento) VALUES ($idResenia, $idAlojamiento)";
         print json_encode(insert($conn, $sql3));
     }
-    

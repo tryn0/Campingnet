@@ -1,9 +1,9 @@
 <?php
     function conexion(){
         $servername = "localhost";
-        $username   = "camping2";
+        $username   = "camping";
         $password   = "CampingNetPI";
-        $dbname     = "camping2";
+        $dbname     = "camping";
         //Creacion de la conexion
         $conn = new mysqli($servername, $username, $password, $dbname);
         //Comprobación de la conexión
