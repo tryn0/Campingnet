@@ -4,13 +4,10 @@
         <mat-horizontal-stepper [linear]="true" #stepper>
             <mat-step [stepControl]="fechas">
                 <form novalidate [formGroup]="fechas">
-                    
                     <!-- Texto/Nombre del step -->
                     <ng-template matStepLabel>Calendario</ng-template>
-            
                     <!-- Icono del step -->
                     <ng-template matStepperIcon="edit"><mat-icon>search</mat-icon></ng-template>
-            
                     <!-- Contenido del step -->
                     <div class="row justify-content-around">
                         <!-- Calendario fecha de entrada -->
@@ -23,7 +20,6 @@
                                 <mat-datepicker touchUi #fechas1></mat-datepicker>
                             </mat-form-field>
                         </div>
-                        
                         <!-- Calendario fecha de salida -->
                         <div class="col-md-5 text-center pb-4">
                             <mat-form-field>
@@ -39,24 +35,19 @@
                     </div>
                     <br>
                     <mat-icon class="icon float-left" style="cursor: pointer;" (click)="mostrarInfo1()">info</mat-icon><span *ngIf="info1 != false" class="float-left">La hora de entrada por defecto es a las 12:00 y la de salida a las 11:59. En casos especiales póngase en contacto con el camping.</span>
-            
                     <!-- Botonera del step -->
                     <div>
                         <button class="float-right mt-3" mat-button matStepperNext (click)="guardarFechas()">Siguiente</button>
                     </div>
                 </form>
             </mat-step>
-            
             <!-- Escoger alojamiento disponible -->
             <mat-step [stepControl]="alojamiento">
                 <form novalidate [formGroup]="alojamiento">
-            
                     <!-- Texto/Nombre del step -->
                     <ng-template matStepLabel>Alojamiento disponible</ng-template>
-            
                     <!-- Icono del step -->
                     <ng-template matStepperIcon="edit"><mat-icon>search</mat-icon></ng-template>
-            
                     <!-- Contenido del step -->
                     <div class="row justify-content-between">
                         <!-- Lista para escoger tipo de alojamiento -->
@@ -72,7 +63,6 @@
                             <br>
                             <span style="color: red;" *ngIf="alojamiento.get('tipo').hasError('menos7')">En los meses de Julio y Agosto debes reservar mínimo 7 días en Bungalow.</span>
                         </div>
-                        
                         <!-- Lista para escoger caracteristica 1 del alojamiento -->
                         <div class="col-md-4">
                             <mat-form-field >
@@ -84,7 +74,6 @@
                                 </mat-select>
                             </mat-form-field>
                         </div>
-            
                         <!-- Lista para escoger caracteristica 2 del alojamiento -->
                         <div class="col-md-4">
                             <mat-form-field >
@@ -96,7 +85,6 @@
                                 </mat-select>
                             </mat-form-field>
                         </div>
-
                         <!-- Cantidad de personas +12 en la reserva -->
                         <div class="col-md-4">
                             <mat-form-field *ngIf="alojamiento.get('tipo').value == 'Parcela'">
@@ -106,7 +94,6 @@
                             </mat-form-field>                           
                         </div>
                     </div>
-
                     <br>
                     <mat-icon *ngIf="alojamiento.get('tipo').value == 'Parcela'" class="icon float-left" style="cursor: pointer;" (click)="mostrarInfo1()">info</mat-icon><span *ngIf="info1 != false && alojamiento.get('tipo').value == 'Parcela'" class="float-left">En el campo personas adultas +12 van todas aquellas personas que no tengan menos de 12 ni más de 65 años. Sí es así indíquelas en la sección de servicios extras.</span>
                     <!-- Botonera del step -->
@@ -116,12 +103,10 @@
                     </div>
                 </form>
             </mat-step>
-                    
             <!-- Servicios extras -->
             <mat-step [stepControl]="serviciosExtras" label="Servicios extras" >
                 <form novalidate [formGroup]="serviciosExtras" class="mt-3">
                     <ng-template matStepperIcon="edit"><mat-icon>search</mat-icon></ng-template>
-
                     <!-- Controlar el tema de borrar-->
                     <div class="row">
                         <div class="col-md-6 float-left row" *ngFor="let servicio of servicios">
@@ -137,15 +122,12 @@
                             </mat-form-field>
                         </div>
                     </div>
-
                     <div *ngIf="alojamiento.get('tipo').value != 'Bungalow'">
                         <p *ngIf="(gentePermitida - totalPersonasparcela) >= 0; else menosGente">Personas disponibles {{gentePermitida - totalPersonasparcela}}</p>
                     </div>
-                    
                     <ng-template #menosGente>
                         <p>Superas el límite permitido de personas en la parcela</p>
                     </ng-template>
-                    
                     <mat-icon class="icon float-left" style="cursor: pointer;" (click)="mostrarInfo1()">info</mat-icon><span *ngIf="info1 != false" class="float-left">Como servicio extra de Animal solo cuentan animales como perros, gatos, etc.<br>La suma total de personas no puede superar 12.</span><br>
                     <br>
                     <div>
@@ -154,7 +136,6 @@
                     </div>
                 </form>
             </mat-step>
-
             <!-- Desglose de precios y demás -->
             <mat-step>
                 <ng-template matStepLabel >Confirmar reserva</ng-template>
@@ -164,17 +145,14 @@
                             <!-- Fechas -->
                             <p>Fecha de entrada: {{fecha1}}</p>
                             <p>Fecha de salida: {{fecha2}}</p>
-    
                             <!-- Información del alojamiento -->
                             <p>Alojamiento: {{alojamiento.get('tipo').value}}</p>
                             <P>Multiplicativo por temporada: x{{multiplicador.toFixed(2)}}</P>
-    
                             <p>Características del alojamiento:</p>
                             <div *ngIf="alojamiento.get('tipo').value == 'Bungalow'; else parcela">
                                 <p>Habitaciones: {{valor1}}</p>
                                 <p>Máximo de personas permitidas: {{valor2}}</p>
                             </div>
-    
                             <ng-template #parcela>
                                 <p>Sombra: {{valor1}}</p>
                                 <p>Dimensiones de la parcela: {{valor2}}</p>
@@ -182,7 +160,6 @@
                             </ng-template>
                             <p>Precio del alojamiento: {{precioAlojamiento}}€</p>
                         </div>
-    
                         <div class="col-md-6" *ngIf="extras?.length > 0">
                             <!-- Servicios extras -->
                             <p>Servicios extras:</p>
@@ -202,35 +179,27 @@
                     <p class="float-right" *ngIf="preciosExtrasFinal != 0">Precio total servicios extras: {{preciosExtrasFinal.toFixed(2)}}€</p>
                     <br>
                     <p class="text-center">Precio total de la reserva: {{(precioAlojamientoFinal+preciosExtrasFinal).toFixed(2)}}€</p>
-
                 </div>
-
                 <!-- Botonera -->
                 <div>
                     <button class="mt-3" mat-button matStepperPrevious>Atrás</button>
                     <button class="float-right mt-3" mat-button matStepperNext (click)="reserva()">Confirmar reserva</button>
                 </div>
                 </mat-step>
-
-
                 <!-- Datos personales para la reserva -->
                 <!-- Si se tiene una sesión iniciada se rellena automáticamente -->
-
                 <mat-step  label="Datos personales" *ngIf="usuarioActual == null">
                     <p>No has iniciado sesión. Para realizar una reserva necesitas estar logueado. Si tienes cuenta inicia sesión. Si aún no tiene regístrese.</p>
                     <p *ngIf="loginReserva == false" style="color: red;">Por favor reintente iniciar sesión, comprueba el correo electrónico y la contraseña.</p>
-
                     <!-- Cada uno de los botones llevará a un popup modal con un formulario logIn a uno con 2 campos, y sigIn a uno con 7 campos -->
                     <!-- Tienen el mismo fin, si el formulario es OK, confirma reserva, lleva a una página que indica que todo OK y la reserva se realizó -->
                     <button mat-button (click)="logIn()">Iniciar sesión</button>
                     <button mat-button (click)="signIn()" class="float-right">Registrarse</button>
-                    
                 </mat-step>
-
         </mat-horizontal-stepper>
     </div>
 </div>
-
+<!-- Mensaje con la info de la reserva, aparece cuando se ha completado la reserva -->
 <ng-template #reservado>
     <div class="container text-center mt-5">
         <h5 class="display-4">La reserva se ha completado.</h5>
@@ -241,5 +210,4 @@
         <br>
         <a href="/inicio" style="text-decoration: none; color: inherit;">Volver a inicio</a>
     </div>
-    
 </ng-template>
