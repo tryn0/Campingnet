@@ -96,6 +96,8 @@ export class ReservasComponent implements OnInit {
   public persona: Usuario;
 
   public reservaHecha: boolean = false;
+
+  public reservaId: any = '';
   
   constructor(private fb: FormBuilder, private http: HttpClient, private dateAdapter: DateAdapter<Date>, public dialog: MatDialog) {
     this.dateAdapter.setLocale('es-ES');
@@ -611,10 +613,8 @@ export class ReservasComponent implements OnInit {
          */
         this.http.post('http://34.206.59.221/reserva.php', params2).subscribe(data => {
           if (data != null && data != 0) { // Si recibe algún alojamiento
-            if (data == 1) {
-              this.reservaHecha = true;
-            }else{
-            }
+            this.reservaId = data;
+            this.reservaHecha = true;
           }
         }, error => console.log(error));
       }else{

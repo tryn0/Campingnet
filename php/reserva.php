@@ -168,7 +168,7 @@
         }
 
         if ($resultadoFinal == 1 && $resultadoFinal2 == 1) {
-            print 1;
+            print $idReserva;
         }
 
 
