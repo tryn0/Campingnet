@@ -88,21 +88,17 @@ export class ReservasComponent implements OnInit {
   public usuario: FormGroup;
   public loginReserva: boolean = null;
 
-  public email: any;
 
+  public email: any;
   public valor1: any = '';
   public valor2: any = '';
-
   public persona: Usuario;
-
   public reservaHecha: boolean = false;
-
   public reservaId: any = '';
   
   constructor(private fb: FormBuilder, private http: HttpClient, private dateAdapter: DateAdapter<Date>, public dialog: MatDialog) {
     this.dateAdapter.setLocale('es-ES');
   }
-
 
   // Mostrar o escondes (toggle) el mensaje de info del formulario de las fechas
   mostrarInfo1(){
@@ -152,13 +148,11 @@ export class ReservasComponent implements OnInit {
       // Para los multiplicativos de las fechas
       this.http.post('http://34.206.59.221/reserva.php', params3).subscribe(data =>{
         if(data != null){ // Si recibe algún alojamiento
-
           // Total de días
           let diff = Math.floor((new Date(this.fechas.get('fechaSalida').value).getTime() - new Date(this.fechas.get('fechaEntrada').value).getTime())/86400000);
-
           if(data != 0){
             let data2: any = data;
-
+            
             // Seteo de la variable calculo usada para el multiplicador
             let calculo: number = 0;
 
@@ -283,7 +277,6 @@ export class ReservasComponent implements OnInit {
       .set('entrada', (this.fechas.get('fechaEntrada').value).format('YYYY-MM-DD'))
       .set('salida', (this.fechas.get('fechaSalida').value).format('YYYY-MM-DD'))
       this.dato4 = 'Dimension';
-
     }else{ // Si escoge Bungalow como alojamiento
       this.tipos = 'bungalow';
       this.electricidad = true;
@@ -294,7 +287,6 @@ export class ReservasComponent implements OnInit {
       this.dato4 = 'Máximo de personas';
     }
 
-
     // Petición POST para obtener todos los tipos de alojamieto y sus características, FORMULARIO 1, Sombra o habitaciones
     this.http.post('http://34.206.59.221/reserva.php', params).subscribe(data =>{
       if(data != null && data != 0){ // Si recibe algún alojamiento
@@ -302,7 +294,6 @@ export class ReservasComponent implements OnInit {
           this.dato1 = key; // Sin mayúscula
           this.dato2 = key[0].toUpperCase()+key.slice(1); // Primera letra mayúscula
         });
-
         this.arrayCaract1 = data;
         if(this.dato1 == 'sombra'){
           for (let i = 0; i < this.arrayCaract1.length; i++) {
@@ -311,15 +302,12 @@ export class ReservasComponent implements OnInit {
               case '0':
                 this.arrayCaract1[i][this.dato1] = 'Nada';
                 break;
-
               case '1':
                 this.arrayCaract1[i][this.dato1] = 'Media';
                 break;
-            
               case '2':
                 this.arrayCaract1[i][this.dato1] = 'Bastante';
                 break;
-
               case '3':
                 this.arrayCaract1[i][this.dato1] = 'Mucha';
                 break;
@@ -358,7 +346,6 @@ export class ReservasComponent implements OnInit {
   // Al escoger la característica 1 consulta en la BD todas las características 2 que hay disponibles para ese tipo de alojamientos con la característica 1 elegida
   getCaracteristica2(datos: string){
     let params2: any;
-
     if(this.tipos == 'parcela'){
       params2 = new HttpParams()
       .set('opcion', '3')
@@ -523,7 +510,6 @@ export class ReservasComponent implements OnInit {
         let k = new HttpParams()
         .set('opcion','10');
         this.http.post('http://34.206.59.221/reserva.php', precioAlojamiento2).subscribe(data =>{
-  
           if(data != null && data != 0){ // Si recibe algún dato
             this.precioAlojamiento = data[0]['precio'];
             for (let i = 0; i < this.extras.length; i++) {
