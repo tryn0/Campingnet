@@ -160,22 +160,19 @@
                                 <p class="card-text">Sombra: {{ alojamientoSeleccionado?.sombra }}</p>
                                 <p class="card-text">Dimensiones: {{ alojamientoSeleccionado?.dimension }}</p>
                             </div>
-
                             <!-- Puntuación media del alojamiento -->
-                            <ng-template #t let-fill="fill">
-                                <span class="star" [class.full]="fill === 100">
-                                  <span class="half" [style.width.%]="fill">&#9733;</span>&#9733;
-                                </span>
-                            </ng-template>
-                            <ngb-rating [(rate)]="currentRate" [starTemplate]="t" [readonly]="true" [max]="10"></ngb-rating>
-                            <hr>
-                                <pre>Puntuación media: <b>{{currentRate}}</b></pre>
-                                <!-- OCULTAR PUNTUACION SI NO HAY RESEÑAS -->
-                            <div *ngIf="noResenias">
+                            <div *ngIf="!noResenias; else noPuntuacion">
+                                <ng-template #t let-fill="fill">
+                                    <span class="star" [class.full]="fill === 100">
+                                      <span class="half" [style.width.%]="fill">&#9733;</span>&#9733;
+                                    </span>
+                                  </ng-template>
+                                  <ngb-rating [(rate)]="currentRate" [starTemplate]="t" [readonly]="true" [max]="10"></ngb-rating>
+                                <hr>
+                                <pre>Puntuación media: <b>{{currentRate.toFixed(2)}}</b></pre>
                             </div>
                         </div>
                     </div>
-
                     <!-- Si el alojamiento es bungalow -->
                     <ng-template #bungalow>
                         <!-- Imagen del alojamiento -->
@@ -183,38 +180,37 @@
                         <!-- Información del alojamiento -->
                         <div class="card-body">
                             <!-- Si el alojamiento es parcela -->
-                            <div >
+                            <div>
                                 <h4 class="card-title">Bungalow nº {{ alojamientoSeleccionado?.numeroAlojamiento }}</h4>
                                 <!-- Los datos de bungalows.X dan errores falsos en la consola del navegador, preguntar por qué y cómo arreglarlo -->
                                 <p class="card-text">Número de habitaciones: {{ alojamientoSeleccionado?.habitaciones }}</p>
                                 <p class="card-text">Número máximo de personas: {{ alojamientoSeleccionado?.maximo_personas }}</p>
                             </div>
                             <br>
-
                             <!-- Puntuación media del alojamiento -->
-                            <ng-template #t let-fill="fill">
-                                <span class="star" [class.full]="fill === 100">
-                                  <span class="half" [style.width.%]="fill">&#9733;</span>&#9733;
-                                </span>
-                              </ng-template>
-                              
-                              <ngb-rating [(rate)]="currentRate" [starTemplate]="t" [readonly]="true" [max]="10"></ngb-rating>
-                            <hr>
-                            <pre>Puntuación media: <b>{{currentRate}}</b></pre>
+                            <div *ngIf="!noResenias; else noPuntuacion">
+                                <ng-template #t let-fill="fill">
+                                    <span class="star" [class.full]="fill === 100">
+                                      <span class="half" [style.width.%]="fill">&#9733;</span>&#9733;
+                                    </span>
+                                  </ng-template>
+                                  <ngb-rating [(rate)]="currentRate" [starTemplate]="t" [readonly]="true" [max]="10"></ngb-rating>
+                                <hr>
+                                <pre>Puntuación media: <b>{{currentRate.toFixed(2)}}</b></pre>
+                            </div>
                         </div>                        
                     </ng-template>
-
+                    <ng-template #noPuntuacion>
+                        <p>Este alojamiento aún no tiene puntuación.</p>
+                    </ng-template>
                     <!-- Reseñas -->
                     <div class="card card-outline-secondary mt-4">
-
                         <div class="card-header">Reseñas</div>
                         <!-- Reseña -->
                         <div *ngIf="noResenias == false; else noReseniasTrue">
-
                             <!-- Aquí hacer un ngFor con las reseñas recogidas de la BD -->
                             <!-- Información de la reseña, usuario/anónimo y puntuación dada-->
                             <div class="card-body" *ngFor="let resenias of listadoResenias | paginate: { id: 'pagination', itemsPerPage: 10, currentPage: p, totalItems: listadoResenias.length }; let i = index">
-
                                 <div class="col-12">
                                     <span class="float-left">Nombre de usuario: {{resenias.alias}}</span>
                                     <span class="float-right">Puntuación: {{resenias.puntuacion}}</span>
@@ -228,55 +224,41 @@
                             </div>
                              <!-- Paginación de las reseñas por revisar -->
                             <pagination-controls class="text-center" [id]="'pagination'" (pageChange)="onChangePage($event)" autoHide="true" nextLabel="Siguiente" previousLabel="Anterior"></pagination-controls> 
-
                         </div>
                         <ng-template #noReseniasTrue>
                             <div class="card-body">
                                 <p class="text-center">Este alojamiento aún no tiene reseñas, sé la primera persona en dejar una ;)</p>
                             </div>
                         </ng-template>
-
                     </div>
-
                     <!-- Escribir reseña, si se está logueado -->
                     <div class="card card-outline-secondary mt-4" *ngIf="usuarioActual != null; else noUsuario">
-
                         <div class="card-header">Dejar una reseña</div>
                         <div class="card-body">
-
                             <form [formGroup]="resenia" novalidate class="py-3 px-4">
-
                                 <div class="col-md-12 row">
-
                                     <!-- Nombre de usurio-->
                                     <div class="col-md-5">
                                         <label>Nombre: {{ usuarioActual.alias }}</label>
                                     </div>
-
                                     <!-- Checkbox si ocultar nombre de usuario en la reseña -->
                                     <div class="col-md-2">
                                         <mat-checkbox formControlName="anonimo" (change)="anonimo($event)">Anónimo</mat-checkbox>
                                     </div>
-
                                     <!-- Puntuación -->
                                     <div class="col-md-5">
                                         <!-- Puntuación media del alojamiento -->
                                         <ng-template #t let-fill="fill">
                                             <span class="star" [class.full]="fill === 100">
-                                            <span class="half" [style.width.%]="fill">&#9733;</span>&#9733;
+                                                <span class="half" [style.width.%]="fill">&#9733;</span>&#9733;
                                             </span>
                                         </ng-template>
-                                        
                                         <ngb-rating [starTemplate]="t" [readonly]="false" [max]="10" formControlName="puntuacion"></ngb-rating>
                                         <hr>
-                                        <pre>Puntuación: <b>{{currentRate}}</b></pre>
-
+                                        <pre>Puntuación: <b>{{resenia.get('puntuacion').value}}</b></pre>
                                     </div>
-
                                 </div>
-
                                 <span class="float-right" *ngIf="resenia.get('puntuacion').hasError('noPuntuacion')" class="text-danger">Por favor, indique una puntuación mínima.</span>
-
                                 <!-- Texta area (mensaje/comentario) -->
                                 <div class="col-md-12 row mt-4">
                                     <mat-form-field class="col-md-12">
@@ -287,16 +269,12 @@
                                     </mat-form-field>
                                     <span *ngIf="resenia.get('mensaje').hasError('noTexto')" class="text-danger">Escriba un comentario de mínimo 25 carácteres por favor.</span>
                                 </div>
-
-                                
-
                                 <div class="text-center">
                                     <button mat-flat-button color="primary" class="mt-3" (click)="enviarResenia()">Enviar</button>
                                     <br>
                                     <span *ngIf="errorResenia == true" class="text-center text-danger">Ha habido un error insperado, inténtelo de nuevo más tarde.</span>
                                     <span *ngIf="reseniaOk == true" class="text-center text-success">Tu reseña ha sido enviada correctamente, está a la espera de ser aprobada por el personal del camping, gracias.</span>
                                 </div>
-
                             </form>
                         </div>
                     </div>
@@ -308,18 +286,16 @@
 </div>
 
 <ng-template #noUsuario>
-
     <div class="card card-outline-secondary mt-4">
         <div class="card-header">Dejar una reseña</div>
         <div class="card-body text-center">
             <p>Para dejar una reseña debes <a href="/login">iniciar sesión</a> o si aún no tienes una cuenta puedes registrarte <a href="/registrar">aquí</a></p>
         </div>
     </div>
-
 </ng-template>
 
+<!-- Plantilla para cuando se escribe en la URL un nº de alojamiento que no existe -->
 <ng-template #noExiste>
-
     <div class="container">
         <div class="row" id="box-search">
             <div class="thumbnail text-center">
@@ -334,5 +310,4 @@
             </div>
         </div>
     </div>
-
 </ng-template>

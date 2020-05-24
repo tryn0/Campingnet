@@ -20,16 +20,22 @@ export class AlojamientoComponent implements OnInit {
   // variable de pagination
   public p: number = 1;
 
+  // Usuario
   public usuarioActual: any;
 
+  // Parámetro de la URL (bungalows/parcelas)
   public alojamiento: string = null;
 
+  // Situación según la URL, cambio de vista según la URL
   public situacion: number;
 
+  // Listado de todos los alojamientos
   public alojamientos: any;
 
+  // Número del alojamiento
   public numero: number;
 
+  // Error si se introduce el número del alojamiento desde la URL y no existe
   public errorExiste: boolean = null;
 
   // Variables de listado de alojamientos
@@ -40,8 +46,7 @@ export class AlojamientoComponent implements OnInit {
   public bungalows: Alojamiento;
   public parcelas: Alojamiento;
 
-  /*public bungalow: Alojamiento;
-  public parcela: Alojamiento;*/
+  // Alojamiento seleccionado (ficha)
   public alojamientoSeleccionado: Alojamiento;
 
   // Reseñas
@@ -237,32 +242,33 @@ export class AlojamientoComponent implements OnInit {
         }
         reseniaEnviar = reseniaEnviar.set('anonimo', anon.toString());
 
-        //console.log(reseniaEnviar)
-        this.http.post<any>("http://34.206.59.221/resenias.php", reseniaEnviar).subscribe(data => {
-          if(data != null && data != 0) {
-            //console.log(data)
-            this.reseniaOk = true;
-          }else{
-            this.errorResenia = true;
-          }
-        });
+        if(!this.reseniaOk) {
+          this.http.post<any>("http://34.206.59.221/resenias.php", reseniaEnviar).subscribe(data => {
+            if(data != null && data != 0) {
+              this.reseniaOk = true;
+              setTimeout(() => { // Recarga de la página cuando se envía la reseña y ha ido bien al cabo de 1 segundo y medio
+                location.reload();
+              },1500);
+            }else{
+              this.errorResenia = true;
+            }
+          });
+        }
       }
     }
   }
 
-
   ngOnInit(): void {
-
     // Comprobar que hay una sesion de usuario
     if (localStorage.getItem('usuarioActual') != null) {
       this.usuarioActual = desencriptar(localStorage.getItem('usuarioActual'));
     }
     
+    // Inicialización del formulario de la reseña
     this.resenia = this.fb.group({
       anonimo: [this.anonimoCheck,  Validators.required],
       mensaje: ['', [Validators.required, Validators.minLength(25)]],
       puntuacion: [0, [Validators.required, Validators.min(1)]]
     });
-
   }
 }
