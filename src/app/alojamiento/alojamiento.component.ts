@@ -13,9 +13,10 @@ import { encriptar, desencriptar } from '../crypto-storage';
 })
 export class AlojamientoComponent implements OnInit {
 
-  public totalPuntuaciones: number = 0;
-  public numeroPuntuaciones: number = 0;
-  public currentRate = 0;
+  // Variables de las puntuaciones
+  public totalPuntuaciones: number = 0; // Suma de todas las puntuaciones
+  public numeroPuntuaciones: number = 0; // Cantidad de puntuaciones del alojamiento
+  public currentRate = 0; // Puntuación media del alojamiento
 
   // variable de pagination
   public p: number = 1;
@@ -61,7 +62,7 @@ export class AlojamientoComponent implements OnInit {
   constructor(private router: ActivatedRoute, private http: HttpClient, public fb: FormBuilder, private route: Router) {
     if(this.router.snapshot.url.length == 1 && this.router.snapshot.url[0].path == 'alojamiento'){ // Si la url solo tiene 1 parámetro y es alojamiento que muestre una página para ver parcelas o bungalows (para asegurarme de que va bien)
       this.situacion = 0;
-      
+
       // Parámetros a enviar al archivo PHP
       let params = new HttpParams()
       .set('alojamiento', '')
