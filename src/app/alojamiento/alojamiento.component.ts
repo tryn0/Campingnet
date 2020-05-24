@@ -13,8 +13,10 @@ import { encriptar, desencriptar } from '../crypto-storage';
 })
 export class AlojamientoComponent implements OnInit {
 
-  public currentRate = 5.50;
-  
+  public totalPuntuaciones: number = 0;
+  public numeroPuntuaciones: number = 0;
+  public currentRate = 0;
+
   // variable de pagination
   public p: number = 1;
 
@@ -152,7 +154,6 @@ export class AlojamientoComponent implements OnInit {
                 }else{ // Si es parcela creo un Alojamiento con los datos de la parcela
                   this.alojamientoSeleccionado = new Alojamiento(element.idAlojamiento, element.tipo, element.numeroAlojamiento, element.sombra, element.dimension, null, null);
                 }
-                // ! COGER EL ID DEL ALOJAMIENTO PARA ENVIAR LA RESEÑA this.alojamientoSeleccionado.idAlojamiento
 
                 let listaResenias = new HttpParams()
                 .set('opcion', '1')
@@ -160,11 +161,12 @@ export class AlojamientoComponent implements OnInit {
 
                 this.http.post<any>("http://34.206.59.221/resenias.php", listaResenias).subscribe(data => {
                   if (data != null && data != 0) {
-                    //console.log(data)
                     this.listadoResenias = data;
                     for (let z = 0; z <  this.listadoResenias.length; z++) {
                       const element =  this.listadoResenias[z];
                       if (element.anonimo != '1') { // Si la reseña no es anónima cojo el alias del usuario
+                        this.totalPuntuaciones += parseInt(element.puntuacion);
+                        this.numeroPuntuaciones++;
 
                         let user = new HttpParams()
                         .set('opcion', '2')
@@ -172,7 +174,6 @@ export class AlojamientoComponent implements OnInit {
 
                         this.http.post<any>("http://34.206.59.221/resenias.php", user).subscribe(data => {
                           if (data != null && data != 0) {
-                            //console.log(data)
                             element.alias = data[0]['alias_usuario'];
                           }
                         });
@@ -180,6 +181,7 @@ export class AlojamientoComponent implements OnInit {
                         element.alias = 'Anónimo';
                       }
                     }
+                    this.currentRate = this.totalPuntuaciones / this.numeroPuntuaciones;
                   }else{
                     this.noResenias = true;
                   }
@@ -188,14 +190,9 @@ export class AlojamientoComponent implements OnInit {
             }else{ // Si no encuentra en la base de datos los datos de la URL (/alojamiento/bungalows/99) significa que no existe ese alojamiento
               this.errorExiste = true;
             }
-
           }
-
         }
-
       }, error => console.log(error));
-
-
     }else{ // Si la url es /alojamiento/ y el 2º parámetro no existe que se redirija a /inicio
       this.route.navigate(['/inicio']);
     }
@@ -261,7 +258,6 @@ export class AlojamientoComponent implements OnInit {
       this.usuarioActual = desencriptar(localStorage.getItem('usuarioActual'));
     }
     
-
     this.resenia = this.fb.group({
       anonimo: [this.anonimoCheck,  Validators.required],
       mensaje: ['', [Validators.required, Validators.minLength(25)]],

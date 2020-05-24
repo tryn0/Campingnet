@@ -1,7 +1,4 @@
 <div *ngIf="errorExiste != true; else noExiste">
-
-
-
     <!-- Si viene con la URL /alojamiento -->
     <div *ngIf='situacion == 0'>
         <h3 class="mt-5 text-center">Alojamientos</h3>
@@ -36,7 +33,6 @@
                     </div>
                     <span class="float-right" style="cursor: pointer;" [routerLink]="'/alojamiento/parcelas'"> Ver todas las parcelas </span>
                 </div>
-    
                 <h5 class="mt-5 text-center">Bungalows</h5>
                 <div class="col-12 mt-2">
                     <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-around center" fxLayoutGap="20px">
@@ -64,10 +60,6 @@
         </ng-template>
     </div>
 
-
-
-
-
     <!-- Si viene con URL con parametros alojamiento/(bungalows o parcelas) -->
     <div *ngIf='situacion == 1'>
         <div *ngIf="alojamiento == 'bungalows'">
@@ -78,7 +70,6 @@
                 </div>
                 <p class="text-center">Si tarda demasiado refresque la página, gracias.</p>
             </div>
-
             <ng-template #hayBungalows>
                 <div class="container">
                     <div class="mt-5 mb-5 d-flex justify-content-center">
@@ -109,9 +100,7 @@
                     <span style="cursor: pointer;" [routerLink]="'/alojamiento'">Volver</span>
                 </div>
             </ng-template>
-
         </div>
-
         <div *ngIf="alojamiento == 'parcelas'">
             <h3 class="mt-5 text-center">Parcelas</h3>
             <div *ngIf="arrayParcelas.length < 1; else hayParcelas">
@@ -120,7 +109,6 @@
                 </div>
                 <p class="text-center">Si tarda demasiado refresque la página, gracias.</p>
             </div>
-
             <ng-template #hayParcelas>
                 <div class="container">
                     <div class="mt-5 mb-5 d-flex justify-content-center">
@@ -154,8 +142,6 @@
         </div>
     </div>
 
-
-
     <!-- Vista de la ficha del alojamiento URL /alojamiento/parcelas/2 -->
     <div *ngIf='situacion == 2'>
         <!-- Alojamiento -->
@@ -167,24 +153,26 @@
                         <img class="card-img-top img-fluid" src="../../assets/images/alojamientos/parcela1.jpg" alt="Imagen de la parcela">
                         <!-- Información del alojamiento -->
                         <div class="card-body">
-
                             <!-- Si el alojamiento es parcela -->
-                            <div >
+                            <div>
                                 <h4 class="card-title">Parcela nº {{ alojamientoSeleccionado?.numeroAlojamiento }}</h4>
                                 <!-- Los datos de bungalows.X dan errores falsos en la consola del navegador, preguntar por qué y cómo arreglarlo -->
                                 <p class="card-text">Sombra: {{ alojamientoSeleccionado?.sombra }}</p>
                                 <p class="card-text">Dimensiones: {{ alojamientoSeleccionado?.dimension }}</p>
                             </div>
 
-                            <!-- PONER STAR RATING O ALGO ASÍ -->
-                            <!--<star-rating value="5" totalstars="5" checkedcolor="red" uncheckedcolor="black" size="24px" readonly="false" (rate)="onRate($event)"></star-rating>-->
-
-                            <span class="text-warning">
-                                Buscar sistema de puntuación de estrellas ★ ★ ★ ★ ☆ Aquí hacer una media de la
-                                puntuación dada por los usuarios, puntuacion del 1 al 5 por ejemplo, despues se hace una media y según
-                                el número que salga, ese número son carácteres ★, se le resta ese numero a 5 y lo que salga es el
-                                caracter ☆
-                            </span>
+                            <!-- Puntuación media del alojamiento -->
+                            <ng-template #t let-fill="fill">
+                                <span class="star" [class.full]="fill === 100">
+                                  <span class="half" [style.width.%]="fill">&#9733;</span>&#9733;
+                                </span>
+                            </ng-template>
+                            <ngb-rating [(rate)]="currentRate" [starTemplate]="t" [readonly]="true" [max]="10"></ngb-rating>
+                            <hr>
+                                <pre>Puntuación media: <b>{{currentRate}}</b></pre>
+                                <!-- OCULTAR PUNTUACION SI NO HAY RESEÑAS -->
+                            <div *ngIf="noResenias">
+                            </div>
                         </div>
                     </div>
 
@@ -194,7 +182,6 @@
                         <img class="card-img-top img-fluid" src="../../assets/images/alojamientos/bungalow1.jpg" alt="Imagen de la parcela">
                         <!-- Información del alojamiento -->
                         <div class="card-body">
-
                             <!-- Si el alojamiento es parcela -->
                             <div >
                                 <h4 class="card-title">Bungalow nº {{ alojamientoSeleccionado?.numeroAlojamiento }}</h4>
@@ -202,7 +189,6 @@
                                 <p class="card-text">Número de habitaciones: {{ alojamientoSeleccionado?.habitaciones }}</p>
                                 <p class="card-text">Número máximo de personas: {{ alojamientoSeleccionado?.maximo_personas }}</p>
                             </div>
-
                             <br>
 
                             <!-- Puntuación media del alojamiento -->
@@ -214,7 +200,7 @@
                               
                               <ngb-rating [(rate)]="currentRate" [starTemplate]="t" [readonly]="true" [max]="10"></ngb-rating>
                             <hr>
-                            <pre>Puntuación: <b>{{currentRate}}</b></pre>
+                            <pre>Puntuación media: <b>{{currentRate}}</b></pre>
                         </div>                        
                     </ng-template>
 
