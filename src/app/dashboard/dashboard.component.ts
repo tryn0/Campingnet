@@ -47,7 +47,7 @@ export class DashboardComponent implements OnInit {
    * ? https://trello.com/b/4xofW6oE
    */
 
-   // variable de pagination
+  // variable de pagination
   public p: number = 1;
 
   // Variable que indica si es un trabajador o no, si un cliente entra a la parte dashboard, no verá nada, solo el cargador y será redireccionado al Inicio
@@ -1810,7 +1810,7 @@ export class DashboardComponent implements OnInit {
 })
 export class confirmacion {
   constructor(private _popUp: MatBottomSheetRef<confirmacion>, @Inject(MAT_BOTTOM_SHEET_DATA) public data: any, private http: HttpClient) {}
-  
+
   confirmado(e) {
     this._popUp.dismiss();
     let temporadas = new HttpParams()

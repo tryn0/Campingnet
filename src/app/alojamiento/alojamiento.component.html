@@ -4,98 +4,19 @@
 
     <!-- Si viene con la URL /alojamiento -->
     <div *ngIf='situacion == 0'>
-        <h3 class="mt-5 text-center">Alojamiento</h3>
-        <div class="container">
-            <h5 class="mt-5 text-center">Parcelas</h5>
-            <div class="col-12 mt-2 mb-5">
-                <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-around center" fxLayoutGap="20px">
-                    <mat-card *ngFor='let parcela of arrayParcelas | slice:0:3;' class="mb-3 col-md-4">
-                        <mat-card-header>
-                            <div mat-card-avatar class="avatar"></div>
-                            <mat-card-title>Parcela nº{{parcela.numeroAlojamiento}}</mat-card-title>
-                            <mat-card-subtitle>ID: {{parcela.idAlojamiento}}</mat-card-subtitle>
-                        </mat-card-header>
-                        <img class="imagen-cuerpo-card" mat-card-image src="../../assets/images/alojamientos/parcela1.jpg" alt="Foto de una parcela">
-                        <mat-card-content>
-                            <p>
-                                Sombra: {{parcela.sombra}} <br>
-                                Dimensiones: {{parcela.dimension}}<br>
-                            </p>
-                        </mat-card-content>
-                        <mat-card-actions>
-                            <button [routerLink]="['/alojamiento/parcelas/', parcela.numeroAlojamiento]" mat-button>VER</button>
-                        </mat-card-actions>
-                    </mat-card>
-                </div>
-                <span class="float-right" style="cursor: pointer;" [routerLink]="'/alojamiento/parcelas'"> Ver todas las parcelas </span>
+        <h3 class="mt-5 text-center">Alojamientos</h3>
+        <div *ngIf="arrayBungalows.length < 1 && arrayParcelas.length < 1; else hayAlojamientos">
+            <div class="d-flex justify-content-center mt-5">
+                <mat-spinner></mat-spinner>
             </div>
-
-            <h5 class="mt-5 text-center">Bungalows</h5>
-            <div class="col-12 mt-2">
-                <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-around center" fxLayoutGap="20px">
-                    <mat-card *ngFor='let bungalow of arrayBungalows | slice:0:3;' class="mb-3 col-md-4">
-                        <mat-card-header>
-                            <div mat-card-avatar class="avatar"></div>
-                            <mat-card-title>Bungalow nº{{bungalow.numeroAlojamiento}}</mat-card-title>
-                            <mat-card-subtitle>ID: {{bungalow.idAlojamiento}}</mat-card-subtitle>
-                        </mat-card-header>
-                        <img class="imagen-cuerpo-card" mat-card-image src="../../assets/images/alojamientos/bungalow1.jpg" alt="Foto de un bungalow">
-                        <mat-card-content>
-                            <p>
-                                Habitaciones: {{bungalow.habitaciones}} <br>
-                                Maximo de personas: {{bungalow.maximo_personas}}<br>
-                            </p>
-                        </mat-card-content>
-                        <mat-card-actions>
-                            <button [routerLink]="['/alojamiento/bungalows/', bungalow.numeroAlojamiento]" mat-button>VER</button>
-                        </mat-card-actions>
-                    </mat-card>
-                </div>
-                <span class="float-right" style="cursor: pointer;" [routerLink]="'/alojamiento/bungalows'"> Ver todos los bungalows </span>
-            </div>
+            <p class="text-center">Si tarda demasiado refresque la página, gracias.</p>
         </div>
-    </div>
-
-
-
-
-
-    <!-- Si viene con URL con parametros alojamiento/(bungalows o parcelas) -->
-    <div *ngIf='situacion == 1'>
-        <div *ngIf="alojamiento == 'bungalows'">
-            <h3 class="mt-5 text-center">Bungalows</h3>
-            <div class="container-lg">
-                <div class="mt-2 mb-5">
-                    <div class="row">
-                        <mat-card *ngFor='let bungalow of arrayBungalows' class="mb-3 col-md-5 col-lg-3 ml-md-5">
-                            <mat-card-header>
-                                <div mat-card-avatar class="avatar"></div>
-                                <mat-card-title>Bungalow nº{{bungalow.numeroAlojamiento}}</mat-card-title>
-                                <mat-card-subtitle>ID: {{bungalow.idAlojamiento}}</mat-card-subtitle>
-                            </mat-card-header>
-                            <img class="imagen-cuerpo-card" mat-card-image src="../../assets/images/alojamientos/bungalow1.jpg" alt="Foto de un bungalow">
-                            <mat-card-content>
-                                <p>
-                                    Habitaciones: {{bungalow.habitaciones}} <br>
-                                    Maximo de personas: {{bungalow.maximo_personas}}<br>
-                                </p>
-                            </mat-card-content>
-                            <mat-card-actions>
-                                <button [routerLink]="['/alojamiento/bungalows/', bungalow.numeroAlojamiento]" mat-button>VER</button>
-                            </mat-card-actions>
-                        </mat-card>
-                    </div>
-                    <span class="float-right" style="cursor: pointer;" [routerLink]="'/alojamiento'"> Volver </span>
-                </div>
-            </div>
-        </div>
-
-        <div *ngIf="alojamiento == 'parcelas'">
-            <h3 class="mt-5 text-center">Parcelas</h3>
-            <div class="container-lg">
-                <div class="mt-2 mb-5">
-                    <div class="row">
-                        <mat-card *ngFor='let parcela of arrayParcelas' class="mb-3 col-md-5 col-lg-3 ml-md-5">
+        <ng-template #hayAlojamientos>
+            <div class="container">
+                <h5 class="mt-5 text-center">Parcelas</h5>
+                <div class="col-12 mt-2 mb-5">
+                    <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-around center" fxLayoutGap="20px">
+                        <mat-card *ngFor='let parcela of arrayParcelas | slice:0:3;' class="mb-3 col-md-4">
                             <mat-card-header>
                                 <div mat-card-avatar class="avatar"></div>
                                 <mat-card-title>Parcela nº{{parcela.numeroAlojamiento}}</mat-card-title>
@@ -108,14 +29,128 @@
                                     Dimensiones: {{parcela.dimension}}<br>
                                 </p>
                             </mat-card-content>
-                            <mat-card-actions mat-card-actions>
+                            <mat-card-actions>
                                 <button [routerLink]="['/alojamiento/parcelas/', parcela.numeroAlojamiento]" mat-button>VER</button>
                             </mat-card-actions>
                         </mat-card>
                     </div>
-                    <span class="float-right" style="cursor: pointer;" [routerLink]="'/alojamiento'"> Volver </span>
+                    <span class="float-right" style="cursor: pointer;" [routerLink]="'/alojamiento/parcelas'"> Ver todas las parcelas </span>
+                </div>
+    
+                <h5 class="mt-5 text-center">Bungalows</h5>
+                <div class="col-12 mt-2">
+                    <div fxLayout="row" fxLayout.xs="column" fxLayoutAlign="space-around center" fxLayoutGap="20px">
+                        <mat-card *ngFor="let bungalow of arrayBungalows | slice:0:3;" class="mb-3 col-md-4">
+                            <mat-card-header>
+                                <div mat-card-avatar class="avatar"></div>
+                                <mat-card-title>Bungalow nº{{bungalow.numeroAlojamiento}}</mat-card-title>
+                                <mat-card-subtitle>ID: {{bungalow.idAlojamiento}}</mat-card-subtitle>
+                            </mat-card-header>
+                            <img class="imagen-cuerpo-card" mat-card-image src="../../assets/images/alojamientos/bungalow1.jpg" alt="Foto de un bungalow">
+                            <mat-card-content>
+                                <p>
+                                    Habitaciones: {{bungalow.habitaciones}} <br>
+                                    Máximo de personas: {{bungalow.maximo_personas}}<br>
+                                </p>
+                            </mat-card-content>
+                            <mat-card-actions>
+                                <button [routerLink]="['/alojamiento/bungalows/', bungalow.numeroAlojamiento]" mat-button>VER</button>
+                            </mat-card-actions>
+                        </mat-card>
+                    </div>
+                    <span class="float-right" style="cursor: pointer;" [routerLink]="'/alojamiento/bungalows'"> Ver todos los bungalows </span>
                 </div>
             </div>
+        </ng-template>
+    </div>
+
+
+
+
+
+    <!-- Si viene con URL con parametros alojamiento/(bungalows o parcelas) -->
+    <div *ngIf='situacion == 1'>
+        <div *ngIf="alojamiento == 'bungalows'">
+            <h3 class="mt-5 text-center">Bungalows</h3>
+            <div *ngIf="arrayBungalows.length < 1; else hayBungalows">
+                <div class="d-flex justify-content-center mt-5">
+                    <mat-spinner></mat-spinner>
+                </div>
+                <p class="text-center">Si tarda demasiado refresque la página, gracias.</p>
+            </div>
+
+            <ng-template #hayBungalows>
+                <div class="container">
+                    <div class="mt-5 mb-5 d-flex justify-content-center">
+                        <div class="row justify-content-around">
+                            <mat-card *ngFor="let bungalow of arrayBungalows | paginate: { id: 'pagination', itemsPerPage: 9, currentPage: p, totalItems: arrayBungalows.length };" class="mt-2 mb-5 col-md-5 col-lg-3 ml-md-3">
+                                <mat-card-header>
+                                    <div mat-card-avatar class="avatar"></div>
+                                    <mat-card-title>Bungalow nº{{bungalow.numeroAlojamiento}}</mat-card-title>
+                                    <mat-card-subtitle>ID: {{bungalow.idAlojamiento}}</mat-card-subtitle>
+                                </mat-card-header>
+                                <img class="imagen-cuerpo-card" mat-card-image src="../../assets/images/alojamientos/bungalow1.jpg" alt="Foto de un bungalow">
+                                <mat-card-content>
+                                    <p>
+                                        Habitaciones: {{bungalow.habitaciones}} <br>
+                                        Maximo de personas: {{bungalow.maximo_personas}}<br>
+                                    </p>
+                                </mat-card-content>
+                                <mat-card-actions>
+                                    <button [routerLink]="['/alojamiento/bungalows/', bungalow.numeroAlojamiento]" mat-button>VER</button>
+                                </mat-card-actions>
+                            </mat-card>
+                        </div>
+                        <!-- Paginación de las reseñas por revisar -->
+                        <div class="d-flex justify-content-center">
+                            <pagination-controls [id]="'pagination'" (pageChange)="onChangePage($event)" autoHide="true" nextLabel="Siguiente" previousLabel="Anterior"></pagination-controls>
+                        </div>
+                    </div>
+                    <span style="cursor: pointer;" [routerLink]="'/alojamiento'">Volver</span>
+                </div>
+            </ng-template>
+
+        </div>
+
+        <div *ngIf="alojamiento == 'parcelas'">
+            <h3 class="mt-5 text-center">Parcelas</h3>
+            <div *ngIf="arrayParcelas.length < 1; else hayParcelas">
+                <div class="d-flex justify-content-center mt-5">
+                    <mat-spinner></mat-spinner>
+                </div>
+                <p class="text-center">Si tarda demasiado refresque la página, gracias.</p>
+            </div>
+
+            <ng-template #hayParcelas>
+                <div class="container">
+                    <div class="mt-5 mb-5 d-flex justify-content-center">
+                        <div class="row justify-content-around">
+                            <mat-card *ngFor="let parcela of arrayParcelas | paginate: { id: 'pagination', itemsPerPage: 9, currentPage: p, totalItems: arrayParcelas.length };" class="mb-3 col-md-5 col-lg-3 ml-md-3">
+                                <mat-card-header>
+                                    <div mat-card-avatar class="avatar"></div>
+                                    <mat-card-title>Parcela nº{{parcela.numeroAlojamiento}}</mat-card-title>
+                                    <mat-card-subtitle>ID: {{parcela.idAlojamiento}}</mat-card-subtitle>
+                                </mat-card-header>
+                                <img class="imagen-cuerpo-card" mat-card-image src="../../assets/images/alojamientos/parcela1.jpg" alt="Foto de una parcela">
+                                <mat-card-content>
+                                    <p>
+                                        Sombra: {{parcela.sombra}} <br>
+                                        Dimensiones: {{parcela.dimension}}<br>
+                                    </p>
+                                </mat-card-content>
+                                <mat-card-actions mat-card-actions>
+                                    <button [routerLink]="['/alojamiento/parcelas/', parcela.numeroAlojamiento]" mat-button>VER</button>
+                                </mat-card-actions>
+                            </mat-card>
+                        </div>
+                        <!-- Paginación de las reseñas por revisar -->
+                        <div class="d-flex justify-content-center">
+                            <pagination-controls [id]="'pagination'" (pageChange)="onChangePage($event)" autoHide="true" nextLabel="Siguiente" previousLabel="Anterior"></pagination-controls>
+                        </div>
+                    </div>
+                    <span style="cursor: pointer;" [routerLink]="'/alojamiento'"> Volver </span>
+                </div>
+            </ng-template>
         </div>
     </div>
 

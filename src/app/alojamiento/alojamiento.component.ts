@@ -14,7 +14,8 @@ import { encriptar, desencriptar } from '../crypto-storage';
 export class AlojamientoComponent implements OnInit {
 
   public currentRate = 5.50;
-
+  
+  // variable de pagination
   public p: number = 1;
 
   public usuarioActual: any;
