@@ -79,7 +79,7 @@ export class DashboardComponent implements OnInit {
   public dashboardReservas: boolean = false;
   public dashboardResenias: boolean = false;
   public dashboardUsuarios: boolean = false;
-  public dashboardServicios: boolean = false; // todo: Pendiente de si dejarlo o meterlo en la parte /dashboard/admin
+  public dashboardServicios: boolean = false;
   public dashboardAdmin: boolean = false;
   public dashboardAdminTemporadas: boolean = false;
   public dashboardAdminServicios: boolean = false;
@@ -1281,14 +1281,9 @@ export class DashboardComponent implements OnInit {
       this.http.post < any > ("http://34.206.59.221/dashboard.php", salidasHoy).subscribe(data => { // Obtener las reservas que saldrán hoy
         if (data != null && data != 0) {
           this.listadoSalidasHoy = data;
-          
           for (let i = 0; i < this.listadoSalidasHoy.length; i++) {
             const element = this.listadoSalidasHoy[i];
             this.serviciosExtras = [];
-            
-            
-            // Total de días de la reserva
-            let dias = Math.floor((new Date(this.listadoSalidasHoy[i].fecha_salida).getTime() - new Date(this.listadoSalidasHoy[i].fecha_entrada).getTime())/86400000);
 
             let nombreUser = new HttpParams()
             .set('opcion', '6')
@@ -1314,9 +1309,17 @@ export class DashboardComponent implements OnInit {
                 this.listadoSalidasHoy[i].idAlojamiento = data[0]['idAlojamiento'];
                 this.listadoSalidasHoy[i].precioAlojamiento = data[0]['precio'];
 
+                // Total de días de la reserva
+                let dias = Math.floor((new Date(this.listadoSalidasHoy[i].fecha_salida).getTime() - new Date(this.listadoSalidasHoy[i].fecha_entrada).getTime())/86400000);
+                console.log(typeof dias)
+ 
+                // TODO: ALGO FALLA EN EL PRECIO FINAL NOSEEE
+
                 // Precio del alojamiento, para que el trabajador de recepción cobre al cliente
                 this.totalPagar = 0;
-                this.totalPagar += (parseFloat(this.listadoSalidasHoy[i].precioAlojamiento)*dias)*parseFloat(this.listadoSalidasHoy[i].multiplicativo);
+                this.totalPagar += (Number(this.listadoSalidasHoy[i].precioAlojamiento)*dias)*Number(this.listadoSalidasHoy[i].multiplicativo);
+                console.log(typeof Number(this.listadoSalidasHoy[i].precioAlojamiento))
+                console.log(typeof Number(this.listadoSalidasHoy[i].multiplicativo))
 
                 let numeAlojamiento = new HttpParams()
                 .set('opcion', '12')
@@ -1329,22 +1332,19 @@ export class DashboardComponent implements OnInit {
                       this.listadoSalidasHoy[i].maximo_personas = data[0]['maximo_personas'];
                     }else{
                       this.listadoSalidasHoy[i].dimension = data[0]['dimension'];
-                      switch (data[0]['sombra']) {
+                      switch (data[0]['sombra']) { // Sombra de la parcela
                         case '0':
                           this.listadoSalidasHoy[i].sombra = "Nada";
                           break;
                         case '1':
                           this.listadoSalidasHoy[i].sombra = "Media";
                           break;
-
                         case '2':
                           this.listadoSalidasHoy[i].sombra = "Bastante";
                           break;
-
                         case '3':
                           this.listadoSalidasHoy[i].sombra = 'Mucha';
                           break;
-
                         default:
                           this.listadoSalidasHoy[i].sombra = "Desconocido";
                           break;
@@ -1364,7 +1364,7 @@ export class DashboardComponent implements OnInit {
                 cantidadFinal = data;
               }
             });
-            
+
             let servicios = new HttpParams()
             .set('opcion', '13')
             .set('idReserva', element['idReserva']);
@@ -1373,17 +1373,23 @@ export class DashboardComponent implements OnInit {
                 for (let i = 0; i < data.length; i++) {
                   const element = data[i];
                   delete element.idAlojamiento;
-                  for (let x = 0; x < cantidadFinal.length; x++) { // Por cada servicio si coincide el id con el de la lista se le agrega a ese mismo la cantidad en la reserva
-                    const elemento = cantidadFinal[x];
-                    if(elemento.idServicio == element.idServicio){
-                      element.cantidad = elemento.cantidad;
-                      // Precio de todos los servicios, para que el trabajador de recepción cobre al cliente
-                      this.totalPagar += (parseFloat(element.precio)*parseInt(element.cantidad));
+                  for (let x = 0; x < cantidadFinal?.length; x++) { // Por cada servicio si coincide el id con el de la lista se le agrega a ese mismo la cantidad en la reserva
+                    const cantidades = cantidadFinal[x];
+                    if(cantidades.idServicio == element.idServicio) {
+                      element.cantidad = cantidades.cantidad;
+                       // Precio de todos los servicios, para que el trabajador de recepción cobre al cliente
+                       this.totalPagar += (parseFloat(element.precio)*parseInt(element.cantidad));
                     }
                   }
+                  //console.log(element)
                   this.serviciosExtras.push(element);
                 }
                 this.serviciosExtras.idReserva = element['idReserva'];
+                this.listadoSalidasHoy[i].servicios = this.serviciosExtras;
+                this.serviciosExtras = [];
+                /*console.log(this.listadoSalidasHoy[i]);
+                console.log('acaba reserva')
+                console.log(' ')*/
               }
               this.listadoSalidasHoy[i].total_pagar = this.totalPagar.toFixed(2);
             });

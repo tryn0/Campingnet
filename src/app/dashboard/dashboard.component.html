@@ -261,12 +261,12 @@
                                             </mat-card-subtitle>
                                         </div>
                                     </mat-card-header>
-                                    <mat-card-content *ngIf="serviciosExtras.idReserva == salida.idReserva">
+                                    <mat-card-content *ngIf="salida.servicios?.length > 0">
                                         <div class="row justify-content-center">
                                             <p class="importante">Listado de servicios extras</p>
                                             <mat-card-subtitle class="text-center justify-content-center col-12">
                                                 <div #scrollMe style="overflow-y: scroll; height: xyz;">
-                                                    <div *ngFor="let extra of serviciosExtras">{{extra.nombre}}</div>
+                                                    <div *ngFor="let extra of salida.servicios">{{extra.nombre}} x {{extra.cantidad}}</div>
                                                 </div>
                                             </mat-card-subtitle>
                                         </div>
