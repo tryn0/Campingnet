@@ -57,6 +57,9 @@ html,body{
     color: white;
 }
 
+#cuerpo{
+    padding-bottom: 196px;
+}
 
 /*Tamaño del título y del texto del menú de la cabecera en pantallas de ancho mayor o igual a 2000px*/
 @media only screen and (min-width: 2000px) {

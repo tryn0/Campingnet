@@ -49,6 +49,7 @@ import { PaneldeControlComponent } from './panelde-control/panelde-control.compo
 import { DashboardComponent, confirmacion, confirmacionReserva, confirmacionServicio } from './dashboard/dashboard.component';
 import { ReservasLoginComponent } from './reservas-login/reservas-login.component';
 import { ReservasRegistrarComponent } from './reservas-registrar/reservas-registrar.component';
+import * as $ from "jquery";
 
 @NgModule({
   declarations: [

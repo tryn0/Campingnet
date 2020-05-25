@@ -18,6 +18,8 @@ export class AlojamientoComponent implements OnInit {
   public numeroPuntuaciones: number = 0; // Cantidad de puntuaciones del alojamiento
   public currentRate = 0; // Puntuación media del alojamiento
 
+  public descripcionBungalows: Array<string> = [''];
+
   // variable de pagination
   public p: number = 1;
 

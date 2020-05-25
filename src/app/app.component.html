@@ -1,8 +1,6 @@
 <div style="width: 100%;" *ngIf="dashboard != true; else admin">
-
   <!--Cabecera/menú-->
-  <mat-toolbar color="primary" >
-
+  <mat-toolbar color="primary" id="toolbar">
     <!--Título-->
     <span id="titulo" style="cursor: pointer;" [routerLink]="'/'">CampingNet</span>
 
@@ -12,7 +10,6 @@
     <div fxShow="true" fxHide.gt-xs="true" style="width: 100%; text-align: right;">
       <button mat-button (click)="sidenav.toggle()"><img src="assets/images/menu.png"></button>
     </div>
-
     <!--Menú en pantallas medias y grandes (tablets y ordenadores), oculto a partir de 959px hacia abajo-->
     <div fxShow="true" fxHide.lt-sm="true">
       <!-- 
@@ -29,14 +26,12 @@
         <button class="botonInicio" mat-button (click)="sidenav.close()" [routerLink]="'/contacto'"><mat-icon fxShow="true" fxHide.sm="true" class="icon">email</mat-icon>Contacto</button>
       </mat-menu>
     </div>
-
     <!-- Botón para iniciar sesión, registrarse y mensaje bienvenida, link para cerrar sesión y link para ir al panel de control -->
     <div style="position: absolute; right: 30px;">
       <div *ngIf="usuarioActual == null" fxShow="true" fxHide.lt-sm="true">
         <button mat-raised-button (click)="sidenav.close()" [routerLink]="'/login'" class="mr-1">Iniciar sesión</button>
         <button mat-raised-button (click)="sidenav.close()" [routerLink]="'/registrar'">Registrarse</button>
       </div>
-
       <div fxShow="true" fxHide.lt-sm="true">
         <div *ngIf="usuarioActual != null && usuarioActual.rol != 'cliente'; else noTrabajador">
           <span id="bienvenida">Bienvenid@ {{usuarioActual.alias}}</span>          
@@ -53,9 +48,7 @@
         </div>
       </div>
     </div>
-
   </mat-toolbar>
-
   <!-- Si existe una sesión iniciada y es cliente -->
   <ng-template #noTrabajador>
     <div *ngIf="usuarioActual != null && usuarioActual.rol == 'cliente'">
@@ -70,14 +63,11 @@
       </div>
     </div>
   </ng-template>
-
-
   <!--Cuerpo-->
   <!--Menú a desplegar en pantallas pequeñas (móviles), se despliega en el cuerpo verticalment a la izquierda-->
   <mat-sidenav-container fxFlexFill>
     <mat-sidenav #sidenav fxLayout="column">
       <div fxLayout="column">
-
         <div *ngIf="usuarioActual != null" class="text-center">
           <p class="px-2 mt-0 mb-0">Bienvenido {{usuarioActual.alias}}</p>
           <button mat-button (click)="logOff()">Cerrar sesión</button><br>
@@ -85,7 +75,6 @@
           <button *ngIf="usuarioActual.rol != 'cliente'" mat-button (click)="sidenav.toggle()" [routerLink]="'/dashboard'">Administración</button>
           <br><br>
         </div>
-        
         <div class="text-center">
           <button mat-button (click)="sidenav.toggle()" [routerLink]="'/'" class="text-center">Inicio</button>
           <br>
@@ -101,86 +90,77 @@
           <br>
           <button *ngIf="usuarioActual == null" mat-button (click)="sidenav.toggle()" [routerLink]="'/registrar'">Registrarse</button>
         </div>
-
       </div>
     </mat-sidenav>
-
     <!--Cuerpo donde cargan todas las páginas-->
-    <mat-sidenav-content fxFlexFill>
+    <mat-sidenav-content fxFlexFill id="cuerpo">
       <router-outlet></router-outlet>
-
-      <!--Footer-->
-      <footer class="page-footer font-small mt-5" style="background-color: #673ab7;">
-        <div class="container-fluid text-center">
-          <div class="row">
-            <!--Contenido-->
-            <div class="col-md-6 col-lg-3 mt-md-0 text-center">
-              <h5 class="text-uppercase text-white">Camping Naúfrago</h5>
-              <span class="text-white">Complejo de lujo para todas las personas dispuestas a disfrutar y relajarse.</span>
-            </div>
-              
-            <!--Dirección-->
-            <div class="col-md-6 col-lg-3 mt-md-0 text-center">
-              <h5 class="text-uppercase text-white">Dirección</h5>
-              <span class="text-white">Paraje Los Escullos, S/N</span><br>
-              <span class="text-white">Parque Natural Cabo de Gata</span><br>
-              <span class="text-white">04118 Níjar, Almería</span>
-            </div>
-
-            <!--Columa Visite-->
-            <div class="col-md-6 col-lg-3 mb-md-0 mb-3 text-center">
-              <h5 class="text-uppercase text-white">Visite</h5>
-              <ul class="list-unstyled text-white">
-                <li>
-                  <span [routerLink]="'/reservas'" style="cursor: pointer;">Reservar</span>
-                </li>
-                <li>
-                  <span [routerLink]="'/link'" style="cursor: pointer;">Reservar</span>
-                </li>
-                <li>
-                  <span [routerLink]="'/link'" style="cursor: pointer;">Reservar</span>
-                </li>
-                <li>
-                  <span [routerLink]="'/link'" style="cursor: pointer;">Reservar</span>
-                </li>
-              </ul>
-            </div>
-
-            <!--Columna Síganos-->
-            <div class="col-md-6 col-lg-3 mb-md-0 mb-3 text-center">
-              <h5 class="text-uppercase text-white">Síganos</h5>
-              <ul class="list-unstyled text-white">
-                <li>
-                  <a href="#!" style="text-decoration: none; color: inherit;">Instagram</a>
-                </li>
-                <li>
-                  <a href="#!" style="text-decoration: none; color: inherit;">Twitter</a>
-                </li>
-                <li>
-                  <a href="#!" style="text-decoration: none; color: inherit;">Youtube</a>
-                </li>
-                <li>
-                  <a href="#!" style="text-decoration: none; color: inherit;">Pinterest</a>
-                </li>
-              </ul>
-            </div>
-          </div>
-        </div>
-        <!--Copyright-->
-        <div class="footer-copyright text-center text-white py-3">© 2020 Copyright:
-          <a id="linkG" target="_blank" href="https://github.com/tryn0"> Web realizada para CampingNet (Camping Naúfrago)</a>
-          <!--Solo DEV-->
-          Tu IP: {{this.ip}}
-          <div>Esta web es visible en
-            <br>
-            <mat-icon class="bottom">smartphone</mat-icon> &nbsp; <mat-icon class="bottom">tablet</mat-icon> &nbsp; <mat-icon class="bottom">laptop</mat-icon> &nbsp; <mat-icon class="bottom">desktop_windows</mat-icon></div>
-        </div>
-      </footer>
-
     </mat-sidenav-content>
-
   </mat-sidenav-container>
-
+  <!--Footer-->
+  <footer id="footer" class="page-footer font-small" style="background-color: #673ab7;">
+    <div class="container-fluid text-center">
+      <div class="row">
+        <!--Contenido-->
+        <div class="col-md-6 col-lg-3 mt-md-0 text-center">
+          <h5 class="text-uppercase text-white">Camping Naúfrago</h5>
+          <span class="text-white">Complejo de lujo para todas las personas dispuestas a disfrutar y relajarse.</span>
+        </div>
+        <!--Dirección-->
+        <div class="col-md-6 col-lg-3 mt-md-0 text-center">
+          <h5 class="text-uppercase text-white">Dirección</h5>
+          <span class="text-white">Paraje Los Escullos, S/N</span><br>
+          <span class="text-white">Parque Natural Cabo de Gata</span><br>
+          <span class="text-white">04118 Níjar, Almería</span>
+        </div>
+        <!--Columa Visite-->
+        <div class="col-md-6 col-lg-3 mb-md-0 mb-3 text-center">
+          <h5 class="text-uppercase text-white">Visite</h5>
+          <ul class="list-unstyled text-white">
+            <li>
+              <span [routerLink]="'/reservas'" style="cursor: pointer;">Reservar</span>
+            </li>
+            <li>
+              <span [routerLink]="'/link'" style="cursor: pointer;">Reservar</span>
+            </li>
+            <li>
+              <span [routerLink]="'/link'" style="cursor: pointer;">Reservar</span>
+            </li>
+            <li>
+              <span [routerLink]="'/link'" style="cursor: pointer;">Reservar</span>
+            </li>
+          </ul>
+        </div>
+        <!--Columna Síganos-->
+        <div class="col-md-6 col-lg-3 mb-md-0 mb-3 text-center">
+          <h5 class="text-uppercase text-white">Síganos</h5>
+          <ul class="list-unstyled text-white">
+            <li>
+              <a href="#!" style="text-decoration: none; color: inherit;">Instagram</a>
+            </li>
+            <li>
+              <a href="#!" style="text-decoration: none; color: inherit;">Twitter</a>
+            </li>
+            <li>
+              <a href="#!" style="text-decoration: none; color: inherit;">Youtube</a>
+            </li>
+            <li>
+              <a href="#!" style="text-decoration: none; color: inherit;">Pinterest</a>
+            </li>
+          </ul>
+        </div>
+      </div>
+    </div>
+    <!--Copyright-->
+    <div class="footer-copyright text-center text-white py-3">© 2020 Copyright:
+      <a id="linkG" target="_blank" href="https://github.com/tryn0"> Web realizada para CampingNet (Camping Naúfrago)</a>
+      <!--Solo DEV-->
+      Tu IP: {{this.ip}}
+      <div>Esta web es visible en
+        <br>
+        <mat-icon class="bottom">smartphone</mat-icon> &nbsp; <mat-icon class="bottom">tablet</mat-icon> &nbsp; <mat-icon class="bottom">laptop</mat-icon> &nbsp; <mat-icon class="bottom">desktop_windows</mat-icon></div>
+    </div>
+  </footer>
 </div>
 
 <ng-template #admin>

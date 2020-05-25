@@ -53,9 +53,6 @@ export class DashboardComponent implements OnInit {
   // Variable que indica si es un trabajador o no, si un cliente entra a la parte dashboard, no verá nada, solo el cargador y será redireccionado al Inicio
   public trabajador: boolean = false;
 
-  // Variable que contiene el texto que muestra el botón del menú lateral
-  public menuMensaje: string = 'Menú';
-
   // Menú lateral
   @ViewChild('menu') drawer: MatDrawer;
 

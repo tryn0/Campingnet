@@ -7,11 +7,13 @@ import { encriptar, desencriptar } from './crypto-storage';
 import { MatDrawer } from '@angular/material/sidenav';
 import { CommonModule } from '@angular/common';
 
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
   styleUrls: ['./app.component.css']
 })
+
 export class AppComponent {
 
   public dashboard: boolean = false;
@@ -23,20 +25,12 @@ export class AppComponent {
   public mensaje: any;
 
   public ip: string;
-  
-  public menuMensaje: string = 'Cerrar menú';
 
-  @ViewChild('menu') drawer: MatDrawer;
-
-  constructor(private http: HttpClient, private _snackBar: MatSnackBar, private route: Router) {
-    
-
+  constructor(private http: HttpClient, private _snackBar: MatSnackBar, private route: Router) {    
     // Para obtener la IP
     this.http.get("http://api.ipify.org/?format=json").subscribe((res:any) =>{
       this.ip = res.ip;
     });
-
-
 
     //Mensaje de información
     if (localStorage.getItem('mensaje') == null) {
@@ -51,42 +45,18 @@ export class AppComponent {
     if (localStorage.getItem('usuarioActual') != null) {
       this.usuarioActual = desencriptar(localStorage.getItem('usuarioActual'));
     }
-
-    
-
-
   }
-
-  
-  togle(){
-    if(this.drawer.opened){
-      this.drawer.close();
-      this.menuMensaje = 'Abrir menú';
-    }else{
-      this.drawer.open();
-      this.menuMensaje = 'Cerrar menú';
-    }
-
-  }
-
 
   logOff(){
     localStorage.removeItem("usuarioActual");
     window.location.reload();
   }
 
-
-  ngOnInit(): void {  
-
-    let param = new HttpParams()
-    .set('opcion','1');
-
+  ngOnInit(): void {
     this.route.events.subscribe((e) => {
       if (e instanceof NavigationEnd) {
-        //console.log(e.url);
         if(e.url.length >= 10 && e.url.slice(0, 10) == '/dashboard'){
           this.dashboard = true;
-
         }else{
           this.dashboard = false;
         }
