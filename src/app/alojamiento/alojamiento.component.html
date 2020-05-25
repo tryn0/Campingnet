@@ -1,7 +1,6 @@
-<script src="assets/js/javascript.js"></script>
 <div *ngIf="errorExiste != true; else noExiste">
     <!-- Si viene con la URL /alojamiento -->
-    <div *ngIf='situacion == 0'>
+    <div *ngIf='situacion == 0' class="mb-5">
         <h3 class="mt-5 text-center">Alojamientos</h3>
         <div *ngIf="arrayBungalows.length < 1 && arrayParcelas.length < 1; else hayAlojamientos">
             <div class="d-flex justify-content-center mt-5">
@@ -144,7 +143,7 @@
     </div>
 
     <!-- Vista de la ficha del alojamiento URL /alojamiento/parcelas/2 -->
-    <div *ngIf='situacion == 2'>
+    <div *ngIf='situacion == 2' class="mb-5">
         <!-- Alojamiento -->
         <div class="container">
             <div class="row justify-content-center">
@@ -163,14 +162,9 @@
                             </div>
                             <!-- Puntuación media del alojamiento -->
                             <div *ngIf="!noResenias; else noPuntuacion">
-                                <ng-template #t let-fill="fill">
-                                    <span class="star" [class.full]="fill === 100">
-                                      <span class="half" [style.width.%]="fill">&#9733;</span>&#9733;
-                                    </span>
-                                  </ng-template>
-                                  <ngb-rating [(rate)]="currentRate" [starTemplate]="t" [readonly]="true" [max]="10"></ngb-rating>
-                                <hr>
-                                <pre>Puntuación media: <b>{{currentRate.toFixed(2)}}</b></pre>
+                                <div *ngIf="currentRate == 0; else puntuacion">
+                                    <mat-spinner></mat-spinner>
+                                </div>
                             </div>
                         </div>
                     </div>
@@ -190,16 +184,21 @@
                             <br>
                             <!-- Puntuación media del alojamiento -->
                             <div *ngIf="!noResenias; else noPuntuacion">
-                                <ng-template #t let-fill="fill">
-                                    <span class="star" [class.full]="fill === 100">
-                                      <span class="half" [style.width.%]="fill">&#9733;</span>&#9733;
-                                    </span>
-                                  </ng-template>
-                                  <ngb-rating [(rate)]="currentRate" [starTemplate]="t" [readonly]="true" [max]="10"></ngb-rating>
-                                <hr>
-                                <pre>Puntuación media: <b>{{currentRate.toFixed(2)}}</b></pre>
+                                <div *ngIf="currentRate == 0; else puntuacion">
+                                    <mat-spinner></mat-spinner>
+                                </div>
                             </div>
                         </div>                        
+                    </ng-template>
+                    <ng-template #puntuacion>
+                        <ng-template #t let-fill="fill">
+                            <span class="star" [class.full]="fill === 100">
+                              <span class="half" [style.width.%]="fill">&#9733;</span>&#9733;
+                            </span>
+                          </ng-template>
+                          <ngb-rating [(rate)]="currentRate" [starTemplate]="t" [readonly]="true" [max]="10"></ngb-rating>
+                        <hr>
+                        <pre>Puntuación media: <b>{{currentRate.toFixed(2)}}</b></pre>
                     </ng-template>
                     <ng-template #noPuntuacion>
                         <p>Este alojamiento aún no tiene puntuación.</p>
@@ -211,18 +210,25 @@
                         <div *ngIf="noResenias == false; else noReseniasTrue">
                             <!-- Aquí hacer un ngFor con las reseñas recogidas de la BD -->
                             <!-- Información de la reseña, usuario/anónimo y puntuación dada-->
-                            <div class="card-body" *ngFor="let resenias of listadoResenias | paginate: { id: 'pagination', itemsPerPage: 10, currentPage: p, totalItems: listadoResenias.length }; let i = index">
-                                <div class="col-12">
-                                    <span class="float-left">Nombre de usuario: {{resenias.alias}}</span>
-                                    <span class="float-right">Puntuación: {{resenias.puntuacion}}</span>
+                            <div *ngIf="listadoResenias.length > 0; else reseniaLoading">
+                                <div class="card-body" *ngFor="let resenias of listadoResenias | paginate: { id: 'pagination', itemsPerPage: 10, currentPage: p, totalItems: listadoResenias.length }; let i = index">
+                                    <div class="col-12">
+                                        <span class="float-left">Nombre de usuario: {{resenias.alias}}</span>
+                                        <span class="float-right">Puntuación: {{resenias.puntuacion}}</span>
+                                    </div>
+                                    <!-- Texto de la reseña -->
+                                    <p class="col-12 mt-5 mb-0">Comentario:</p>
+                                    <p class="col-12 mt-0">
+                                        {{resenias.comentario}}
+                                    </p>
+                                    <hr *ngIf="i != listadoResenias.length-1">
                                 </div>
-                                <!-- Texto de la reseña -->
-                                <p class="col-12 mt-5 mb-0">Comentario:</p>
-                                <p class="col-12 mt-0">
-                                    {{resenias.comentario}}
-                                </p>
-                                <hr *ngIf="i != listadoResenias.length-1">
                             </div>
+                            <ng-template #reseniaLoading>
+                                <div class="d-flex justify-content-center">
+                                    <mat-spinner></mat-spinner>
+                                </div>
+                            </ng-template>
                              <!-- Paginación de las reseñas por revisar -->
                             <pagination-controls class="text-center" [id]="'pagination'" (pageChange)="onChangePage($event)" autoHide="true" nextLabel="Siguiente" previousLabel="Anterior"></pagination-controls> 
                         </div>

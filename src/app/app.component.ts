@@ -63,4 +63,18 @@ export class AppComponent {
       }
     });
   }
+
+  ngAfterViewInit(): void { // Footer siempre al final
+    let cuerpo: number = document.getElementById('cuerpo').scrollHeight;
+    let documento: number = document.documentElement.scrollHeight;
+    let toolbar: number = document.getElementById('toolbar').clientHeight;
+    let footer: number = document.getElementById('footer').clientHeight;
+    let cuerpo2: HTMLElement = document.getElementById('cuerpo');
+
+    let h = documento - cuerpo;
+
+    if(h > 0) {
+      cuerpo2.style.minHeight = (h - footer - toolbar) as unknown as string+'px';
+    }
+  }
 }

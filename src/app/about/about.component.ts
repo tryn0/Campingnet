@@ -9,7 +9,8 @@ import { CommonModule } from '@angular/common';
 })
 export class AboutComponent implements OnInit {
 
-  public servicios: any;
+  // Listado de servicios, dichos servicios, no será alojamientos, o los servicios extras de personas
+  public servicios: any = [];
 
   /* Pendiente de poner este JSON de servicios en un PHP para no repetirlo en varios .ts */
   public servicios2 = [
@@ -26,11 +27,11 @@ export class AboutComponent implements OnInit {
 
   constructor(private http: HttpClient) {
     this.http.get('http://34.206.59.221/servicios.php').subscribe(data => {
-      this.servicios = data;
-      }, error => console.log(error));
+      if(data != null && data != 0) {
+        this.servicios = data;
+      }
+    }, error => console.log(error));
   }
 
-  ngOnInit(): void {
-  }
-
+  ngOnInit(): void { }
 }
