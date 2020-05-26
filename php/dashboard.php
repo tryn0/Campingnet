@@ -375,7 +375,72 @@
     }
     // Actualización de la reserva
     else if($opcion == '"29"') {
-        print json_encode($_POST);
+        $idReserva = $_POST['idReserva'];
+        $valido = 1;
+        if($_POST['fechaEntrada']) {
+            $entrada = $_POST['fechaEntrada'];
+            $salida = $_POST['fechaSalida'];
+
+            $sql = "SELECT idServicio FROM servicio WHERE idServicio = (SELECT idServicio FROM servicio WHERE idAlojamiento IS NOT NULL AND idServicio IN (SELECT idServicio FROM servicios_reserva WHERE idReserva = $idReserva)) AND idAlojamiento IS NOT NULL AND idServicio IN (SELECT idServicio FROM servicios_reserva WHERE idReserva IN (SELECT idReserva FROM reserva WHERE fecha_entrada < '$salida' AND fecha_salida > '$entrada' AND idReserva != $idReserva))";
+            $resultado = consulta($conn, $sql);
+            if($resultado == 0) {
+                $conn = conexion();
+                $sql2 = "UPDATE reserva SET fecha_entrada = '$entrada', fecha_salida = '$salida' WHERE idReserva = $idReserva";
+                $resultado2 = update($conn, $sql2);
+                if($resultado2 == 1) { // Si el update ha ido bien
+                    $valido = 1;
+                }else{ // sino acaba y manda error 3
+                    print json_encode(3);
+                }
+            }else{ // Si hay reservas en ese alojamiento entre las fechas a actualizar y no es la reserva a modificar, acaba y devuelve 2 (error)
+                $valido = 0;
+                print json_encode(2);
+            }
+        }else{ // Si no hay fecha a actualizar
+            $valido = 1;
+        }
+
+        if($valido == 1){
+            if($_POST['servicios']) { // Si hay servicios a actualizar
+                $cantidades = 0;
+                $servicios = array();
+
+                $x = explode(',',$_POST['servicios']);
+                for ($j=0; $j < count($x); $j = $j+2) { 
+                    if($valido == 1) {
+                        $conn = conexion();
+                        $idServicio = $x[$j];
+                        $cantidad = $x[$j+1];
+                        $sql = "UPDATE servicios_reserva SET cantidad = $cantidad WHERE idReserva = $idReserva AND idServicio = $idServicio";
+                        $resultado = insert($conn, $sql);
+                        if($resultado) {
+                            $valido = 1;
+                            if($idServicio == 2 || $idServicio == 3 || $idServicio == 4){ // Si el servicio es de personas extras
+                                $cantidades += $cantidad;
+                            }
+                        }else{
+                            $valido = 0;
+			                print json_encode(0);
+                        }
+                    }else{
+                        print json_encode(0);
+                        break;
+                    }
+                }
+
+                if($valido == 1) {  
+                    $conn = conexion();
+                    if($cantidades > 0) {
+                        $cantidadFinal = $cantidades + 2;
+                    }
+                    $sql = "UPDATE reserva SET num_personas = $cantidadFinal WHERE idReserva = $idReserva";
+                    print json_encode(update($conn, $sql));
+                }
+            }else{ // Si no hay todo ok y acaba
+                print json_encode(1);
+            }
+        }
+
     }
     // Eliminar alojamiento
     else if($opcion == '"30"') {
@@ -403,7 +468,6 @@
             $i++;
         }
         
-
         $valido = 1;
         $x = explode(',',$servicios[0]);
         for ($j=0; $j < count($x); $j = $j+2) { 
@@ -415,7 +479,9 @@
                 $resultado = insert($conn, $sql);
                 if($resultado) {
                     $valido = 1;
-                    $cantidades += $cantidad;
+                    if($idServicio == 2 || $idServicio == 3 || $idServicio == 4){ // Si el servicio es de personas extras
+                        $cantidades += $cantidad;
+                    }
                 }else{
                     $valido = 0;
                 }
@@ -426,18 +492,17 @@
         }
 
         if($valido == 1) {
-             $conn = conexion();
+            $conn = conexion();
             $sql = "SELECT num_personas FROM reserva WHERE idReserva = $idReserva";
             $cantidadOriginal = consulta($conn, $sql)[0]['num_personas'];
 
             $conn = conexion();
-            $cantidadFinal = $cantidadOriginal + $cantidad;
+            $cantidadFinal = $cantidadOriginal + $cantidades;
             $sql = "UPDATE reserva SET num_personas = $cantidadFinal WHERE idReserva = $idReserva";
             print json_encode(update($conn, $sql));
         }
     }
     // Eliminar servicio de reserva
-    // todo: AL BORRAR PERSONAS EXTRAS ACTUALIZAR NUM_PERSONAS, SOLO ES CONSULTA DE NUM_PERSONAS - LA CANTIDAD DEL SERVICIO DE LAS PERSONAS, Y ESTO POR CADA SERVICIO A ELIMINAR DE PERSONAS
     else if($opcion == '"32"') {
         $idReserva = $_POST['idReserva'];
         $cantidad = 0;
@@ -458,7 +523,9 @@
                 if($idServicio == 2 || $idServicio == 3 || $idServicio == 4){
                     $conn = conexion();
                     $sqlCantidad = "SELECT * FROM servicios_reserva WHERE idServicio = $idServicio AND idReserva = $idReserva";
-                    $cantidad = $cantidad + consulta($conn, $sqlCantidad)[0]['cantidad'];
+                    if($idServicio == 2 || $idServicio == 3 || $idServicio == 4){ // Si el servicio es de personas extras
+                        $cantidad = $cantidad + consulta($conn, $sqlCantidad)[0]['cantidad'];
+                    }
                 }
                 $conn = conexion();
                 $sql = "DELETE FROM servicios_reserva WHERE idServicio = $idServicio AND idReserva = $idReserva";

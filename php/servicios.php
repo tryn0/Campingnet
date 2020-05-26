@@ -14,5 +14,5 @@
     $conn = conexion();
 
     //Con la siguiente query se seleccionan todos los datos de la tabla alojamiento donde el tipo sea bungalow, con ORDER BY RAND() se selccionan aleatoriamente y LIMIT 5 un límite de 5 alojamientos.
-    $sql = "SELECT idServicio, nombre, precio, idAlojamiento FROM servicio ORDER BY RAND() LIMIT 4;";
+    $sql = "SELECT idServicio, nombre, precio FROM servicio WHERE idAlojamiento IS NULL AND idServicio NOT IN (2, 3, 4) ORDER BY RAND() LIMIT 4;";
     print json_encode(consulta($conn, $sql));
