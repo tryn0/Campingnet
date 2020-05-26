@@ -371,6 +371,15 @@ export class ReservasComponent implements OnInit {
   }
 
   alojamientoElegido(){ // Seteo de cantidad personas en la reserva
+    //this.serviciosExtras.reset();
+    Object.entries(this.serviciosExtras.value).forEach(entries => {
+      //console.log(entries)
+      if(entries[0] == 'num2' || entries[0] == 'num3' || entries[0] == 'num4') {
+        this.serviciosExtras.get('servicio'+entries[0].slice(3)).setValue(false);
+        this.serviciosExtras.get(entries[0]).setValue('');
+        this.serviciosExtras.get(entries[0]).disable();
+      }
+    });
     if(this.alojamiento.get('tipo').value == 'Parcela'){
       let personasTotal = this.alojamiento.get('numPersonas').value;
       if(personasTotal > 2){
@@ -454,7 +463,7 @@ export class ReservasComponent implements OnInit {
             if((this.personas+totalPersonasparcela2) > 12) { // La suma de todas las personas
               this.serviciosExtras.get(entries[0]).setErrors({'muchaGente': true});
             }else{
-              if(this.alojamiento.get('numPersonas').value == 1 && this.serviciosExtras.get('num2').value > 0 || this.serviciosExtras.get('num3').value > 0 || this.serviciosExtras.get('num4').value > 0) {
+              if(this.alojamiento.get('numPersonas').value == 1 && (this.serviciosExtras.get('num2').value > 0 || this.serviciosExtras.get('num3').value > 0 || this.serviciosExtras.get('num4').value > 0)) {
                 this.serviciosExtras.get(entries[0]).setErrors({'noGente': true});
               }else{
                 this.serviciosExtras.get(entries[0]).setErrors(null);
