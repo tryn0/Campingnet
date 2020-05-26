@@ -91,7 +91,8 @@ export class DashboardComponent implements OnInit {
   // Variables salidas-hoy
   public listadoSalidasHoy: any = [];
   public serviciosExtras: any = []; // También es usado en entradas-hoy
-  public totalPagar: number = 0; 
+  public totalPagar: number = 0;
+  public pago: number = 0;
 
   // Variables entradas-hoy
   public listadoEntradasHoy: any = [];
@@ -1107,6 +1108,10 @@ export class DashboardComponent implements OnInit {
     this.dashboardServiciosEditar = true;
   }
 
+  suma(a,b){
+    return parseFloat(a)+parseFloat(b);
+  }
+
 
   ngOnInit(): void {
     this.scrollToBottom();
@@ -1277,13 +1282,17 @@ export class DashboardComponent implements OnInit {
 
       let salidasHoy = new HttpParams()
       .set('opcion', '10');
-
       this.http.post < any > ("http://34.206.59.221/dashboard.php", salidasHoy).subscribe(data => { // Obtener las reservas que saldrán hoy
         if (data != null && data != 0) {
           this.listadoSalidasHoy = data;
           for (let i = 0; i < this.listadoSalidasHoy.length; i++) {
             const element = this.listadoSalidasHoy[i];
+
             this.serviciosExtras = [];
+            this.totalPagar = 0;
+
+            // Total de días de la reserva
+            let dias = Math.floor((new Date(this.listadoSalidasHoy[i].fecha_salida).getTime() - new Date(this.listadoSalidasHoy[i].fecha_entrada).getTime())/86400000);
 
             let nombreUser = new HttpParams()
             .set('opcion', '6')
@@ -1297,101 +1306,92 @@ export class DashboardComponent implements OnInit {
                 this.listadoSalidasHoy[i].email = data[0]['email'];
                 this.listadoSalidasHoy[i].fecha_entrada = new Date(this.listadoSalidasHoy[i].fecha_entrada).toLocaleDateString("es-ES",{year: "numeric", month:"2-digit", day: "2-digit"});
                 this.listadoSalidasHoy[i].fecha_salida = new Date(this.listadoSalidasHoy[i].fecha_salida).toLocaleDateString("es-ES",{year: "numeric", month:"2-digit", day: "2-digit"});
-              }
-            });
 
-            let idAlojamientoSalidasHoy = new HttpParams()
-            .set('opcion', '11')
-            .set('idReserva', element['idReserva']);
-            this.http.post < any > ("http://34.206.59.221/dashboard.php", idAlojamientoSalidasHoy).subscribe(data => { // Obtener los datos de los alojamientos de la reserva
-              if (data != null && data != 0) {
-                this.listadoSalidasHoy[i].tipo_alojamiento = data[0]['nombre'];
-                this.listadoSalidasHoy[i].idAlojamiento = data[0]['idAlojamiento'];
-                this.listadoSalidasHoy[i].precioAlojamiento = data[0]['precio'];
-
-                // Total de días de la reserva
-                let dias = Math.floor((new Date(this.listadoSalidasHoy[i].fecha_salida).getTime() - new Date(this.listadoSalidasHoy[i].fecha_entrada).getTime())/86400000);
-                console.log(typeof dias)
- 
-                // TODO: ALGO FALLA EN EL PRECIO FINAL NOSEEE
-
-                // Precio del alojamiento, para que el trabajador de recepción cobre al cliente
-                this.totalPagar = 0;
-                this.totalPagar += (Number(this.listadoSalidasHoy[i].precioAlojamiento)*dias)*Number(this.listadoSalidasHoy[i].multiplicativo);
-                console.log(typeof Number(this.listadoSalidasHoy[i].precioAlojamiento))
-                console.log(typeof Number(this.listadoSalidasHoy[i].multiplicativo))
-
-                let numeAlojamiento = new HttpParams()
-                .set('opcion', '12')
-                .set('idAlojamiento', data[0]['idAlojamiento']);
-                this.http.post < any > ("http://34.206.59.221/dashboard.php", numeAlojamiento).subscribe(data => { // Obtener el número del alojamiento
+                let idAlojamientoSalidasHoy = new HttpParams()
+                .set('opcion', '11')
+                .set('idReserva', element['idReserva']);
+                this.http.post <any>("http://34.206.59.221/dashboard.php", idAlojamientoSalidasHoy).subscribe(data => { // Obtener los datos de los alojamientos de la reserva
                   if (data != null && data != 0) {
-                    this.listadoSalidasHoy[i].numeroAlojamiento = data[0]['numeroAlojamiento'];
-                    if(data[0]['tipo'] == 'bungalow'){
-                      this.listadoSalidasHoy[i].habitaciones = data[0]['habitaciones'];
-                      this.listadoSalidasHoy[i].maximo_personas = data[0]['maximo_personas'];
-                    }else{
-                      this.listadoSalidasHoy[i].dimension = data[0]['dimension'];
-                      switch (data[0]['sombra']) { // Sombra de la parcela
-                        case '0':
-                          this.listadoSalidasHoy[i].sombra = "Nada";
-                          break;
-                        case '1':
-                          this.listadoSalidasHoy[i].sombra = "Media";
-                          break;
-                        case '2':
-                          this.listadoSalidasHoy[i].sombra = "Bastante";
-                          break;
-                        case '3':
-                          this.listadoSalidasHoy[i].sombra = 'Mucha';
-                          break;
-                        default:
-                          this.listadoSalidasHoy[i].sombra = "Desconocido";
-                          break;
+                    this.listadoSalidasHoy[i].tipo_alojamiento = data[0]['nombre'];
+                    this.listadoSalidasHoy[i].idAlojamiento = data[0]['idAlojamiento'];
+                    this.listadoSalidasHoy[i].precioAlojamiento = data[0]['precio'];
+
+                    this.totalPagar = (parseFloat(this.listadoSalidasHoy[i].precioAlojamiento)*dias)*(parseFloat(this.listadoSalidasHoy[i].multiplicativo));
+                    
+                    let numeAlojamiento = new HttpParams()
+                    .set('opcion', '12')
+                    .set('idAlojamiento', data[0]['idAlojamiento']);
+                    this.http.post < any > ("http://34.206.59.221/dashboard.php", numeAlojamiento).subscribe(data => { // Obtener el número del alojamiento
+                      if (data != null && data != 0) {
+                        this.listadoSalidasHoy[i].numeroAlojamiento = data[0]['numeroAlojamiento'];
+                        if(data[0]['tipo'] == 'bungalow'){
+                          this.listadoSalidasHoy[i].habitaciones = data[0]['habitaciones'];
+                          this.listadoSalidasHoy[i].maximo_personas = data[0]['maximo_personas'];
+                        }else{
+                          this.listadoSalidasHoy[i].dimension = data[0]['dimension'];
+                          switch (data[0]['sombra']) { // Sombra de la parcela
+                            case '0':
+                              this.listadoSalidasHoy[i].sombra = "Nada";
+                              break;
+                            case '1':
+                              this.listadoSalidasHoy[i].sombra = "Media";
+                              break;
+                            case '2':
+                              this.listadoSalidasHoy[i].sombra = "Bastante";
+                              break;
+                            case '3':
+                              this.listadoSalidasHoy[i].sombra = 'Mucha';
+                              break;
+                            default:
+                              this.listadoSalidasHoy[i].sombra = "Desconocido";
+                              break;
+                          }
+                        }
                       }
-                    }
+                    });
+
+                    let cantidadFinal: any;
+                    let cantidadServicios = new HttpParams()
+                    .set('opcion', '14')
+                    .set('idReserva', element['idReserva']);
+                    
+                    this.http.post<any>("http://34.206.59.221/dashboard.php", cantidadServicios).subscribe(data => { // Obtener la cantidad de servicios contratados
+                      if (data != null && data != 0) {
+                        cantidadFinal = data;
+                      }
+                    });
+
+                    let serviciosReserva: any = [];
+                    let servicios = new HttpParams()
+                    .set('opcion', '13')
+                    .set('idReserva', element['idReserva']);
+                    this.http.post < any > ("http://34.206.59.221/dashboard.php", servicios).subscribe(data => { // Obtener los datos de los servicios contratados
+                      if (data != null && data != 0) {
+                        serviciosReserva = data;
+                        this.pago = 0;
+                        for (let x = 0; x < cantidadFinal?.length; x++) {
+                          const elemento1 = cantidadFinal[x];
+                          for (let r = 0; r < serviciosReserva.length; r++) {
+                            const elemento2 = serviciosReserva[r];
+                            if(elemento1.idServicio === elemento2.idServicio) {
+                              elemento2.cantidad = elemento1.cantidad;
+                              //elemento2.precioTotal = elemento2.cantidad*elemento2.precio;
+                              this.pago += (elemento2.cantidad*elemento2.precio);
+                              this.serviciosExtras.push(elemento2);
+                              if(r == serviciosReserva.length-1){
+                                this.serviciosExtras.push(this.pago);
+                              }
+                            }
+                          }
+                        }
+                        this.listadoSalidasHoy[i].servicios = this.serviciosExtras;
+                        this.serviciosExtras = [];
+                      }
+                    });
+                    this.listadoSalidasHoy[i].total_pagar = this.totalPagar.toFixed(2);
                   }
                 });
               }
-            });
-
-            let cantidadServicios = new HttpParams()
-            .set('opcion', '14')
-            .set('idReserva', element['idReserva']);
-            let cantidadFinal: any;
-            this.http.post<any>("http://34.206.59.221/dashboard.php", cantidadServicios).subscribe(data => { // Obtener la cantidad de servicios contratados
-              if (data != null && data != 0) {
-                cantidadFinal = data;
-              }
-            });
-
-            let servicios = new HttpParams()
-            .set('opcion', '13')
-            .set('idReserva', element['idReserva']);
-            this.http.post<any>("http://34.206.59.221/dashboard.php", servicios).subscribe(data => { // Obtener los datos de los servicios contratados
-              if (data != null && data != 0) {
-                for (let i = 0; i < data.length; i++) {
-                  const element = data[i];
-                  delete element.idAlojamiento;
-                  for (let x = 0; x < cantidadFinal?.length; x++) { // Por cada servicio si coincide el id con el de la lista se le agrega a ese mismo la cantidad en la reserva
-                    const cantidades = cantidadFinal[x];
-                    if(cantidades.idServicio == element.idServicio) {
-                      element.cantidad = cantidades.cantidad;
-                       // Precio de todos los servicios, para que el trabajador de recepción cobre al cliente
-                       this.totalPagar += (parseFloat(element.precio)*parseInt(element.cantidad));
-                    }
-                  }
-                  //console.log(element)
-                  this.serviciosExtras.push(element);
-                }
-                this.serviciosExtras.idReserva = element['idReserva'];
-                this.listadoSalidasHoy[i].servicios = this.serviciosExtras;
-                this.serviciosExtras = [];
-                /*console.log(this.listadoSalidasHoy[i]);
-                console.log('acaba reserva')
-                console.log(' ')*/
-              }
-              this.listadoSalidasHoy[i].total_pagar = this.totalPagar.toFixed(2);
             });
           }
         }
