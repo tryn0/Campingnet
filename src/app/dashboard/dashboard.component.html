@@ -547,9 +547,10 @@
                                                 </div>
                                             </ng-template>
                                             <p *ngIf="errorEdicionReserva" class="text-danger">Hubo un error, inténtelo de nuevo más tarde</p>
+                                            <p *ngIf="!errorFechas" class="text-danger">Este alojamiento no está disponible en esas fechas</p>
                                             <p><mat-icon class="icon">info</mat-icon>Si la fecha se cambia se comprobará si está disponible el alojamiento en dicha fecha.</p>
                                             <div class="d-flex justify-content-center mt-2 pb-2">
-                                                <button mat-raised-button color="accent" (click)="edicionReserva()">Guardar</button>
+                                                <button mat-raised-button color="accent" (click)="edicionReserva(buscado)">Guardar</button>
                                             </div>
                                         </form>
                                     </div>
@@ -627,7 +628,7 @@
                             <h4 class="text-center mb-4">Listado de reseñas encontradas</h4>
                             <div *ngFor="let buscado of listadoBuscado | paginate: { id: 'pagination', itemsPerPage: 10, currentPage: p, totalItems: listadoBuscado.length }">
                                 <mat-card class="mb-4">
-                                    <mat-card-header class="justify-content-end">
+                                    <mat-card-header class="justify-content-end mb-0">
                                         <div class="col-12 text-center text-md-left">
                                             <mat-card-title>ID de la reseña: {{buscado.idResenia}} </mat-card-title>
                                             <mat-card-subtitle class="float-md-left text-md-left">
@@ -640,8 +641,6 @@
                                                 <span>Tipo de alojamiento: {{buscado.tipo_alojamiento}}</span>
                                                 <br>
                                                 <span *ngIf="buscado.tipo_alojamiento == 'Bungalow'">Habitaciones: {{buscado.habitaciones}}</span><span *ngIf="buscado.tipo_alojamiento == 'Parcela'">Dimensiones: {{buscado.dimension}}</span>
-                                                <br>
-                                                <span>Publicado: {{buscado.publicado}}</span>
                                             </mat-card-subtitle>
                                             <mat-card-subtitle class="float-md-right text-md-right">
                                                 <span>DNI Cliente: {{buscado.nif}}</span>
@@ -653,19 +652,12 @@
                                                 <span>Número del alojamiento: {{buscado.numeroAlojamiento}}</span>
                                                 <br>
                                                 <span *ngIf="buscado.tipo_alojamiento == 'Bungalow'">Máximo de personas: {{buscado.maximo_personas}}</span><span  class="float-left float-md-right" *ngIf="buscado.tipo_alojamiento == 'Parcela'">Sombra: {{buscado.sombra}}</span>
+                                                <br>
+                                                <span>Publicado: {{buscado.publicado}}</span>
                                             </mat-card-subtitle>
                                         </div>
                                     </mat-card-header>
-                                    <mat-card-content *ngIf="serviciosExtras.idReserva == buscado.idReserva && serviciosExtras[0] != null">
-                                        <div class="row justify-content-center">
-                                            <p class="importante">Listado de servicios extras</p>
-                                            <mat-card-subtitle class="text-center justify-content-center col-12">
-                                                <div #scrollMe style="overflow-y: auto; height: 100px;">
-                                                    <div *ngFor="let extra of serviciosExtras">{{extra.nombre}}</div>
-                                                </div>
-                                            </mat-card-subtitle>
-                                        </div>
-                                    </mat-card-content>
+                                    <p class="mt-0">Comentario: {{buscado.comentario}}</p>
                                 </mat-card>
                             </div>
                             <pagination-controls class="text-center" [id]="'pagination'" (pageChange)="onChangePage($event)" autoHide="true" nextLabel="Siguiente" previousLabel="Anterior"></pagination-controls>
@@ -963,7 +955,7 @@
                                 </mat-card>
                             </div>
                             <pagination-controls class="text-center" [id]="'pagination'" (pageChange)="onChangePage($event)" autoHide="true" nextLabel="Siguiente" previousLabel="Anterior"></pagination-controls>
-                            <p class="puntero importante text-center" [routerLink]="'/dashboard'">Volver</p>
+                            <p class="puntero text-center" (click)="atrasBusqueda()">Volver</p>
                         </div>
                     </div>
                     <ng-template #editarServices>

@@ -109,6 +109,7 @@ export class DashboardComponent implements OnInit {
   public totalPersonas: number = 0;
   public fechaVal: boolean = null;
   public errorEdicionReserva: boolean = false;
+  public errorFechas: boolean = false;
 
   // Variables reseñas
   public buscarResenia: FormGroup;
@@ -563,6 +564,8 @@ export class DashboardComponent implements OnInit {
       this.agregarTemporada = false;
     }else if (this.router.snapshot.url.length > 1 && this.router.snapshot.url[0].path == 'dashboard' && this.router.snapshot.url[1].path == 'admin' && this.router.snapshot.url[2].path == 'servicios' && this.dashboardServiciosEditar == true) {
       this.dashboardServiciosEditar = false;
+      this.agregarAlojamiento = false;
+      this.edicionServicios.reset();
       this.addAlojamientoForm.get('tipo').setValue('');
       this.addAlojamientoForm.get('nombre').setValue('');
       this.addAlojamientoForm.get('precio').setValue('');
@@ -576,9 +579,6 @@ export class DashboardComponent implements OnInit {
   }
 
   editar(r) { // Editar reserva
-    /**
-     * TODO: Cargar un formulario con los datos de la reserva, las fechas han cambiado comprobar si hay alguna reserva de ese alojamiento entre las fechas de entrada y salida, lo mismo que al reservas pero especificamente del alojamiento
-     */
     this.reservaEditar = null;
     this.serviciosReservaEditar = [];
     this.allServices = [];
@@ -729,7 +729,7 @@ export class DashboardComponent implements OnInit {
     };
   }
 
-  edicionReserva() { // Comprobación del formulario y envío de datos al php para guardar en BD si en php valida las fechas, en caso de solo añadir servicios update directamente
+  edicionReserva(r) { // Comprobación del formulario y envío de datos al php para guardar en BD si en php valida las fechas, en caso de solo añadir servicios update directamente
 
     // Comprobación de campos, checkbox activado input relleno, sino no hace la función
     let validado: number = 1;
@@ -757,8 +757,13 @@ export class DashboardComponent implements OnInit {
     }); 
 
     // Si formulario está validado se mandan los datos al php y comprueba las fechas y datos
-    if(validado == 1 && this.totalPersonas > 0 && this.totalPersonas < 13) {
+    if(this.reservaEditar.tipo_alojamiento == 'Parcela') {
+      if(this.totalPersonas < 0 && this.totalPersonas > 12){
+        validado = 0;
+      }
+    }
 
+    if(validado == 1 ){
       let updateReserva = new HttpParams()
       .set('opcion', '29')
       .set('idReserva', this.reservaEditar.idReserva);
@@ -778,13 +783,13 @@ export class DashboardComponent implements OnInit {
       let update = 0;
       let deletee = 0;
 
-      if(fecha1.toLocaleDateString('es-ES',{day: '2-digit', month: '2-digit', year: 'numeric'}) != this.reservaEditar.fecha_entrada) {
+      if(fecha1.toLocaleDateString('es-ES',{day: '2-digit', month: '2-digit', year: 'numeric'}) != this.reservaEditar.fecha_entrada || fecha2.toLocaleDateString('es-ES',{day: '2-digit', month: '2-digit', year: 'numeric'}) != this.reservaEditar.fecha_salida) {
         update = 1;
-        updateReserva = updateReserva.set('fechaEntrada', fecha1.getFullYear()+'-'+fecha1.getMonth()+'-'+fecha1.getDate());
-      }
-      if(fecha2.toLocaleDateString('es-ES',{day: '2-digit', month: '2-digit', year: 'numeric'}) != this.reservaEditar.fecha_salida) {
-        update = 1;
-        updateReserva = updateReserva.set('fechaSalida', fecha2.getFullYear()+'-'+fecha2.getMonth()+'-'+fecha2.getDate());
+        updateReserva = updateReserva.set('fechaEntrada', fecha1.getFullYear()+'-'+(fecha1.getMonth()+1)+'-'+fecha1.getDate());
+        updateReserva = updateReserva.set('fechaSalida', fecha2.getFullYear()+'-'+(fecha2.getMonth()+1)+'-'+fecha2.getDate());
+        console.log('alguna fecha distinta')
+      }else{
+        console.log('fechas iguales')
       }
 
       let listaeditarReserva: any = [];
@@ -801,13 +806,16 @@ export class DashboardComponent implements OnInit {
                 const elemento = this.serviciosReservaEditar[z];
                 if(element.idServicio == elemento.idServicio && this.editarReserva.get('num'+element.idServicio).value != '0'){
                   if(Number(element.cantidad) == Number(cant)) { // Si la cantidad del servicio extra no se ha actualizado
+                    //console.log('igual')
                     break;
                   }else{ // Si la cantidad del servicio extra ha sido actualizada
+                    //console.log('actualizado')
                     update = 1;
                     listaupdateReserva.push(element.idServicio,this.editarReserva.get('num'+element.idServicio).value)
                     break;
                   }
                 }else if(z == this.serviciosReservaEditar.length-1 && element.idServicio != elemento.idServicio && this.editarReserva.get('num'+element.idServicio).value != '0'){ // Si el servicio extra es nuevo
+                  //console.log('nuevo')
                   insert = 1;
                   listaeditarReserva.push(element.idServicio,this.editarReserva.get('num'+element.idServicio).value);
                   break;
@@ -815,10 +823,10 @@ export class DashboardComponent implements OnInit {
               }
               break;
             }else if(entries[0] == 'servicio'+element['idServicio']){
-              // todo: comprobar si estaba en la lista this.serviciosReservaEditar, y si estaba significa que se ha eliminado, sino estaba pues NADA
               for (let j = 0; j < this.serviciosReservaEditar.length; j++) {
                 const elemento = this.serviciosReservaEditar[j];
                 if(element.idServicio == elemento.idServicio && this.editarReserva.get('num'+element.idServicio).value != '0') { // Si se ha eliminado el servicio extra
+                  //console.log('deletee')
                   deletee = 1;
                   listadeleteReserva.push(element.idServicio);
                 }
@@ -828,12 +836,10 @@ export class DashboardComponent implements OnInit {
         }
       });
 
-      //34.206.59.221
       if(deletee) { // Si hay algún servicio extra eliminado
         deleteReserva = deleteReserva.set('servicios', listadeleteReserva);
         this.http.post<any>("http://34.206.59.221/dashboard.php", deleteReserva).subscribe(data => { // Delete
-        //console.log(data)
-        if(data == null && data == 0) {
+          if(data == null && data == 0) {
             this.errorEdicionReserva = true;
           }
         });
@@ -841,11 +847,23 @@ export class DashboardComponent implements OnInit {
       
       if(update) { // Si hay alguna actualización de servicio extra
         // todo: comprobar que no haya reservas de ese alojamiento en las fechas que se ha introducido, si solo se modifican los servicios, actualizarlos sin más.
-        updateReserva = updateReserva.set('servicios',listaupdateReserva);
+        if(listaupdateReserva.length > 0) {
+          updateReserva = updateReserva.set('servicios',listaupdateReserva);
+        }
         this.http.post<any>("http://34.206.59.221/dashboard.php", updateReserva).subscribe(data => { // Update
-        //console.log(data)
-        if(data == null && data == 0) {
+          console.log(data)
+          if(data == null && data == 0) {
             this.errorEdicionReserva = true;
+          }else if(data == 2) {
+            // todo: error de fechas
+            this.errorEdicionReserva = true;
+            this.errorFechas = true;
+            console.log(data)
+          }else if(data == 3) {
+            //todo: error de update
+            this.errorEdicionReserva = true;
+  
+            console.log(data)
           }
         });
       }
@@ -853,7 +871,6 @@ export class DashboardComponent implements OnInit {
       if(insert) { // Si hay algún servicio extra nuevo
         insertReserva = insertReserva.set('servicios',listaeditarReserva);
         this.http.post<any>("http://34.206.59.221/dashboard.php", insertReserva).subscribe(data => { // Insert
-        //console.log(data)
           if(data == null && data == 0) {
             this.errorEdicionReserva = true;
           }
@@ -864,6 +881,8 @@ export class DashboardComponent implements OnInit {
       if(!this.errorEdicionReserva) {
         location.reload();
       }
+    }else{
+      //console.log('algo va mal')
     }
   }
 
