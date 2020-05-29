@@ -2,6 +2,11 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 
+export interface Tile {
+  cols: number;
+  rows: number;
+  src: string;
+}
 @Component({
   selector: 'app-about',
   templateUrl: './about.component.html',
@@ -23,6 +28,13 @@ export class AboutComponent implements OnInit {
     {
       texto: "Piscina", precio: 5.99, horario: "09:00 - 21:00" /*,src: "url de la foto"*/
     },
+  ];
+
+  // Cabecera de fotos
+  public tiles: Tile[] = [
+    {cols: 1, rows: 2, src: 'cielo.jpg'},
+    {cols: 2, rows: 2, src: 'parcelas.jpg'},
+    {cols: 1, rows: 2, src: 'aereo.jpg'},
   ];
 
   constructor(private http: HttpClient) {

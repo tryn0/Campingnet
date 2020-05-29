@@ -3,19 +3,28 @@
     <h2>Camping Naúfrago</h2>
 </div>
 
+<!-- Cabecera con fotos -->
+<mat-grid-list cols="4" rowHeight="100px" class="d-none d-md-block">
+    <mat-grid-tile *ngFor="let tile of tiles" [colspan]="tile.cols" [rowspan]="tile.rows">
+        <img src="../../assets/images/acerca/{{tile.src}}">
+    </mat-grid-tile>
+</mat-grid-list>
+
 <!-- Columnas en los extremos (2 columnas) -->
 <div class="container mt-5 col-xl-11 mb-5 rounded"  style="box-shadow: 5px 5px lightgrey;">
-    <div class="row text-center">
+    <div class="row text-center justify-content-around">
         <!-- Columna izquierda -->
         <div class="col-md-6 col-lg-5">
-            <b>Aquí va info acerca del camping, situación y alguna info importante más.</b><br><br>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit. 
-            Ad temporibus optio nulla est suscipit! Velit odit libero, 
-            id aspernatur reiciendis exercitationem! Quia illo necessitatibus recusandae rem! Omnis iure necessitatibus corporis!
+            <p class="grande text-center mt-5">
+                El Camping Naúfrago está situado en el Parque Natural Cabo de Gata, entre Rodalquilar y San José, en Almería.
+                El Camping Naúfrago, se compone de Bungalows y parcelas con toma de corriente y agua.
+                Disponemos además de Restaurante, Cafetería, Bar de Tapas, Supermercado, Piscina, Gimnasio, Sauna, Jacuzzi, Sala de Cuidados Corporales y Masajes, Recepción 24h, Pistas Polideportivas, pista de Padel, pista de Voley Playa y un Parque Biosaludable.
+            </p>
+            
         </div>
         <!-- Columna derecha -->
-        <div class="col-md-6 offset-md-0 col-lg-5 offset-lg-2">
-            <iframe src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3194.634647406925!2d-2.080921684426985!3d36.80330927522393!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd7aedcdb346495d%3A0xbac631c12829b5d4!2sCamping%20Los%20Escullos!5e0!3m2!1ses!2ses!4v1590690040789!5m2!1ses!2ses" width="600" height="450" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
+        <div class="col-md-6  col-lg-5">
+            <iframe class="mt-2" src="https://www.google.com/maps/embed?pb=!1m18!1m12!1m3!1d3194.634647406925!2d-2.080921684426985!3d36.80330927522393!2m3!1f0!2f0!3f0!3m2!1i1024!2i768!4f13.1!3m3!1m2!1s0xd7aedcdb346495d%3A0xbac631c12829b5d4!2sCamping%20Los%20Escullos!5e0!3m2!1ses!2ses!4v1590690040789!5m2!1ses!2ses" width="600" height="450" frameborder="0" style="border:0;" allowfullscreen="" aria-hidden="false" tabindex="0"></iframe>
         </div>
     </div>
 </div>
@@ -30,25 +39,27 @@
     <div class="row text-center">
         <!-- Columna izquierda -->
         <div class="col-lg-3 col-md-4">
-            <b>Aquí va info de cómo llegar en coche.</b><br><br>
-            Lorem, ipsum dolor sit amet consectetur adipisicing elit. 
-            Tempora blanditiis voluptatibus nam quia aliquam? Qui corrupti voluptatem obcaecati veritatis nostrum fugiat autem, 
-            necessitatibus culpa dolorum nesciunt maxime ab, cupiditate tempora.
+            <span class="h5"><b>Cómo llegar en coche</b></span>
+            <br>
+            Debes llegar desde la A-7 (E-15): Autovia del Mediterráneo (Barcelona-Valencia-Alicante-Murcia-Almería-Málaga-Algeciras).
+            Toma la salida de la A-7 Número 479 (NIJAR-SAN ISIDRO-SAN JOSE), contínua aprox. 20 Km. siguiendo las indicaciones hacia San Jose, hasta tomar la salida a tu izquierda hacia Los Escullos-La Isleta-Rodalquiar. En pocos minutos (3 Km.) encontrarás el Complejo a tu derecha.
+            Coordenadas: 36° 48′ 11.898″ N 2° 4′ 43.439″ W
         </div>
         <!-- Columna central -->
         <div class="col-lg-4 col-md-4 offset-lg-1 offset-md-0">
-            <b>Aquí va info de cómo llegar en tren o bus.</b><br><br>
-            Lorem ipsum dolor, sit amet consectetur adipisicing elit.
-            Deleniti modi, cumque earum soluta deserunt eius dolorum odio quibusdam distinctio possimus iure esse ratione id, 
-            fugiat laborum in harum cupiditate aliquam.
+            <span class="h5"><b>Cómo llegar en tren o bus</b></span>
+            <br>
+            Los servicios de Tren y Autobús se concentran en la estación intermodal de Almería, a 38 Km (40 min.)
+            La estación intermodal se encuentra en el centro de Almería: Plaza de la estación S/N. 04006 Almería. Presta servicios de comunicación con la mayoría de las principales ciudades de España.
+            Consulta con Renfe (trenes) y con distintos operadores (autobuses) las ciudades con conexión a Almería.
         </div>
         <!-- Columna derecha -->
         <div class="col-lg-3 col-md-4 offset-lg-1 offset-md-0">
-            <b>Aquí va info de cómo llegar en avion.</b><br><br>
-            Lorem ipsum dolor sit amet consectetur adipisicing elit.
-            Exercitationem placeat repellendus possimus voluptates reprehenderit rem dolores, 
-            quisquam id illo molestias inventore dolorem culpa labore.
-            Tenetur dolores est repellat incidunt. Aliquid.
+            <span class="h5"><b>Cómo legar en avión</b></span>
+            <br>
+            El aeropuerto de Almería es el aeropuerto más cercano a nuestro camping, a sólo 32 Km (30 minutos).
+            Cuenta con vuelos regulares a Madrid, Barcelona, Sevilla y otras ciudades Europeas. En temporada alta aumenta considerablemente la oferta de destinos.
+            Otros aeropuertos próximos a nuestro complejo turístico son los aeropuertos de Alicante (275 Km.) y Málaga (262 Km.)
         </div>
     </div>
 </div>
@@ -58,7 +69,7 @@
 </div>
 
 <!-- 2 columnas con información -->
-<div class="container mt-2 rounded mb-5"  style="box-shadow: 5px 5px lightgrey;">
+<div class="container mt-2 rounded mb-5" style="box-shadow: 5px 5px lightgrey;">
     <div class="row text-center">
         <!-- Columna izquierda -->
         <div class="col-lg-5 col-md-6 mb-5 mt-5">

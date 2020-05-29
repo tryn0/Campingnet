@@ -34,6 +34,7 @@ import { NgxPaginationModule } from 'ngx-pagination';
 import { ScrollingModule } from '@angular/cdk/scrolling';
 import { MatBottomSheetModule } from '@angular/material/bottom-sheet';
 import { NgbModule } from '@ng-bootstrap/ng-bootstrap';
+import { MatGridListModule } from '@angular/material/grid-list';
 
 //Componentes añadidos
 import { HomeComponent } from './home/home.component';
@@ -49,7 +50,6 @@ import { PaneldeControlComponent } from './panelde-control/panelde-control.compo
 import { DashboardComponent, confirmacion, confirmacionReserva, confirmacionServicio } from './dashboard/dashboard.component';
 import { ReservasLoginComponent } from './reservas-login/reservas-login.component';
 import { ReservasRegistrarComponent } from './reservas-registrar/reservas-registrar.component';
-import * as $ from "jquery";
 
 @NgModule({
   declarations: [
@@ -103,7 +103,8 @@ import * as $ from "jquery";
     LayoutModule,
     ScrollingModule,
     MatBottomSheetModule,
-    NgbModule
+    NgbModule,
+    MatGridListModule
   ],
   providers: [
     MatDatepickerModule,
