@@ -68,6 +68,7 @@ export class ReservasComponent implements OnInit {
   public personas: number = 0;
   public precioAlojamiento: number = 0;
   public precioAlojamientoFinal: number = 0;
+  public noAlojamiento: boolean = false;
 
   // Variables del formulario 3
   public serviciosExtras: FormGroup;
@@ -111,6 +112,7 @@ export class ReservasComponent implements OnInit {
 
   // Obtiene listado de alojamientos si las fechas introducidas están correctas
   guardarFechas(){
+    this.noAlojamiento = false;
     this.alojamiento.reset();
     this.serviciosExtras.reset();
     
@@ -247,7 +249,6 @@ export class ReservasComponent implements OnInit {
     // los datos del anterior alojamiento se quedan guardados y permite seguir con los datos del nuevo alojamiento en blanco,
     // pero en la parte backend guardaba los datos del anterior alojamiento y podría dar un error en la reserva a la hora de hacerla.
     if(this.alojamiento.get('tipo').value != null){
-
       // Formulario de alojamiento
       this.alojamiento.patchValue({'caracteristicaUnica1': null, 'caracteristicaUnica2': null, 'numPersonas': null, 'numPersonasMenor':null, 'numPersonasMayor': null});
       this.alojamiento.setErrors({'caracteristicaUnica1' : null, 'caracteristicaUnica2' : null});
@@ -276,6 +277,7 @@ export class ReservasComponent implements OnInit {
       .set('opcion', '2')
       .set('entrada', (this.fechas.get('fechaEntrada').value).format('YYYY-MM-DD'))
       .set('salida', (this.fechas.get('fechaSalida').value).format('YYYY-MM-DD'))
+      this.dato2 = 'Sombra';
       this.dato4 = 'Dimension';
     }else{ // Si escoge Bungalow como alojamiento
       this.tipos = 'bungalow';
@@ -284,12 +286,15 @@ export class ReservasComponent implements OnInit {
       .set('opcion', '4')
       .set('entrada', (this.fechas.get('fechaEntrada').value).format('YYYY-MM-DD'))
       .set('salida', (this.fechas.get('fechaSalida').value).format('YYYY-MM-DD'))
+      this.dato2 = 'Habitaciones';
       this.dato4 = 'Máximo de personas';
     }
 
     // Petición POST para obtener todos los tipos de alojamieto y sus características, FORMULARIO 1, Sombra o habitaciones
     this.http.post('http://34.206.59.221/reserva.php', params).subscribe(data =>{
       if(data != null && data != 0){ // Si recibe algún alojamiento
+        this.arrayCaract1 = [];
+        this.arrayCaract2 = [];
         Object.keys(data[0]).forEach(key => { // Para sacar las keys del array obtenido desde reserva.php
           this.dato1 = key; // Sin mayúscula
           this.dato2 = key[0].toUpperCase()+key.slice(1); // Primera letra mayúscula
@@ -317,6 +322,10 @@ export class ReservasComponent implements OnInit {
             }
           }
         }
+      }else if(data == 0) {
+        this.arrayCaract1 = [];
+        this.arrayCaract2 = [];
+        this.noAlojamiento = true;
       }
     }, error => console.log(error));
   }

@@ -20,13 +20,13 @@ export class AboutComponent implements OnInit {
   /* Pendiente de poner este JSON de servicios en un PHP para no repetirlo en varios .ts */
   public servicios2 = [
     {
-      texto: "Restaurante", precio: 9.95, horario: "10:00 - 23:30" /*,src: "url de la foto"*/
+      texto: "Restaurante - Menú del día", precio: 9.95, horario: "10:00 - 23:30"
     },
     {
-      texto: "Spa", precio: 19.90, horario: "09:00 - 20:00" /*,src: "url de la foto"*/
+      texto: "Spa", precio: 19.95, horario: "09:00 - 20:00"
     },
     {
-      texto: "Piscina", precio: 5.99, horario: "09:00 - 21:00" /*,src: "url de la foto"*/
+      texto: "Pista de padel", precio: 1.99, horario: "09:00 - 21:00"
     },
   ];
 
