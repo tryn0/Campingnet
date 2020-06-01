@@ -6,7 +6,7 @@
         $dbname     = "camping";
         //Creacion de la conexion
         $conn = new mysqli($servername, $username, $password, $dbname);
-	    $conn->set_charset("utf8");
+	$conn->set_charset("utf8");
         //Comprobación de la conexión
         if ($conn->connect_error) {
             die("La conexión ha fallado: " . $conn->connect_error);

@@ -411,16 +411,17 @@
                         $conn = conexion();
                         $idServicio = $x[$j];
                         $cantidad = $x[$j+1];
+
                         $sql = "UPDATE servicios_reserva SET cantidad = $cantidad WHERE idReserva = $idReserva AND idServicio = $idServicio";
                         $resultado = insert($conn, $sql);
                         if($resultado) {
                             $valido = 1;
-                            if($idServicio == 2 || $idServicio == 3 || $idServicio == 4){ // Si el servicio es de personas extras
-                                $cantidades += $cantidad;
-                            }
+			    if($idServicio == 2 || $idServicio == 3 || $idServicio == 4){
+                              $cantidades += $cantidad;
+			    }
                         }else{
                             $valido = 0;
-			                print json_encode(0);
+			    print json_encode(0);
                         }
                     }else{
                         print json_encode(0);
@@ -428,15 +429,24 @@
                     }
                 }
 
-                if($valido == 1) {  
+                if($valido == 1) {
+/*                    $conn = conexion();
+                    $sql = "SELECT num_personas FROM reserva WHERE idReserva = $idReserva";
+                    $cantidadOriginal = consulta($conn, $sql)[0]['num_personas'];
+  */      
                     $conn = conexion();
-                    if($cantidades > 0) {
-                        $cantidadFinal = $cantidades + 2;
-                    }
+		    if($cantidades > 0) {
+			$cantidadFinal = $cantidades + 2;
+		    }
+
+//                    $cantidadFinal = $cantidadOriginal + $cantidades;
                     $sql = "UPDATE reserva SET num_personas = $cantidadFinal WHERE idReserva = $idReserva";
                     print json_encode(update($conn, $sql));
                 }
-            }else{ // Si no hay todo ok y acaba
+
+
+                //print json_encode($servicios);
+            }else{ // Sino hay todo ok y acaba
                 print json_encode(1);
             }
         }
@@ -479,9 +489,9 @@
                 $resultado = insert($conn, $sql);
                 if($resultado) {
                     $valido = 1;
-                    if($idServicio == 2 || $idServicio == 3 || $idServicio == 4){ // Si el servicio es de personas extras
-                        $cantidades += $cantidad;
-                    }
+		    if($idServicio == 2 || $idServicio == 3 || $idServicio == 4){
+                    	$cantidades += $cantidad;
+		    }
                 }else{
                     $valido = 0;
                 }
@@ -523,9 +533,9 @@
                 if($idServicio == 2 || $idServicio == 3 || $idServicio == 4){
                     $conn = conexion();
                     $sqlCantidad = "SELECT * FROM servicios_reserva WHERE idServicio = $idServicio AND idReserva = $idReserva";
-                    if($idServicio == 2 || $idServicio == 3 || $idServicio == 4){ // Si el servicio es de personas extras
-                        $cantidad = $cantidad + consulta($conn, $sqlCantidad)[0]['cantidad'];
-                    }
+		    if($idServicio == 2 || $idServicio == 3 || $idServicio == 4){
+                      $cantidad = $cantidad + consulta($conn, $sqlCantidad)[0]['cantidad'];
+		    }
                 }
                 $conn = conexion();
                 $sql = "DELETE FROM servicios_reserva WHERE idServicio = $idServicio AND idReserva = $idReserva";
