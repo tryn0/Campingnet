@@ -32,37 +32,49 @@ export class HomeComponent implements OnInit {
 
   public servicios = [
     {
-      texto: "Servicio 1", precio: 3.50, horario: "10:00" /*,src: "url de la foto"*/
+      texto: "Reparto de comida al alojamiento", precio: 1.99, horario: "13:00 - 23:00"
     },
     {
-      texto: "servicio 2", precio: 19.90, horario: "17:00"
+      texto: "Ruta en piragüa por la playa", precio: 14.95, horario: "16:00 - 20:00"
     },
     {
-      texto: "servicio 3", precio: 5.99, horario: "21:00"
+      texto: "Alquiler de bicicletas", precio: 9.99, horario: "09:00 - 21:00"
+    },
+    {
+      texto: "Buceo por la playa", precio: 6.99, horario: "10:00 - 20:00"
     },
   ];
 
   public alrededores = [
     {
-      informacion: "información 1"
+      informacion: "Minas de Rodalquilar, ruta por las auténticas minas de Rodalquilar, Almería."
     },
     {
-      informacion: "información 2"
+      informacion: "Discotecas en la playa, para que los adultos pasen una buena noche."
     },
     {
-      informacion: "información 3"
+      informacion: "Volcán, visita y ruta por el volcán de Cabo de Gata."
+    },
+    {
+      informacion: "Visita los pueblos de los alrededores, El Pozo de los Frailes, San José, Rodalquilar, Las Negras, La Isleta del Moro, Aguamarga, etc."
+    },
+    {
+      informacion: "Visita de Almería Capital, Campohermoso, para productos básicos que no encuentres en la tienda del camping, como combustible para su vehículo, comida especial (sin gluten o sin lactosa), etc."
     },
   ];
 
   public listaEventos = [
     {
-      evento: "evento 1", info: "info evento 1"
+      evento: "Campeonato de futbol", info: "Cada domingo a las 18:00 se realizará un campeonato de futbol en las pistas de futbol y baloncesto."
     },
     {
-      evento: "evento 2", info: "info evento 2"
+      evento: "Campeonato de padel", info: "Cada sábado a las 18:00, se realizará un campeonato de padel en la pista de padel."
     },
     {
-      evento: "evento 3", info: "info evento 3"
+      evento: "Partido de aquabasket", info: "Cada día a las 17:00 se realizará un partido de aquabasket en la piscina."
+    },
+    {
+      evento: "Animación", info: "Cada día habrá animación de 11:00 - 14:00, 17:00 - 19:00 y 22:00 - 00:00"
     },
   ];
 

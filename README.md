@@ -117,7 +117,7 @@ free -h
 Devovlerá la memoria RAM libre, por ejemplo 700Mb, pues se usará 685 por ejemplo.  
 Una vez se tenga en cuenta la cantidad de RAM libre, se lanzará la app ejecutando:
 ```
-node --max-old-space-size=2685 ./node_modules/@angular/cli/bin/ng serve
+node --max-old-space-size=3000 ./node_modules/@angular/cli/bin/ng serve --host=172.31.88.175
 ```
 
 Donde max-old-space-size se le dice la cantidad de memoria a usar, como se puede apreciar se usó algo menos de memoria RAM libre, para que no use el 100% y los 2Gb del swapfile.
