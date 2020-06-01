@@ -245,6 +245,8 @@ export class ReservasComponent implements OnInit {
   // Al escoger un tipo de alojamiento consulta en la BD la característica 1 de todos los alojamientos de ese tipo que estén disponibles entre las fechas indicadas al principio
   getCaracteristica1(datos: string){
 
+    this.noAlojamiento = false;
+
     // Cada vez que se cambie el tipo de alojamiento que ponga a null los demás campos, para que no permita crear un error, cuando eliges los datos de un tipo de alojamiento y luego cambias el tipo de alojamiento,
     // los datos del anterior alojamiento se quedan guardados y permite seguir con los datos del nuevo alojamiento en blanco,
     // pero en la parte backend guardaba los datos del anterior alojamiento y podría dar un error en la reserva a la hora de hacerla.

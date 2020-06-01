@@ -94,7 +94,7 @@
                             </mat-form-field>                           
                         </div>
                     </div>
-                    <p class="text-danger" *ngIf="noAlojamiento">Actualmente, no hay alojamientos disponibles para las fechas elegidas, por favor, pruebe con otras fechas, gracias.</p>
+                    <p class="text-danger" *ngIf="noAlojamiento">Actualmente, no hay {{tipos}}s disponibles para las fechas elegidas, por favor, pruebe con otras fechas, gracias.</p>
                     <br>
                     <mat-icon *ngIf="alojamiento.get('tipo').value == 'Parcela'" class="icon float-left" style="cursor: pointer;" (click)="mostrarInfo1()">info</mat-icon><span *ngIf="info1 != false && alojamiento.get('tipo').value == 'Parcela'" class="float-left">En el campo personas adultas +12 van todas aquellas personas que no tengan menos de 12 ni más de 65 años. Sí es así indíquelas en la sección de servicios extras.</span>
                     <!-- Botonera del step -->
