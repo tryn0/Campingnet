@@ -7,7 +7,7 @@
                 <!-- Si la imagen contiene texto -->
                 <div class="texto" *ngIf="slide.texto" style="position: absolute; bottom: 0; left: 50%; transform: translate(-50%,0); padding: 10px; color: white; background-color: rgba(165,165,165,0.4); font-size: 2vw; border-radius: 5px;">
                     <!-- Si la imagen que contiene texto contiene además link para visitar, sino llama al bloque noLink -->
-                    <span *ngIf="slide.link; else noLink" [routerLink]="slide.link">{{slide.texto}}</span>
+                    <span *ngIf="slide.link; else noLink" class="puntero" [routerLink]="slide.link">{{slide.texto}}</span>
                 </div>
                 <!-- Solo imprime el texto, ya que tiene texto pero no link -->
                 <ng-template #noLink>{{slide.texto}}</ng-template>
@@ -61,16 +61,16 @@
             <div class="row mt-2">
                 <!-- Parcelas -->
                 <div class="col-12">
-                    <a href="/alojamiento/parcelas"><img  style="width: 75%; display: block; margin: auto; cursor: pointer;" src="assets/images/alojamientos/parcela1.jpg" class="rounded"></a>
-                    <p style="text-align: center; margin-top: 0; cursor: pointer;">Parcelas</p>
+                    <a href="/alojamiento/parcelas"><img class="puntero" style="width: 75%; display: block; margin: auto;" src="assets/images/alojamientos/parcela1.jpg" class="rounded"></a>
+                    <p class="puntero" style="text-align: center; margin-top: 0;">Parcelas</p>
                 </div>
 
                 <br>
 
                 <!-- Bungalows -->
                 <div class="col-12">
-                    <a href="/alojamiento/bungalows"><img style="width: 75%; display: block; margin: auto; cursor: pointer;" src="assets/images/alojamientos/bungalow1.jpg" class="rounded"></a>
-                    <p style="text-align: center; margin-top: 0; cursor: pointer;">Bungalows</p>
+                    <a href="/alojamiento/bungalows"><img class="puntero" style="width: 75%; display: block; margin: auto;" src="assets/images/alojamientos/bungalow1.jpg" class="rounded"></a>
+                    <p class="puntero" style="text-align: center; margin-top: 0;">Bungalows</p>
                 </div>
             </div>
         </div>

@@ -7,10 +7,6 @@ import { CommonModule } from '@angular/common';
   styleUrls: ['./home.component.css']
 })
 export class HomeComponent implements OnInit {
-  parcelas = [];
-  bungalows = [];
-
-  userdata = [];
 
   public mostrarEventos: boolean = false;
 
@@ -23,10 +19,13 @@ export class HomeComponent implements OnInit {
       src: "assets/images/carrusel/bienvenida.jpg", alt: "Playa de bienvenida", texto: "Te damos la bienvenida"
     },
     {
-      src: "assets/images/carrusel/imagen2.jpg", alt: "Diapositiva 1 con bungalows", texto: "Conozca nuestros bungalows", link: "/alojamiento:bungalows" // CREAR LINK Y ESO PARA ESTO
+      src: "assets/images/carrusel/bungalows.jpg", alt: "Nuestros bungalows", texto: "Conozca nuestros bungalows", link: "/alojamiento/bungalows"
     },
     {
-      src: "assets/images/carrusel/imagen2.jpg", alt: "Bungalows", texto: "prueba"
+      src: "assets/images/carrusel/parcelas.jpg", alt: "Nuestras parcelas", texto: "Conozca nuestras parcelas", link: "/alojamiento/parcelas"
+    },
+    {
+      src: "assets/images/carrusel/cortijo-fraile.jpg", alt: "Cortijo del Fraile, Almería", texto: "Cortijo del Fraile"
     },
   ];
 
@@ -60,6 +59,9 @@ export class HomeComponent implements OnInit {
     },
     {
       informacion: "Visita de Almería Capital, Campohermoso, para productos básicos que no encuentres en la tienda del camping, como combustible para su vehículo, comida especial (sin gluten o sin lactosa), etc."
+    },
+    {
+      informacion: "Visita al Cortijo del Fraile, lugar de Bodas de Sangre, adaptada por Federico García Lorca."
     },
   ];
 
