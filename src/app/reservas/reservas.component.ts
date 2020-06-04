@@ -387,8 +387,6 @@ export class ReservasComponent implements OnInit {
   }
 
   alojamientoElegido(){ // Seteo de cantidad personas en la reserva
-    console.log(this.multiplicador)
-    //this.serviciosExtras.reset();
     Object.entries(this.serviciosExtras.value).forEach(entries => {
       //console.log(entries)
       if(entries[0] == 'num2' || entries[0] == 'num3' || entries[0] == 'num4') {
