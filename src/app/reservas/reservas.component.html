@@ -148,7 +148,7 @@
                             <p>Fecha de salida: {{fecha2}}</p>
                             <!-- Información del alojamiento -->
                             <p>Alojamiento: {{alojamiento.get('tipo').value}}</p>
-                            <P>Multiplicativo por temporada: x{{multiplicador.toFixed(2)}}</P>
+                            <p>Multiplicativo por temporada: x{{multiplicador.toFixed(2)}}</p>
                             <p>Características del alojamiento:</p>
                             <div *ngIf="alojamiento.get('tipo').value == 'Bungalow'; else parcela">
                                 <p>Habitaciones: {{valor1}}</p>

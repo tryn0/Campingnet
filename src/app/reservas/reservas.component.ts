@@ -112,6 +112,7 @@ export class ReservasComponent implements OnInit {
 
   // Obtiene listado de alojamientos si las fechas introducidas están correctas
   guardarFechas(){
+    this.multiplicador = 0;
     this.noAlojamiento = false;
     this.alojamiento.reset();
     this.serviciosExtras.reset();
@@ -177,7 +178,7 @@ export class ReservasComponent implements OnInit {
                 if(finTemporada >= salida){ // sale del camping antes de que acabe la temporada
                   let total = Math.abs(salida.diff(inicioTemporada, 'days'));
                   //console.log('1 Entra al camping '+diasAntes+' dias antes de que empiece la temporada '+element['nombre_temporada']+', está '+total+' días en la temporada '+element['nombre_temporada']);
-                  calculo = ((diasAntes*1)+(total*element['multiplicador']));
+                  calculo += ((diasAntes*1)+(total*element['multiplicador']));
                   calculo = calculo/diff;
                   // Seteo del multiplicador a la variable del principio, para guardarla luego en la BD
                   this.multiplicador = parseFloat(calculo.toFixed(2));
@@ -200,11 +201,16 @@ export class ReservasComponent implements OnInit {
                     }else{ // Si no existe otra temporada por delante
                       dias2Temp = Math.floor((new Date(salida).getTime() - new Date(element['fecha_salida']).getTime())/86400000);
                     }
+                    calculo += ((diasAntes*1)+(total*element['multiplicador']));
+                    //this.multiplicador = parseFloat(calculo.toFixed(2));
+                    if(i == data2.length-1) {
+                      //console.log(this.dias)
+                      calculo += dias2Temp*1;
+                      this.multiplicador = parseFloat((calculo/diff).toFixed(2));
+                    }
                     // Multiplicador
                     //console.log('3 Está '+diasAntes+' días antes en el camping, pasa '+total+' días de la temporada '+element['nombre_temporada']+ ' y está '+dias2Temp+' en temp media');
-                    calculo += ((diasAntes*1)+(total*element['multiplicador']));
-                    //console.log('Por lo que su multiplicativo será: ('+diasAntes+'*1+'+total+'*'+element['multiplicador']+') = '+calculo);
-               
+                    //console.log('Por lo que su multiplicativo será: ('+diasAntes+'*1+'+total+'*'+element['multiplicador']+') = '+ calculo);
                   }
                 }
               }else if(inicioTemporada <= entrada){ // Si entra al camping el mismo día o después del inicio de la temporada
@@ -244,7 +250,6 @@ export class ReservasComponent implements OnInit {
 
   // Al escoger un tipo de alojamiento consulta en la BD la característica 1 de todos los alojamientos de ese tipo que estén disponibles entre las fechas indicadas al principio
   getCaracteristica1(datos: string){
-
     this.noAlojamiento = false;
 
     // Cada vez que se cambie el tipo de alojamiento que ponga a null los demás campos, para que no permita crear un error, cuando eliges los datos de un tipo de alojamiento y luego cambias el tipo de alojamiento,
@@ -382,6 +387,7 @@ export class ReservasComponent implements OnInit {
   }
 
   alojamientoElegido(){ // Seteo de cantidad personas en la reserva
+    console.log(this.multiplicador)
     //this.serviciosExtras.reset();
     Object.entries(this.serviciosExtras.value).forEach(entries => {
       //console.log(entries)
