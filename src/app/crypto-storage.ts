@@ -1,5 +1,9 @@
 import * as CryptoJS from 'crypto-js';
 
+/**
+ * Encriptar datos
+ * @param data 
+ */
 export function encriptar(data: any) {
     try {
         return CryptoJS.AES.encrypt(JSON.stringify(data), 'Pi7@').toString();
@@ -9,6 +13,10 @@ export function encriptar(data: any) {
     }
 }
 
+/**
+ * Desencriptar datos
+ * @param data 
+ */
 export function desencriptar(data: any) {
     try {
         const bytes = CryptoJS.AES.decrypt(data, 'Pi7@');

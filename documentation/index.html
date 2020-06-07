@@ -1,0 +1,178 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>campingnet documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="./images/favicon.ico">
+	      <link rel="stylesheet" href="./styles/style.css">
+    </head>
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top visible-xs">
+            <a href="./" class="navbar-brand">campingnet documentation</a>
+            <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="hidden-xs menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content getting-started">
+                   <div class="content-data">
+
+<h1 id="campingnet">Campingnet</h1>
+<p>Proyecto Integrado de 2º DAW</p>
+<h2 id="¿en-qué-consiste">¿En qué consiste?</h2>
+<p>Aplicación web desarrollada en Angular para reservar alojamiento en un camping.<br>La vista de la app web tiene bootstrap y módulos de Angular (Flex-Layout, Angular Material, moment e Ignite-UI)<br>La comunicación con la base de datos se hace a través de PHP.</p>
+<h2 id="creación-del-proyecto">Creación del proyecto</h2>
+<p>Para crear el proyecto seguí estos pasos:  </p>
+<ul>
+<li><p>Abrí una terminal NodeJS y ejecuté: </p>
+<div><pre class="line-numbers"><code class="language-none">ng new Campingnet</code></pre></div></li>
+<li><p>A continuación elegí estas respuestas:  </p>
+<ul>
+<li><strong>? Would you like to add Angular routing Yes</strong>  </li>
+<li><strong>? Which stylesheet format would you like to use? CSS</strong></li>
+</ul>
+</li>
+<li><p>Luego añadí al proyecto Material, que es como bootstrap (visualmente) para HTML, una biblioteca de componentes de diseño:</p>
+</li>
+</ul>
+<div><pre class="line-numbers"><code class="language-none">ng add &#64;angular/material</code></pre></div><ul>
+<li>Y elegí estas respuestas:  <ul>
+<li><strong>? Choose a prebuilt theme name, or &quot;custom&quot; for a custom theme: Deep Purple/Amber</strong>  </li>
+<li><strong>? Set up global Angular Material typography styles? No</strong>  </li>
+<li><strong>? Set up browser animations for Angular Material? Yes</strong></li>
+</ul>
+</li>
+</ul>
+<p>Se agregó Flex Layout:</p>
+<div><pre class="line-numbers"><code class="language-none">npm i -s &#64;angular/flex-layout &#64;angular/cdk</code></pre></div><p>Ignite UI (Carrusel):</p>
+<div><pre class="line-numbers"><code class="language-none">ng add igniteui-angular</code></pre></div><p>Elegir presionando Enter las opciones predeterminadas.  </p>
+<p>Para seleccionar fecha uso el módulo moment:</p>
+<div><pre class="line-numbers"><code class="language-none">npm i moment --save</code></pre></div><p>Para la encriptación y decriptación de datos:</p>
+<div><pre class="line-numbers"><code class="language-none">npm install crypto-js</code></pre></div><p><a href="https://stackoverflow.com/questions/53478860/how-to-encrypt-and-decrypt-in-angular-6?noredirect=1&amp;lq=1">Mini tutorial de cómo implementarlo en el proyecto</a></p>
+<p>Para la paginación usé NGX-Pagination:</p>
+<div><pre class="line-numbers"><code class="language-none">npm install ngx-pagination --save</code></pre></div><p>Y con este último ya estarían todas las dependencias externas instaladas.</p>
+<h2 id="proceso-de-instalación">Proceso de instalación</h2>
+<p>Para el proceso de instalación o importación de este proyecto deberá tener instalado nodeJS y npm.<br>Una vez se tengan instalar Angular:</p>
+<div><pre class="line-numbers"><code class="language-none">npm install -g &#64;angular/cli</code></pre></div><p>Clonar el repositorio donde se quiera tener el proyecto. En la raíz del proyecto ejecutar a través de una terminal:</p>
+<div><pre class="line-numbers"><code class="language-none">npm install</code></pre></div><p>Este comando instalará todas las dependencias del proyecto en la carpeta node_modules.</p>
+<h2 id="despliegue-de-la-web-app">Despliegue de la web app</h2>
+<p>Una vez se hayan instalado las dependencias, se compila y lanza la app ejecutando en la raíz del proyecto a través de una terminal:</p>
+<div><pre class="line-numbers"><code class="language-none">ng serve</code></pre></div><p>Navegar a la URL <code>http://localhost:4200/</code> y aparecerá la web app recargada automáticamente.</p>
+<h2 id="herramientas-usadas">Herramientas usadas</h2>
+<p>Este proyecto ha sido creado con:  </p>
+<ul>
+<li><a href="https://github.com/angular/angular-cli">Angular CLI</a> versión 9.1.4.  </li>
+<li><a href="https://material.angular.io/">Angular Material</a> versión 9.2.1  </li>
+<li><a href="https://github.com/angular/flex-layout">Angular FlexLayout</a> versión 9.0.0  </li>
+<li><a href="https://github.com/angular/flex-layout">Ignite UI Angular</a> versión 9.0.12  </li>
+<li><a href="https://momentjs.com/">Moment</a> versión 2.25.1</li>
+<li><a href="https://github.com/brix/crypto-js">CryptoJS</a> versión 4.0.0</li>
+<li><a href="https://github.com/michaelbromley/ngx-pagination">NGX-Pagination</a> versión 5.0.0 <a href="https://www.npmjs.com/package/ngx-pagination">NGX-Pagination en npmjs.com</a></li>
+</ul>
+<h2 id="errores-conocidos-y-sus-soluciones">Errores conocidos y sus soluciones</h2>
+<p>A lo largo del desarrollo del proyecto han surgido varios errores, los explicaré aquí junto a las soluciones que me han servido.</p>
+<h3 id="errores-con-nodejs-npm-o-el-paquete-de-angular-npm">Errores con nodeJS, npm o el paquete de Angular (npm)</h3>
+<p>En Windows no da ningún problema, ya que se descarga todo desde la web oficial y no da problemas.</p>
+<p>En la máquina de AWS de Ubuntu Server he tenido muchos problemas a la hora de instalar nodeJS, npm y Angular (a través de npm).<br>Para instalarlo todo correctamente, desinstalar todos estos paquetes si se tiene alguno instalado.<br>Instalar nodeJS y npm siguiendo <a href="https://ubunlog.com/nodejs-npm-instalacion-ubuntu-20-04-18-04/">este tutorial</a> solo hasta la parte de instalación a través de Snap.<br>Luego instalar Angular con <a href="https://ubunlog.com/angular-instala-framework-ubuntu/">este tutorial</a> solo la parte de Instalar CLI Angular en Ubuntu.  </p>
+<p>Y se tendría instalado limpia y correctamente todo lo necesario.</p>
+<h3 id="memoria-insuficiente-en-máquina-aws">Memoria insuficiente en máquina AWS</h3>
+<p>Al usar cuentas de estudiantes de AWS tenemos un límite de $$$, por lo que usamos todo free tie.<br>Y el mayor error de todos es que la máquina de AWS solo tiene ~980Mb de memoria RAM, nada en esta época.<br>Lo cual hace imposible el tema de compilación y lanzamiento de la app.</p>
+<p>Al indagar por internet encontré la solución perfecta, crear un archivo swap, para usar memoria interna como memoria de intercambio (memoria RAM).
+Para ello a la hora de crear la máquina AWS elegí 15Gb de espacio, en vez de los 8Gb por defecto (creo que hasta 100Gb no hay probelmas con el tema free).
+<a href="https://www.digitalocean.com/community/tutorials/how-to-add-swap-space-on-ubuntu-18-04">Tutorial</a> para el swapfile. A la hora de seguir este tutorial, yo solo creé un swap file de 2Gb, con esto es suficiente y no es un gran impacto en la memoria interna.</p>
+<p>Una vez creado el swapfile y sin problema alguno para compilar y lanzar la app se deberá seguir estos pasos:<br>Ejecutar:</p>
+<div><pre class="line-numbers"><code class="language-none">free -h</code></pre></div><p>Devovlerá la memoria RAM libre, por ejemplo 700Mb, pues se usará 685 por ejemplo.<br>Una vez se tenga en cuenta la cantidad de RAM libre, se lanzará la app ejecutando:</p>
+<div><pre class="line-numbers"><code class="language-none">node --max-old-space-size=3000 ./node_modules/&#64;angular/cli/bin/ng serve --host=172.31.88.175</code></pre></div><p>Donde max-old-space-size se le dice la cantidad de memoria a usar, como se puede apreciar se usó algo menos de memoria RAM libre, para que no use el 100% y los 2Gb del swapfile.</p>
+<h3 id="warning-del-módulo-moment">Warning del módulo moment</h3>
+<p>Este módulo sirve para la elección de fechas y su manejo.<br>A la hora de compilar y lanzar la app empezó a lanzar un warning indicando que no podía resolver &#39;./locale/&#39; en el fichero locales.js.<br>Busqué en internet y no encontré una solución en concreto y el error llevaba ya varias versiones sin un fix que lo arreglara.<br>Por lo que decidí abrir el archivo /node_modules/moment/src/lib/locale/locales.js y buscar con CTRL+F ./locale y encontré una línea en la que por lo visto usa los módulo de la carpeta locale,</p>
+<div><pre class="line-numbers"><code class="language-none">&#39;./locale/&#39;+name</code></pre></div><p>pero locales.js ya estaba en la carpeta locale, así que copié la línea, comenté la original y la copia la modifiqué:</p>
+<div><pre class="line-numbers"><code class="language-none">&#39;./&#39;+name</code></pre></div><p>Y ya no me daba warning. Si en algún momento da algún error, borro la línea modificada y descomento la original.</p>
+<h3 id="warning-del-módulo-crypto-js">Warning del módulo crypto-js</h3>
+<p>Este módulo sirve para encriptar con una key la información de localStorage, para que no pueda verse, o ser intento de robo, phising, etc.<br>Cuando compilas y lanzas la app salta un warning parecido al de justo arriba, no puede resolver crypto. Para ello abre el archivo /node_modules/crypto-js/core.js y encuentra la función con sobre la línea 40, con esta descripción:  </p>
+<div><pre class="line-numbers"><code class="language-none">// Native crypto import via require (NodeJS)</code></pre></div><p>Cambiar:  </p>
+<div><pre class="line-numbers"><code class="language-none">crypto = require(&#39;crypto&#39;);</code></pre></div><p>por</p>
+<div><pre class="line-numbers"><code class="language-none">crypto = require(&#39;crypto-js&#39;);</code></pre></div><p>Yo copié la línea, y modifiqué la copia comentando la original, por si en un futuro diese problemas.  </p>
+<hr>
+<p>Este proyecto no puede copiarse y/o usarse sin el consentimiento de su creador, <a href="https://github.com/tryn0">tryn0</a><br>&copy;tryn0 2020</p>
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+                   
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> result-matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 0;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'getting-started';
+            var COMPODOC_CURRENT_PAGE_URL = 'index.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script src="./js/libs/custom-elements.min.js"></script>
+       <script src="./js/libs/lit-html.js"></script>
+       <!-- Required to polyfill modern browsers as code is ES5 for IE... -->
+       <script src="./js/libs/custom-elements-es5-adapter.js" charset="utf-8" defer></script>
+       <script src="./js/menu-wc.js" defer></script>
+
+       <script src="./js/libs/bootstrap-native.js"></script>
+
+       <script src="./js/libs/es6-shim.min.js"></script>
+       <script src="./js/libs/EventDispatcher.js"></script>
+       <script src="./js/libs/promise.min.js"></script>
+       <script src="./js/libs/zepto.min.js"></script>
+
+       <script src="./js/compodoc.js"></script>
+
+       <script src="./js/tabs.js"></script>
+       <script src="./js/menu.js"></script>
+       <script src="./js/libs/clipboard.min.js"></script>
+       <script src="./js/libs/prism.js"></script>
+       <script src="./js/sourceCode.js"></script>
+          <script src="./js/search/search.js"></script>
+          <script src="./js/search/lunr.min.js"></script>
+          <script src="./js/search/search-lunr.js"></script>
+          <script src="./js/search/search_index.js"></script>
+       <script src="./js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

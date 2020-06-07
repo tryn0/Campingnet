@@ -7,6 +7,9 @@ import { Router } from "@angular/router";
 import { MustMatch } from '../must-match.validator';
 import { encriptar, desencriptar } from '../crypto-storage';
 
+/**
+ * Componente registrar
+ */
 @Component({
   selector: 'app-registrar',
   templateUrl: './registrar.component.html',
@@ -14,43 +17,86 @@ import { encriptar, desencriptar } from '../crypto-storage';
 })
 export class RegistrarComponent implements OnInit {
 
+  /**
+   * Variable con los datos del usuario
+   */
   public userdata: string;
 
+  /**
+   * Formulario de registro
+   */
   public registro: FormGroup;
 
+  /**
+   * Boolean como string, comprueba si se ha registrado o no
+   */
   public registrado: string;
 
+  /**
+   * Objeto usuario
+   */
   public usuario: Usuario;
 
-  public registerUser: string;
-
+  /**
+   * Booleano para comprobar que el formulario de registro está correcto
+   */
   public validacionForm: boolean = false;
 
-  public nombre: string;
-
-  /*Variables para los errores del formulario*/
+  /**
+   * Variables para los errores del formulario
+  */
   public aliasVal: boolean = null;
+  /**
+   * Variables para los errores del formulario
+  */
   public dniVal: boolean = null;
+  /**
+   * Variables para los errores del formulario
+  */
   public nombreVal: boolean = null;
+  /**
+   * Variables para los errores del formulario
+  */
   public telVal: boolean = null;
+  /**
+   * Variables para los errores del formulario
+  */
   public emailVal: boolean = null;
+  /**
+   * Variables para los errores del formulario
+  */
   public passVal: boolean = null;
+  /**
+   * Variables para los errores del formulario
+  */
   public pass2Val: boolean = null;
 
+  /**
+   * Variables de error
+  */
   public errorEmail: boolean = null;
+  /**
+   * Variables de error
+  */
   public errorDni: boolean = null;
+  /**
+   * Variables de error
+  */
   public errorAlias: boolean = null;
 
+  /**
+   * Constructor de registrar
+   * @param http 
+   * @param fb 
+   * @param router 
+   */
   constructor(private http: HttpClient, public fb: FormBuilder, private router: Router) {
-
 
     this.registro = this.fb.group({
       alias: ['', [Validators.required, Validators.maxLength(25)]],
       dni: ['', [Validators.required, Validators.pattern('^[0-9]{8,8}[A-Za-z]$')]],
       nombreCompleto: ['', Validators.required],
       telefono: ['', [Validators.required, Validators.pattern('^[6-7][0-9]{8}$')]],
-      //FALLA email
-      //email: ['', [Validators.required, Validators.pattern("^(((\.)+)?[A-z0-9]+((\.)+)?)+@(((\.)+)?[A-z0-9]+((\.)+)?)+\.[A-z]+$")]],//Puede empezar por . o no, contener letras y numeros seguidos de punto o no, seguido por @ seguido por . o no letras y numeros y punto o no . letras
       email: ['', [Validators.required, Validators.pattern("^[a-zA-Z0-9.!#$%&'*+/=?^_`{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)$")]],
       password: ['', [Validators.minLength(8), Validators.required, Validators.pattern('^(?=.*?[A-Z])(?=.*?[a-z])(?=.*?[0-9]).{8,}$')]],
       password2: ['',  Validators.required],
@@ -58,10 +104,16 @@ export class RegistrarComponent implements OnInit {
 
   }
 
+  /**
+   * Función para volver atrás en el historial del navegador
+   */
   volver(){
     history.back();
   }
 
+  /**
+   * Función para registrar al usuario, primero comprueba si todo está correcto, y si es así, lo registra
+   */
   registrar(){
     if (!this.registro.get('alias').hasError('required') && !this.registro.get('alias').hasError('maxlength')) {
       this.aliasVal = true;
@@ -169,15 +221,15 @@ export class RegistrarComponent implements OnInit {
     }
   }
 
-  
+  /**
+   * Al empezar a cargar el archivo .ts
+   */
   ngOnInit(): void {
     if(localStorage.getItem('usuarioActual') != null){
       this.userdata = desencriptar(localStorage.getItem('usuarioActual'));
     }
     
-
     if(this.userdata != null){
-      //this.router.navigate(['/']);
       window.history.back();
     }
   }

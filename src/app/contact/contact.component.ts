@@ -2,6 +2,9 @@ import { Component, OnInit } from '@angular/core';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { Router } from "@angular/router";
 
+/**
+ * Componente contact
+ */
 @Component({
   selector: 'app-contact',
   templateUrl: './contact.component.html',
@@ -9,20 +12,43 @@ import { Router } from "@angular/router";
 })
 export class ContactComponent implements OnInit {
 
+  /**
+   * Variable de FormBuilder de contacto
+   */
   public contacto: FormGroup;
 
-  /* Cantidad de carácteres a mostrar */
+  /**
+   * Cantidad de carácteres a mostrar
+   */
   public caracteres: number = 255;
 
-  /* Formulario de contacto validado, por defecto en null */
+  /**
+  * Formulario de contacto validado, por defecto en null
+  */
   public contactoVal: boolean = null;
 
-  /* Variables de errores del formulario */
+  /**
+   * Variables de errores del formulario
+  */
   public errorNombre: boolean = null;
+  /**
+   * Variables de errores del formulario
+  */
   public errorTel: boolean = null;
+  /**
+   * Variables de errores del formulario
+  */
   public errorEmail: boolean = null;
+  /**
+   * Variables de errores del formulario
+  */
   public errorMensaje: boolean = null;
 
+  /**
+   * Constructor de contact
+   * @param fb 
+   * @param router 
+   */
   constructor(public fb: FormBuilder, private router: Router) {
     this.contacto = this.fb.group({
       nombreCompleto: ['', Validators.required],
@@ -34,14 +60,23 @@ export class ContactComponent implements OnInit {
     });
   }
 
+  /**
+   * Función para controlar la cantidad restantes de carácteres
+   */
   changed() {
     this.caracteres = 255 - this.contacto.get('mensaje').value.length;
   }
 
+  /**
+   * Función para volver atrás en el historial del navegador
+   */
   volver(){
     history.back();
   }
 
+  /**
+   * Función que comprueba si todos los campos están correctos y si es así envía el correo de contacto
+   */
   contactar(){
     if(!this.contacto.get('nombreCompleto').hasError('required')){ // Nombre escritos
       this.errorNombre = false;
@@ -91,6 +126,9 @@ export class ContactComponent implements OnInit {
     }
   }
 
+  /**
+   * Al empezar a cargar el archivo .ts
+   */
   ngOnInit(): void {
   }
 

@@ -2,9 +2,21 @@ import { Component, OnInit } from '@angular/core';
 import { HttpClient } from '@angular/common/http';
 import { CommonModule } from '@angular/common';
 
+/**
+ * Imágenes de cabecera
+ */
 export interface Tile {
+  /**
+   * Número de columnas
+   */
   cols: number;
+  /**
+   * Número de filas
+   */
   rows: number;
+  /**
+   * Fuente/ruta de la imagen
+   */
   src: string;
 }
 @Component({
@@ -14,10 +26,14 @@ export interface Tile {
 })
 export class AboutComponent implements OnInit {
 
-  // Listado de servicios, dichos servicios, no será alojamientos, o los servicios extras de personas
+  /**
+   * Listado de servicios, dichos servicios, no será alojamientos, o los servicios extras de personas
+   */
   public servicios: any = [];
 
-  /* Pendiente de poner este JSON de servicios en un PHP para no repetirlo en varios .ts */
+  /**
+   * Pendiente de poner este JSON de servicios en un PHP para no repetirlo en varios .ts
+   */
   public servicios2 = [
     {
       texto: "Restaurante - Menú del día", precio: 9.95, horario: "10:00 - 23:30"
@@ -30,13 +46,19 @@ export class AboutComponent implements OnInit {
     },
   ];
 
-  // Cabecera de fotos
+  /**
+   * Cabecera de fotos
+   */
   public tiles: Tile[] = [
     {cols: 1, rows: 2, src: 'cielo.jpg'},
     {cols: 2, rows: 2, src: 'parcelas.jpg'},
     {cols: 1, rows: 2, src: 'aereo.jpg'},
   ];
 
+  /**
+   * Constructor de About
+   * @param http 
+   */
   constructor(private http: HttpClient) {
     this.http.get('http://34.206.59.221/servicios.php').subscribe(data => {
       if(data != null && data != 0) {
@@ -45,5 +67,8 @@ export class AboutComponent implements OnInit {
     }, error => console.log(error));
   }
 
+  /**
+   * Al iniciar el .ts
+   */
   ngOnInit(): void { }
 }

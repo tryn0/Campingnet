@@ -1,0 +1,1109 @@
+<!doctype html>
+<html class="no-js" lang="">
+    <head>
+        <meta charset="utf-8">
+        <meta http-equiv="x-ua-compatible" content="ie=edge">
+        <title>campingnet documentation</title>
+        <meta name="description" content="">
+        <meta name="viewport" content="width=device-width, initial-scale=1">
+
+        <link rel="icon" type="image/x-icon" href="../images/favicon.ico">
+	      <link rel="stylesheet" href="../styles/style.css">
+    </head>
+    <body>
+
+        <div class="navbar navbar-default navbar-fixed-top visible-xs">
+            <a href="../" class="navbar-brand">campingnet documentation</a>
+            <button type="button" class="btn btn-default btn-menu ion-ios-menu" id="btn-menu"></button>
+        </div>
+
+        <div class="xs-menu menu" id="mobile-menu">
+                <div id="book-search-input" role="search"><input type="text" placeholder="Type to search"></div>            <compodoc-menu></compodoc-menu>
+        </div>
+
+        <div class="container-fluid main">
+           <div class="row main">
+               <div class="hidden-xs menu">
+                   <compodoc-menu mode="normal"></compodoc-menu>
+               </div>
+               <!-- START CONTENT -->
+               <div class="content interface">
+                   <div class="content-data">
+
+
+
+
+
+
+
+
+
+
+
+
+<ol class="breadcrumb">
+  <li>Interfaces</li>
+  <li>DialogData</li>
+</ol>
+
+<ul class="nav nav-tabs" role="tablist">
+        <li class="active">
+            <a href="#info" role="tab" id="info-tab" data-toggle="tab" data-link="info">Info</a>
+        </li>
+        <li >
+            <a href="#source" role="tab" id="source-tab" data-toggle="tab" data-link="source">Source</a>
+        </li>
+</ul>
+
+<div class="tab-content">
+    <div class="tab-pane fade active in" id="c-info">
+        <p class="comment">
+            <h3>File</h3>
+        </p>
+        <p class="comment">
+            <code>src/app/reservas/reservas.component.ts</code>
+        </p>
+
+            <p class="comment">
+                <h3>Description</h3>
+            </p>
+            <p class="comment">
+                <p>Interfaz DialogData</p>
+
+            </p>
+
+
+        <section>
+            <h3 id="index">Index</h3>
+            <table class="table table-sm table-bordered index-table">
+                <tbody>
+                    <tr>
+                        <td class="col-md-4">
+                            <h6><b>Properties</b></h6>
+                        </td>
+                    </tr>
+                    <tr>
+                        <td class="col-md-4">
+                            <ul class="index-list">
+                                <li>
+                                        <a href="#email">email</a>
+                                </li>
+                            </ul>
+                        </td>
+                    </tr>
+                </tbody>
+            </table>
+        </section>
+
+
+
+            <section>
+                <h3 id="inputs">Properties</h3>
+                    <table class="table table-sm table-bordered">
+                        <tbody>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <a name="email"></a>
+                                        <span class="name"><b>email</b><a href="#email"><span class="icon ion-ios-link"></span></a></span>
+                                    </td>
+                                </tr>
+                                <tr>
+                                    <td class="col-md-4">
+                                        <code>email:         <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+</code>
+                                    </td>
+                                </tr>
+
+
+                                    <tr>
+                                        <td class="col-md-4">
+                                            <i>Type : </i>        <code><a href="https://www.typescriptlang.org/docs/handbook/basic-types.html" target="_blank" >any</a></code>
+
+                                        </td>
+                                    </tr>
+
+
+
+
+
+                            <tr>
+                                <td class="col-md-4">
+                                    <div class="io-description"><p>Dato email del usuario a reservar</p>
+</div>
+                                </td>
+                            </tr>
+                        </tbody>
+                    </table>
+            </section>
+    </div>
+
+
+    <div class="tab-pane fade  tab-source-code" id="c-source">
+        <pre class="line-numbers compodoc-sourcecode"><code class="language-typescript">import { Component, OnInit, Inject, ɵConsole } from &#x27;@angular/core&#x27;;
+import { FormBuilder, FormGroup, Validators, FormControl, ValidationErrors } from &#x27;@angular/forms&#x27;;
+import { HttpClient, HttpParams } from &#x27;@angular/common/http&#x27;;
+import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from &#x27;@angular/material/core&#x27;;
+import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from &#x27;@angular/material-moment-adapter&#x27;;
+import * as moment from &#x27;moment/moment&#x27;;
+import { MatDialog } from &#x27;@angular/material/dialog&#x27;;
+import { ReservasLoginComponent } from &#x27;../reservas-login/reservas-login.component&#x27;;
+import { ReservasRegistrarComponent } from &#x27;../reservas-registrar/reservas-registrar.component&#x27;;
+import { Usuario } from &#x27;../usuario/usuario&#x27;;
+import { encriptar, desencriptar } from &#x27;../crypto-storage&#x27;;
+
+/**
+ * Interfaz DialogData
+ */
+interface DialogData {
+  /**
+   * Dato email del usuario a reservar
+   */
+  email: any;
+}
+
+/**
+ * Cómo lee y muestra las fechas de los datePicker
+ */
+export const DD_MM_YYYY_Format &#x3D; {
+  parse: {
+      dateInput: &#x27;DD/MM/YYYY&#x27;,
+  },
+  display: {
+      dateInput: &#x27;DD/MM/YYYY&#x27;,
+      monthYearLabel: &#x27;MMM YYYY&#x27;,
+      dateA11yLabel: &#x27;LL&#x27;,
+      monthYearA11yLabel: &#x27;MMMM YYYY&#x27;,
+  },
+};
+
+/**
+ * Componente principal Reservas
+ */
+@Component({
+  selector: &#x27;app-reservas&#x27;,
+  templateUrl: &#x27;./reservas.component.html&#x27;,
+  styleUrls: [&#x27;./reservas.component.css&#x27;],
+  providers: [{
+    provide: DateAdapter,
+    useClass: MomentDateAdapter,
+    deps: [MAT_DATE_LOCALE, MAT_MOMENT_DATE_ADAPTER_OPTIONS]
+  },
+  {provide: MAT_DATE_FORMATS, useValue: DD_MM_YYYY_Format}],
+  
+})
+export class ReservasComponent implements OnInit {
+
+  /**
+   * Variable de sesión iniciada
+   */
+  public usuarioActual: string;
+
+  /**
+   * Variables del formulario 1
+   */
+  public fechas: FormGroup;
+  /**
+   * Variables del formulario 1
+   */
+  public fecha1: string;
+  /**
+   * Variables del formulario 1
+   */
+  public fecha2: string;
+  /**
+   * Variables del formulario 1
+   */
+  public dias: number &#x3D; 0;
+  /**
+   * Variables del formulario 1
+   */
+  public alojamientosDisponibles: any;
+  /**
+   * Variables del formulario 1
+   */
+  public info1: boolean &#x3D; false;
+  /**
+   * Variables del formulario 1
+   */
+  public fechaVal: boolean &#x3D; false;
+  /**
+   * Variables del formulario 1
+   */
+  public fechaMenos7: boolean &#x3D; null;
+  /**
+   * Variables del formulario 1
+   */
+  public multiplicador: number &#x3D; 0;
+
+  /**
+   * Variables del formulario 2
+   */
+  public alojamiento: FormGroup;
+  /**
+   * Variables del formulario 2
+   */
+  public tipos: string;
+  /**
+   * Variables del formulario 2
+   */
+  public tipos2: any &#x3D; [];
+  /**
+   * Variables del formulario 2
+   */
+  public tipos22: any &#x3D; [];
+  /**
+   * Variables del formulario 2
+   */
+  public dato1: string;
+  /**
+   * Variables del formulario 2
+   */
+  public dato2: string &#x3D; &#x27;Sombra o habitaciones&#x27;;
+  /**
+   * Variables del formulario 2
+   */
+  public arrayCaract1: any &#x3D; [];
+  /**
+   * Variables del formulario 2
+   */
+  public dato3: string;
+  /**
+   * Variables del formulario 2
+   */
+  public dato4: string &#x3D; &#x27;Dimensión o Número maximo de personas&#x27;;
+  /**
+   * Variables del formulario 2
+   */
+  public arrayCaract2: any &#x3D; [];
+  /**
+   * Variables del formulario 2
+   */
+  public personas: number &#x3D; 0;
+  /**
+   * Variables del formulario 2
+   */
+  public precioAlojamiento: number &#x3D; 0;
+  /**
+   * Variables del formulario 2
+   */
+  public precioAlojamientoFinal: number &#x3D; 0;
+  /**
+   * Variables del formulario 2
+   */
+  public noAlojamiento: boolean &#x3D; false;
+
+  /**
+   * Variables del formulario 3
+   */
+  public serviciosExtras: FormGroup;
+  /**
+   * Variables del formulario 3
+   */
+  public servicios: any &#x3D; [];
+  /**
+   * Variables del formulario 3
+   */
+  public electricidad: boolean &#x3D; null;
+  /**
+   * Variables del formulario 3
+   */
+  public checkado: boolean &#x3D; false;
+  /**
+   * Variables del formulario 3
+   */
+  public personasExtras: number;
+  /**
+   * Variables del formulario 3
+   */
+  public personasExtrasMenor: number;
+  /**
+   * Variables del formulario 3
+   */
+  public personasExtrasMayor: number;
+  /**
+   * Variables del formulario 3
+   */
+  public extras: any &#x3D; [];
+  /**
+   * Variables del formulario 3
+   */
+  public idAlojamientoRandom: number;
+  /**
+   * Variables del formulario 3
+   */
+  public gentePermitida: number &#x3D; 12;
+  /**
+   * Variables del formulario 3
+   */
+  public totalPersonasparcela: number &#x3D; 0;
+  /**
+   * Variables del formulario 3
+   */
+  public preciosServicios: any;
+  /**
+   * Variables del formulario 3
+   */
+  public preciosExtrasFinal: number &#x3D; 0;
+
+  /**
+   * Variables del formulario 4
+   */
+  public usuario: FormGroup;
+  /**
+   * Variables del formulario 4
+   */
+  public loginReserva: boolean &#x3D; null;
+
+  /**
+   * Variable email
+   */
+  public email: any;
+  /**
+   * Variable de la parcela 1
+   */
+  public valor1: any &#x3D; &#x27;&#x27;;
+  /**
+   * Variable de la parcela 2
+   */
+  public valor2: any &#x3D; &#x27;&#x27;;
+  /**
+   * Variable de persona
+   */
+  public persona: Usuario;
+  /**
+   * Variable de comprobación si tiene la reserva hecha o no
+   */
+  public reservaHecha: boolean &#x3D; false;
+  /**
+   * Variable del ID de la reserva
+   */
+  public reservaId: any &#x3D; &#x27;&#x27;;
+  
+  /**
+   * Constructor de la reserva
+   * @param fb 
+   * @param http 
+   * @param dateAdapter 
+   * @param dialog 
+   */
+  constructor(private fb: FormBuilder, private http: HttpClient, private dateAdapter: DateAdapter&lt;Date&gt;, public dialog: MatDialog) {
+    this.dateAdapter.setLocale(&#x27;es-ES&#x27;);
+  }
+
+  /**
+   * Mostrar o escondes (toggle) el mensaje de info del formulario de las fechas
+   */
+  mostrarInfo1(){
+    if(this.info1 &#x3D;&#x3D; false){
+      this.info1 &#x3D; true;
+    }else{
+      this.info1 &#x3D; false;
+    }
+  }
+
+  /**
+   * Obtiene listado de alojamientos si las fechas introducidas están correctas
+   */
+  guardarFechas(){
+    this.multiplicador &#x3D; 0;
+    this.noAlojamiento &#x3D; false;
+    this.alojamiento.reset();
+    this.serviciosExtras.reset();
+    
+    this.fechaVal &#x3D; true;
+    if(this.fechas.get(&#x27;fechaEntrada&#x27;).value !&#x3D; &#x27;&#x27; &amp;&amp; this.fechas.get(&#x27;fechaSalida&#x27;).value !&#x3D; &#x27;&#x27; &amp;&amp; !this.fechas.get(&#x27;fechaEntrada&#x27;).errors &amp;&amp; !this.fechas.get(&#x27;fechaSalida&#x27;).errors){
+      this.tipos2 &#x3D; [];
+      this.tipos22 &#x3D; [];
+      this.dias &#x3D; Math.floor((new Date(this.fechas.get(&#x27;fechaSalida&#x27;).value).getTime() - new Date(this.fechas.get(&#x27;fechaEntrada&#x27;).value).getTime())/86400000);
+
+      // Parámetros a enviar al archivo PHP
+      let params2 &#x3D; new HttpParams()
+      .set(&#x27;opcion&#x27;, &#x27;1&#x27;);
+
+      // Petición POST para obtener todos los tipos de alojamieto, FORMULARIO 1, Tipo de alojamiento
+      this.http.post(&#x27;http://34.206.59.221/reserva.php&#x27;, params2).subscribe(data &#x3D;&gt;{
+        if(data !&#x3D; null &amp;&amp; data !&#x3D; 0){ // Si recibe algún alojamiento
+          this.tipos2 &#x3D; data;
+          for (let i &#x3D; 0; i &lt; this.tipos2.length; i++) {
+            const element &#x3D; this.tipos2[i];
+            let element2 &#x3D; element[&#x27;tipo&#x27;][0].toUpperCase()+element[&#x27;tipo&#x27;].slice(1);
+            this.tipos22.push(element2);
+          }
+        }
+      }, error &#x3D;&gt; console.log(error));
+
+      let params3 &#x3D; new HttpParams()
+      .set(&#x27;opcion&#x27;, &#x27;11&#x27;)
+      .set(&#x27;entrada&#x27;, (this.fechas.get(&#x27;fechaEntrada&#x27;).value).format(&#x27;YYYY-MM-DD&#x27;))
+      .set(&#x27;salida&#x27;, (this.fechas.get(&#x27;fechaSalida&#x27;).value).format(&#x27;YYYY-MM-DD&#x27;));
+
+      // Seteo de fechas para mostrarlas en el desglose
+      this.fecha1 &#x3D; (this.fechas.get(&#x27;fechaEntrada&#x27;).value).format(&#x27;DD-MM-YYYY&#x27;);
+      this.fecha2 &#x3D; (this.fechas.get(&#x27;fechaSalida&#x27;).value).format(&#x27;DD-MM-YYYY&#x27;);
+
+      // Para los multiplicativos de las fechas
+      this.http.post(&#x27;http://34.206.59.221/reserva.php&#x27;, params3).subscribe(data &#x3D;&gt;{
+        if(data !&#x3D; null){ // Si recibe algún alojamiento
+          // Total de días
+          let diff &#x3D; Math.floor((new Date(this.fechas.get(&#x27;fechaSalida&#x27;).value).getTime() - new Date(this.fechas.get(&#x27;fechaEntrada&#x27;).value).getTime())/86400000);
+          if(data !&#x3D; 0){
+            let data2: any &#x3D; data;
+            
+            // Seteo de la variable calculo usada para el multiplicador
+            let calculo: number &#x3D; 0;
+
+            // Cálculo de días en cada temporada
+            for (let i &#x3D; 0; i &lt; data2.length; i++) { // Por cada temporada...
+              const element &#x3D; data2[i];
+              // Seteo de las fechas de la temporada
+              let inicioTemporada &#x3D; moment(element[&#x27;fecha_entrada&#x27;]);
+              let finTemporada &#x3D; moment(element[&#x27;fecha_salida&#x27;]);
+
+              // Seteo de las fechas de la reserva
+              let entrada &#x3D; this.fechas.get(&#x27;fechaEntrada&#x27;).value;
+              let salida &#x3D; this.fechas.get(&#x27;fechaSalida&#x27;).value;
+              // Seteo predefinido de los días entre la fecha de entrada de la reserva y la fecha de inicio de la temporada
+              let diasAntes &#x3D; Math.floor((new Date(element[&#x27;fecha_entrada&#x27;]).getTime() - new Date(entrada).getTime())/86400000);
+              if(inicioTemporada &gt; entrada){ // Si entra al camping antes de la temporada y...
+                if(i !&#x3D; 0){ // Si el índice del for no es igual a 0
+                  diasAntes &#x3D; Math.floor((new Date(element[&#x27;fecha_entrada&#x27;]).getTime() - new Date(data[i-1][&#x27;fecha_salida&#x27;]).getTime())/86400000);
+                }              
+                if(finTemporada &gt;&#x3D; salida){ // sale del camping antes de que acabe la temporada
+                  let total &#x3D; Math.abs(salida.diff(inicioTemporada, &#x27;days&#x27;));
+                  //console.log(&#x27;1 Entra al camping &#x27;+diasAntes+&#x27; dias antes de que empiece la temporada &#x27;+element[&#x27;nombre_temporada&#x27;]+&#x27;, está &#x27;+total+&#x27; días en la temporada &#x27;+element[&#x27;nombre_temporada&#x27;]);
+                  calculo +&#x3D; ((diasAntes*1)+(total*element[&#x27;multiplicador&#x27;]));
+                  calculo &#x3D; calculo/diff;
+                  // Seteo del multiplicador a la variable del principio, para guardarla luego en la BD
+                  this.multiplicador &#x3D; parseFloat(calculo.toFixed(2));
+                  //console.log(&#x27;Por lo que su multiplicativo será: (&#x27;+diasAntes+&#x27;*1+&#x27;+total+&#x27;*&#x27;+element[&#x27;multiplicador&#x27;]+&#x27;)/&#x27;+diff+&#x27; &#x3D; &#x27;+ calculo.toFixed(2));
+                  
+                }else{ // sale del camping después de que acabe la temporada
+                  let total &#x3D; Math.abs(finTemporada.diff(inicioTemporada, &#x27;days&#x27;));
+                  let dias &#x3D; Math.abs(salida.diff(finTemporada, &#x27;days&#x27;));
+                  if(data2.length &lt; 2){ // Si hay solo 1 temporada (a parte de la temporada media)
+                    //console.log(&#x27;2 Entra al camping &#x27;+diasAntes+&#x27; dias antes de la temporada &#x27;+element[&#x27;nombre_temporada&#x27;]+&#x27; pasa &#x27;+total+&#x27; días en la temporada &#x27;+element[&#x27;nombre_temporada&#x27;]+&#x27; y sale &#x27;+dias+&#x27; dias despues de que acabe la temporada&#x27;);
+                    calculo &#x3D; ((diasAntes*1)+(total*element[&#x27;multiplicador&#x27;])+(dias*1))/diff;
+                    // Seteo del multiplicador a la variable del principio, para guardarla luego en la BD
+                    this.multiplicador &#x3D; parseFloat(calculo.toFixed(2));
+                    //console.log(&#x27;Por lo que su multiplicativo será: (&#x27;+diasAntes+&#x27;*1+&#x27;+total+&#x27;*&#x27;+element[&#x27;multiplicador&#x27;]+&#x27;+&#x27;+dias+&#x27;*1)/&#x27;+diff+&#x27; &#x3D; &#x27;+ calculo.toFixed(2));
+               
+                  }else{ // Si hay más de 1 temporada (cambios de temporada, a parte de la temporada media)
+                    let dias2Temp: any;
+                    if(data2[i+1] !&#x3D; null){ // Si existe otra temporada por delante
+                      dias2Temp &#x3D; Math.floor((new Date(data2[i+1][&#x27;fecha_entrada&#x27;]).getTime() - new Date(element[&#x27;fecha_salida&#x27;]).getTime())/86400000);
+                    }else{ // Si no existe otra temporada por delante
+                      dias2Temp &#x3D; Math.floor((new Date(salida).getTime() - new Date(element[&#x27;fecha_salida&#x27;]).getTime())/86400000);
+                    }
+                    calculo +&#x3D; ((diasAntes*1)+(total*element[&#x27;multiplicador&#x27;]));
+                    //this.multiplicador &#x3D; parseFloat(calculo.toFixed(2));
+                    if(i &#x3D;&#x3D; data2.length-1) {
+                      //console.log(this.dias)
+                      calculo +&#x3D; dias2Temp*1;
+                      this.multiplicador &#x3D; parseFloat((calculo/diff).toFixed(2));
+                    }
+                    // Multiplicador
+                    //console.log(&#x27;3 Está &#x27;+diasAntes+&#x27; días antes en el camping, pasa &#x27;+total+&#x27; días de la temporada &#x27;+element[&#x27;nombre_temporada&#x27;]+ &#x27; y está &#x27;+dias2Temp+&#x27; en temp media&#x27;);
+                    //console.log(&#x27;Por lo que su multiplicativo será: (&#x27;+diasAntes+&#x27;*1+&#x27;+total+&#x27;*&#x27;+element[&#x27;multiplicador&#x27;]+&#x27;) &#x3D; &#x27;+ calculo);
+                  }
+                }
+              }else if(inicioTemporada &lt;&#x3D; entrada){ // Si entra al camping el mismo día o después del inicio de la temporada
+                let dias: any;
+                if(finTemporada &gt;&#x3D; salida){ // sale del camping antes de que acabe la temporada y...
+                  dias &#x3D; Math.floor((new Date(salida).getTime() - new Date(entrada).getTime())/86400000);
+                  //console.log(&#x27;4 Entra al camping el día &#x27;+(this.fechas.get(&#x27;fechaEntrada&#x27;).value).format(&#x27;YYYY-MM-DD&#x27;)+&#x27; y sale el día &#x27;+(this.fechas.get(&#x27;fechaSalida&#x27;).value).format(&#x27;YYYY-MM-DD&#x27;)+&#x27; un total de &#x27;+dias+&#x27; días en la temporada &#x27;+element[&#x27;nombre_temporada&#x27;]);
+                  calculo &#x3D; (dias*element[&#x27;multiplicador&#x27;])/diff
+                  // Seteo del multiplicador a la variable del principio, para guardarla luego en la BD
+                  this.multiplicador &#x3D; parseFloat(calculo.toFixed(2));
+                  //console.log(&#x27;Lo cual su multiplicador es: (&#x27;+dias+&#x27;*&#x27;+element[&#x27;multiplicador&#x27;]+&#x27;)/&#x27;+diff+&#x27; &#x3D; &#x27;+calculo.toFixed(2));
+             
+                }else{ // sale del camping después de que acabe la temporada
+                  dias &#x3D; Math.floor((new Date(element[&#x27;fecha_salida&#x27;]).getTime() - new Date(entrada).getTime())/86400000);
+                  if(data2.length &lt; 2){ // Si hay solo 1 temporada (a parte de la temporada media), sale en temporada media
+                    let diasSalida &#x3D; Math.floor((new Date(salida).getTime() - new Date(element[&#x27;fecha_salida&#x27;]).getTime())/86400000);
+                    calculo &#x3D; ((dias*element[&#x27;multiplicador&#x27;])+(diasSalida*1))/diff;
+                    this.multiplicador &#x3D; parseFloat(calculo.toFixed(2));
+                    //console.log(&#x27;Entro durante la temporada &#x27;+element[&#x27;nombre_temporada&#x27;]+&#x27; y estuvo &#x27;+dias+&#x27; en dicha temporada, luego estuvo &#x27;+diasSalida+&#x27; en temporada media&#x27;);
+               
+                  }else{
+                    //console.log(&#x27;Ha entrado durante la temporada y ha estado &#x27;+dias+&#x27; días en la temporada &#x27;+element[&#x27;nombre_temporada&#x27;]);
+                    calculo +&#x3D; dias*element[&#x27;multiplicador&#x27;];
+                  }                 
+                }
+              }
+            }
+          }else{ // Si lo que devuelve reserva.php es 0, significa que las fechas no están en ninguna temporada, lo que significa que todos los días de la estancia son en temporada media
+            // Seteo del multiplicador a la variable del principio, para guardarla luego en la BD
+            this.multiplicador &#x3D; (diff*1)/diff;
+            //console.log(&#x27;Pasa &#x27;+diff+&#x27; días en temporada media por lo que el multiplicativo de la reserva es: &#x27;+diff+&#x27;*1/&#x27;+diff+&#x27; &#x3D; &#x27;+this.multiplicador);
+          }
+        }
+      }, error &#x3D;&gt; console.log(error));
+    }
+  }
+
+  /**
+   * Al escoger un tipo de alojamiento consulta en la BD la característica 1 de todos los alojamientos de ese tipo que estén disponibles entre las fechas indicadas al principio
+   */
+  getCaracteristica1(datos: string){
+    this.noAlojamiento &#x3D; false;
+
+    // Cada vez que se cambie el tipo de alojamiento que ponga a null los demás campos, para que no permita crear un error, cuando eliges los datos de un tipo de alojamiento y luego cambias el tipo de alojamiento,
+    // los datos del anterior alojamiento se quedan guardados y permite seguir con los datos del nuevo alojamiento en blanco,
+    // pero en la parte backend guardaba los datos del anterior alojamiento y podría dar un error en la reserva a la hora de hacerla.
+    if(this.alojamiento.get(&#x27;tipo&#x27;).value !&#x3D; null){
+      // Formulario de alojamiento
+      this.alojamiento.patchValue({&#x27;caracteristicaUnica1&#x27;: null, &#x27;caracteristicaUnica2&#x27;: null, &#x27;numPersonas&#x27;: null, &#x27;numPersonasMenor&#x27;:null, &#x27;numPersonasMayor&#x27;: null});
+      this.alojamiento.setErrors({&#x27;caracteristicaUnica1&#x27; : null, &#x27;caracteristicaUnica2&#x27; : null});
+
+      // Formulario serviciosExtras, cada vez que se elija un tipo de alojamiento los servicios extras se resetean, si es servicioX se pone false (unchecked), si es numX se pone a null y se deshabilita por defecto (el input se borra y está disable)
+      Object.entries(this.serviciosExtras.controls).forEach(entries &#x3D;&gt; {
+        if(entries[0].slice(0,-1) &#x3D;&#x3D; &#x27;servicio&#x27;){
+          this.serviciosExtras.get([entries[0]]).setValue(false);
+        }else if(entries[0].slice(0,-1) &#x3D;&#x3D; &#x27;num&#x27;){
+          this.serviciosExtras.get([entries[0]]).setValue(null);
+          this.serviciosExtras.get([entries[0]]).disable();
+        }
+      });
+    }
+
+    this.arrayCaract2 &#x3D; [];
+
+    // Parámetros a enviar al archivo PHP
+    let params: any;
+
+    // Si escoge Parcela como alojamiento
+    if(datos &#x3D;&#x3D; &#x27;Parcela&#x27;){ 
+      this.tipos &#x3D; &#x27;parcela&#x27;;
+      this.electricidad &#x3D; false;
+      params &#x3D; new HttpParams()
+      .set(&#x27;opcion&#x27;, &#x27;2&#x27;)
+      .set(&#x27;entrada&#x27;, (this.fechas.get(&#x27;fechaEntrada&#x27;).value).format(&#x27;YYYY-MM-DD&#x27;))
+      .set(&#x27;salida&#x27;, (this.fechas.get(&#x27;fechaSalida&#x27;).value).format(&#x27;YYYY-MM-DD&#x27;))
+      this.dato2 &#x3D; &#x27;Sombra&#x27;;
+      this.dato4 &#x3D; &#x27;Dimension&#x27;;
+    }else{ // Si escoge Bungalow como alojamiento
+      this.tipos &#x3D; &#x27;bungalow&#x27;;
+      this.electricidad &#x3D; true;
+      params &#x3D; new HttpParams()
+      .set(&#x27;opcion&#x27;, &#x27;4&#x27;)
+      .set(&#x27;entrada&#x27;, (this.fechas.get(&#x27;fechaEntrada&#x27;).value).format(&#x27;YYYY-MM-DD&#x27;))
+      .set(&#x27;salida&#x27;, (this.fechas.get(&#x27;fechaSalida&#x27;).value).format(&#x27;YYYY-MM-DD&#x27;))
+      this.dato2 &#x3D; &#x27;Habitaciones&#x27;;
+      this.dato4 &#x3D; &#x27;Máximo de personas&#x27;;
+    }
+
+    // Petición POST para obtener todos los tipos de alojamieto y sus características, FORMULARIO 1, Sombra o habitaciones
+    this.http.post(&#x27;http://34.206.59.221/reserva.php&#x27;, params).subscribe(data &#x3D;&gt;{
+      if(data !&#x3D; null &amp;&amp; data !&#x3D; 0){ // Si recibe algún alojamiento
+        this.arrayCaract1 &#x3D; [];
+        this.arrayCaract2 &#x3D; [];
+        Object.keys(data[0]).forEach(key &#x3D;&gt; { // Para sacar las keys del array obtenido desde reserva.php
+          this.dato1 &#x3D; key; // Sin mayúscula
+          this.dato2 &#x3D; key[0].toUpperCase()+key.slice(1); // Primera letra mayúscula
+        });
+        this.arrayCaract1 &#x3D; data;
+        if(this.dato1 &#x3D;&#x3D; &#x27;sombra&#x27;){
+          for (let i &#x3D; 0; i &lt; this.arrayCaract1.length; i++) {
+            const element &#x3D; this.arrayCaract1[i];
+            switch (element[this.dato1]) {
+              case &#x27;0&#x27;:
+                this.arrayCaract1[i][this.dato1] &#x3D; &#x27;Nada&#x27;;
+                break;
+              case &#x27;1&#x27;:
+                this.arrayCaract1[i][this.dato1] &#x3D; &#x27;Media&#x27;;
+                break;
+              case &#x27;2&#x27;:
+                this.arrayCaract1[i][this.dato1] &#x3D; &#x27;Bastante&#x27;;
+                break;
+              case &#x27;3&#x27;:
+                this.arrayCaract1[i][this.dato1] &#x3D; &#x27;Mucha&#x27;;
+                break;
+              default:
+                this.arrayCaract1[i][this.dato1] &#x3D; &#x27;Desconocido&#x27;;
+                break;
+            }
+          }
+        }
+      }else if(data &#x3D;&#x3D; 0) {
+        this.arrayCaract1 &#x3D; [];
+        this.arrayCaract2 &#x3D; [];
+        this.noAlojamiento &#x3D; true;
+      }
+    }, error &#x3D;&gt; console.log(error));
+  }
+
+  /**
+   * Función para validar el alojamiento, Validators del FormBuilder
+   */
+  validacionAlojamiento(){
+    return (): ValidationErrors &#x3D;&gt; {
+      if(this.alojamiento.get(&#x27;tipo&#x27;).value &#x3D;&#x3D; &#x27;Bungalow&#x27;){
+        this.alojamiento.get(&#x27;numPersonas&#x27;).setErrors(null);
+        if(this.fechaMenos7 &#x3D;&#x3D; true){
+          this.alojamiento.get(&#x27;tipo&#x27;).setErrors({menos7: true});
+        }else{
+          this.alojamiento.get(&#x27;tipo&#x27;).setErrors(null);
+        }
+      }else{
+        if(this.alojamiento.get(&#x27;numPersonas&#x27;).value){
+          if(this.alojamiento.get(&#x27;numPersonas&#x27;).value &gt; 12 || this.alojamiento.get(&#x27;numPersonas&#x27;).value &lt; 1){
+            this.alojamiento.get(&#x27;numPersonas&#x27;).setErrors({&#x27;personas&#x27;: true});
+          }
+        }else{
+          this.alojamiento.get(&#x27;numPersonas&#x27;).setErrors({&#x27;personas&#x27;: true});
+        }
+      }
+      return;
+    };
+  }
+
+  /**
+   * Al escoger la característica 1 consulta en la BD todas las características 2 que hay disponibles para ese tipo de alojamientos con la característica 1 elegida
+   */
+  getCaracteristica2(datos: string){
+    let params2: any;
+    if(this.tipos &#x3D;&#x3D; &#x27;parcela&#x27;){
+      params2 &#x3D; new HttpParams()
+      .set(&#x27;opcion&#x27;, &#x27;3&#x27;)
+      .set(&#x27;entrada&#x27;, (this.fechas.get(&#x27;fechaEntrada&#x27;).value).format(&#x27;YYYY-MM-DD&#x27;))
+      .set(&#x27;salida&#x27;, (this.fechas.get(&#x27;fechaSalida&#x27;).value).format(&#x27;YYYY-MM-DD&#x27;))
+      .set(&#x27;sombra&#x27;, datos[&#x27;sombra&#x27;]);
+    }else{
+      params2 &#x3D; new HttpParams()
+      .set(&#x27;opcion&#x27;, &#x27;5&#x27;)
+      .set(&#x27;entrada&#x27;, (this.fechas.get(&#x27;fechaEntrada&#x27;).value).format(&#x27;YYYY-MM-DD&#x27;))
+      .set(&#x27;salida&#x27;, (this.fechas.get(&#x27;fechaSalida&#x27;).value).format(&#x27;YYYY-MM-DD&#x27;))
+      .set(&#x27;habitaciones&#x27;, datos[&#x27;habitaciones&#x27;]);
+    }
+     
+    this.http.post(&#x27;http://34.206.59.221/reserva.php&#x27;, params2).subscribe(data &#x3D;&gt;{
+      if(data !&#x3D; null &amp;&amp; data !&#x3D; 0){ // Si recibe algún alojamiento
+        this.arrayCaract2 &#x3D; data;
+        Object.keys(data[0]).forEach(key &#x3D;&gt; { // Para sacar las keys del array obtenido desde reserva.php
+          this.dato3 &#x3D; key; // Sin mayúscula
+        });
+      }
+    }, error &#x3D;&gt; console.log(error));
+  }
+
+  /**
+   * Función para controlar el seteo de la cantidad de personas en la reserva
+   */
+  alojamientoElegido(){
+    Object.entries(this.serviciosExtras.value).forEach(entries &#x3D;&gt; {
+      //console.log(entries)
+      if(entries[0] &#x3D;&#x3D; &#x27;num2&#x27; || entries[0] &#x3D;&#x3D; &#x27;num3&#x27; || entries[0] &#x3D;&#x3D; &#x27;num4&#x27;) {
+        this.serviciosExtras.get(&#x27;servicio&#x27;+entries[0].slice(3)).setValue(false);
+        this.serviciosExtras.get(entries[0]).setValue(&#x27;&#x27;);
+        this.serviciosExtras.get(entries[0]).disable();
+      }
+    });
+    if(this.alojamiento.get(&#x27;tipo&#x27;).value &#x3D;&#x3D; &#x27;Parcela&#x27;){
+      let personasTotal &#x3D; this.alojamiento.get(&#x27;numPersonas&#x27;).value;
+      if(personasTotal &gt; 2){
+        this.personas &#x3D; 2;
+        this.personasExtras &#x3D; personasTotal - 2;
+      }else{
+        this.personas &#x3D;  this.alojamiento.get(&#x27;numPersonas&#x27;).value;
+        this.personasExtras &#x3D; null;
+      }
+      this.totalPersonasparcela &#x3D; 0 + this.personas; // Refrescar personas disponibles en la reserva
+    }else{
+      this.personasExtras &#x3D; null;
+    }
+    if (this.personasExtras &gt; 0){
+      this.serviciosExtras.get(&#x27;servicio2&#x27;).patchValue(true);
+      this.serviciosExtras.get(&#x27;num2&#x27;).patchValue(this.personasExtras);
+      this.serviciosExtras.get(&#x27;num2&#x27;).enable();
+    }
+  }
+
+  /**
+   * Función para validar las fechas, si la fecha de salida es posterior a la de entrada no dará error, en cambio si la fecha de salida es el mismo día de entrada o anterior dará error y te pedirá que cambies de fecha
+   */
+  validacionFecha(){
+      return (): ValidationErrors &#x3D;&gt; {
+        if(this.fechas.get(&#x27;fechaSalida&#x27;).value !&#x3D; &#x27;&#x27;){
+          this.fechas.get(&#x27;fechaSalida&#x27;).setErrors(null);
+          this.fechaVal &#x3D; false;
+          let diff &#x3D; Math.floor((new Date(this.fechas.get(&#x27;fechaSalida&#x27;).value).getTime() - new Date(this.fechas.get(&#x27;fechaEntrada&#x27;).value).getTime())/86400000);
+          if (diff &lt;&#x3D; 0) {
+            this.fechas.get(&#x27;fechaSalida&#x27;).setErrors({fecha2Mayor: true});
+          }else if(diff &gt; 0){
+            this.fechas.get(&#x27;fechaSalida&#x27;).setErrors(null);
+          } 
+          if((this.fechas.get(&#x27;fechaEntrada&#x27;).value).month() &#x3D;&#x3D; 6 || (this.fechas.get(&#x27;fechaEntrada&#x27;).value).month() &#x3D;&#x3D; 7){
+            if(diff &gt;&#x3D; 0 &amp;&amp; diff &lt; 7){
+              this.fechaMenos7 &#x3D; true;
+              if(this.alojamiento.get(&#x27;tipo&#x27;).value &#x3D;&#x3D; &#x27;Bungalow&#x27;){
+                this.alojamiento.get(&#x27;tipo&#x27;).setErrors({menos7: true});
+              }
+            }else if(diff &gt;&#x3D; 7){
+              this.fechaMenos7 &#x3D; false;
+              this.alojamiento.get(&#x27;tipo&#x27;).setErrors(null);
+            }
+          }else{
+            this.alojamiento.get(&#x27;tipo&#x27;).setErrors(null);
+          }
+        }else{
+          this.fechas.get(&#x27;fechaSalida&#x27;).setErrors({vacio: true});
+        }
+      return;
+    };
+  }
+
+  /**
+   * Al elegir un servicio extra, desbloquea el input de al lado para poder introducir la cantidad
+   */
+  onChange(a){
+    if(this.serviciosExtras.get(&#x27;servicio&#x27;+a[&#x27;idServicio&#x27;]).value){
+      this.serviciosExtras.get(&#x27;num&#x27;+a[&#x27;idServicio&#x27;]).enable();
+    }else{
+      this.serviciosExtras.get(&#x27;num&#x27;+a[&#x27;idServicio&#x27;]).disable();
+      this.serviciosExtras.get(&#x27;num&#x27;+a[&#x27;idServicio&#x27;]).setValue(&#x27;&#x27;);
+      this.totalPersonasparcela &#x3D; 0 + this.personas; // Refrescar personas disponibles en la reserva
+    }    
+  }
+
+  /**
+   * Validación para el FormGroup de serviciosExtras, comprueba si se ha marcado algún checkbox y si se ha introducido una cantidad en su correspondiente &lt;input&gt;, si no se ha escrito crea un error para que no pueda continuar el formulario
+   */
+  validacionServicio(){
+    return (): ValidationErrors &#x3D;&gt; {
+      let totalPersonasparcela2: number &#x3D; 0;
+      Object.entries(this.serviciosExtras.value).forEach(entries &#x3D;&gt; {
+        if(entries[0].slice(0,3) &#x3D;&#x3D; &#x27;num&#x27; &amp;&amp; entries[0] !&#x3D; &#x27;num1&#x27;){
+          if(entries[0] &#x3D;&#x3D; &#x27;num2&#x27; || entries[0] &#x3D;&#x3D; &#x27;num3&#x27; || entries[0] &#x3D;&#x3D; &#x27;num4&#x27;){
+            totalPersonasparcela2 +&#x3D; (entries[1] as number);
+            this.totalPersonasparcela &#x3D; totalPersonasparcela2 + this.personas;
+          }
+          if(entries[1] &#x3D;&#x3D; &#x27;&#x27; || entries[1] &#x3D;&#x3D; null){ // Si el servicio elegido no está en blanco
+            this.serviciosExtras.get(entries[0]).setErrors({&#x27;noCantidad&#x27;: true});
+          }else if(entries[1] &lt;&#x3D; 0 || entries[1] &gt; 12) { // Si el servicio elegido no está entre 0 y 12
+            this.serviciosExtras.get(entries[0]).setErrors({&#x27;muchaCantidad&#x27;: true});
+          }else { // Tó correcto
+            if((this.personas+totalPersonasparcela2) &gt; 12) { // La suma de todas las personas
+              this.serviciosExtras.get(entries[0]).setErrors({&#x27;muchaGente&#x27;: true});
+            }else{
+              if(this.alojamiento.get(&#x27;numPersonas&#x27;).value &#x3D;&#x3D; 1 &amp;&amp; (this.serviciosExtras.get(&#x27;num2&#x27;).value &gt; 0 || this.serviciosExtras.get(&#x27;num3&#x27;).value &gt; 0 || this.serviciosExtras.get(&#x27;num4&#x27;).value &gt; 0)) {
+                this.serviciosExtras.get(entries[0]).setErrors({&#x27;noGente&#x27;: true});
+              }else{
+                this.serviciosExtras.get(entries[0]).setErrors(null);
+              }
+            }
+          }
+        }
+      });
+      return;
+    };
+  }
+
+  /**
+   * Recopila información de todos los formularios y consulta a la base de datos la información necesaria para crear un desglose de precios e información con sus precios
+   */
+  addServicios(){
+    this.preciosExtrasFinal &#x3D; 0;
+    this.extras &#x3D; [];
+    this.valor1 &#x3D; Object.values(this.alojamiento.get(&#x27;caracteristicaUnica1&#x27;).value)[0];
+    this.valor2 &#x3D; Object.values(this.alojamiento.get(&#x27;caracteristicaUnica2&#x27;).value)[0];
+    
+    Object.entries(this.serviciosExtras.value).forEach(entries &#x3D;&gt; {
+      if(entries[0] !&#x3D; &#x27;num1&#x27; &amp;&amp; entries[1] !&#x3D; false){
+        for (let i &#x3D; 0; i &lt; this.servicios.length; i++) {
+          const element &#x3D; this.servicios[i];
+          if(entries[0] &#x3D;&#x3D; &#x27;servicio&#x27;+element[&#x27;idServicio&#x27;]){
+            let cant &#x3D; this.serviciosExtras.get(&#x27;num&#x27;+element[&#x27;idServicio&#x27;]).value ? this.serviciosExtras.get(&#x27;num&#x27;+element[&#x27;idServicio&#x27;]).value : 0;
+            this.extras.push([element[&#x27;nombre&#x27;], element[&#x27;idServicio&#x27;], cant]);
+            break;
+          }
+        }
+      }
+    }); 
+
+    let params2 &#x3D; new HttpParams()
+    .set(&#x27;opcion&#x27;, &#x27;8&#x27;)
+    .set(&#x27;tipo&#x27;, this.alojamiento.get(&#x27;tipo&#x27;).value)
+    .set(&#x27;caract1&#x27;,this.valor1)
+    .set(&#x27;caract2&#x27;, this.valor2);
+
+    // Obtención de los precios
+    this.http.post(&#x27;http://34.206.59.221/reserva.php&#x27;, params2).subscribe(data &#x3D;&gt;{
+      if(data !&#x3D; null &amp;&amp; data!&#x3D; 0){ // Si recibe algún alojamiento
+        this.idAlojamientoRandom &#x3D; data[0][&#x27;idAlojamiento&#x27;];
+        let precioAlojamiento2 &#x3D; new HttpParams()
+        .set(&#x27;opcion&#x27;, &#x27;9&#x27;)
+        .set(&#x27;idAlojamiento&#x27;, this.idAlojamientoRandom.toString());
+        let k &#x3D; new HttpParams()
+        .set(&#x27;opcion&#x27;,&#x27;10&#x27;);
+        this.http.post(&#x27;http://34.206.59.221/reserva.php&#x27;, precioAlojamiento2).subscribe(data &#x3D;&gt;{
+          if(data !&#x3D; null &amp;&amp; data !&#x3D; 0){ // Si recibe algún dato
+            this.precioAlojamiento &#x3D; data[0][&#x27;precio&#x27;];
+            for (let i &#x3D; 0; i &lt; this.extras.length; i++) {
+              const element &#x3D; this.extras[i];
+              k &#x3D; k.set(element[1], element[2]);
+            }
+            this.precioAlojamientoFinal &#x3D; ((this.precioAlojamiento*this.dias)*this.multiplicador);
+            this.http.post(&#x27;http://34.206.59.221/reserva.php&#x27;, k).subscribe(data &#x3D;&gt;{
+              if(data !&#x3D; null &amp;&amp; data !&#x3D; 0){ // Si recibe algún dato
+                this.preciosServicios &#x3D; data;
+                for (let i &#x3D; 0; i &lt; this.extras.length; i++) {
+                  const element &#x3D; this.extras[i];
+                  for (let k &#x3D; 0; k &lt; this.preciosServicios.length; k++) {
+                    const elemento &#x3D; this.preciosServicios[k];
+                    if(elemento[0][&#x27;idServicio&#x27;] &#x3D;&#x3D; element[1]) {
+                      if(element[2] &#x3D;&#x3D; 0){
+                        this.preciosExtrasFinal +&#x3D; 1*elemento[0][&#x27;precio&#x27;];
+                      }else{
+                        this.preciosExtrasFinal +&#x3D; element[2]*elemento[0][&#x27;precio&#x27;];
+                      }
+                    }
+                  }
+                }
+              }
+            });
+          }
+        }, error &#x3D;&gt; console.log(error));
+      }
+    }, error &#x3D;&gt; console.log(error)); 
+  }
+
+  /**
+   * Función para confirmar la reserva, llama a la función reserva()
+   */
+  confirmarReserva(){
+    if (this.usuarioActual !&#x3D; null) {
+      this.reserva();
+    }
+  }
+
+  /**
+   * Función para guardar la reserva en la BD (realiza la reserva)
+   */
+  reserva() {
+    if(this.usuarioActual !&#x3D; null) {
+      let params2: any;
+      let totalPersonas: number;
+      if (this.persona !&#x3D; null) {
+        // Igualar a 0 las variables para que no de errores al paasarlas por HttpParams
+        let persExtras: number &#x3D; 0;
+        if (this.personasExtras &gt; 0) {
+          persExtras &#x3D; this.personasExtras;
+        }
+        if (this.alojamiento.get(&#x27;tipo&#x27;).value &#x3D;&#x3D; &#x27;Bungalow&#x27;) {
+          persExtras &#x3D; 0;
+          totalPersonas &#x3D; this.valor2;
+        } else {
+          let mayor &#x3D; null ? this.serviciosExtras.get(&#x27;num3&#x27;).value : 0;
+          let menor &#x3D; null ? this.serviciosExtras.get(&#x27;num4&#x27;).value : 0;
+          totalPersonas &#x3D; this.personas + persExtras + mayor + menor;
+        }
+        params2 &#x3D; new HttpParams()
+          .set(&#x27;opcion&#x27;, &#x27;7&#x27;)
+          // Fechas
+          .set(&#x27;entrada&#x27;, (this.fechas.get(&#x27;fechaEntrada&#x27;).value).format(&#x27;YYYY-MM-DD&#x27;))
+          .set(&#x27;salida&#x27;, (this.fechas.get(&#x27;fechaSalida&#x27;).value).format(&#x27;YYYY-MM-DD&#x27;))
+
+          // Alojamiento
+          .set(&#x27;alojamiento&#x27;, this.alojamiento.get(&#x27;tipo&#x27;).value)
+          .set(&#x27;caract1&#x27;, this.valor1) // * Esto en reserva.php sale como un string con forma de array ARREGLAR
+          .set(&#x27;caract2&#x27;, this.valor2) // * Esto en reserva.php sale como un string con forma de array ARREGLAR
+          .set(&#x27;idAlojamiento&#x27;, this.idAlojamientoRandom.toString())
+
+          // Datos del usuario para sacar idUsuario e introducirlo en la tabla reserva
+          .set(&#x27;nombreUsuario&#x27;, this.usuarioActual[&#x27;nombre&#x27;])
+          .set(&#x27;telefono&#x27;, this.usuarioActual[&#x27;telefono&#x27;])
+          .set(&#x27;email&#x27;, this.usuarioActual[&#x27;email&#x27;])
+          .set(&#x27;dni&#x27;, this.usuarioActual[&#x27;nif&#x27;])
+          .set(&#x27;alias&#x27;, this.usuarioActual[&#x27;alias&#x27;])
+
+          // Detalles de la reserva
+          .set(&#x27;numPersonas&#x27;, totalPersonas.toString()) // Entre 12 y 64
+          .set(&#x27;multiplicativo&#x27;, this.multiplicador.toString());
+        for (let i &#x3D; 0; i &lt; this.extras.length; i++) {
+          const element &#x3D; this.extras[i];
+          // ID del servicio extra y la cantidad
+          params2 &#x3D; params2.set(element[1], element[2]);
+        }
+
+        this.http.post(&#x27;http://34.206.59.221/reserva.php&#x27;, params2).subscribe(data &#x3D;&gt; {
+          if (data !&#x3D; null &amp;&amp; data !&#x3D; 0) { // Si recibe algún alojamiento
+            this.reservaId &#x3D; data;
+            this.reservaHecha &#x3D; true;
+          }
+        }, error &#x3D;&gt; console.log(error));
+      }else{
+        this.persona &#x3D; this.persona &#x3D; new Usuario(this.usuarioActual[&#x27;id&#x27;], this.usuarioActual[&#x27;email&#x27;], this.usuarioActual[&#x27;nif&#x27;], this.usuarioActual[&#x27;nombre&#x27;], this.usuarioActual[&#x27;rol&#x27;], this.usuarioActual[&#x27;telefono&#x27;], this.usuarioActual[&#x27;alias&#x27;]);
+        this.reserva();
+      }
+    }
+  }
+
+  /**
+   * Popup para iniciar sesión y hacer la reserva
+   */
+  logIn(){
+    const dialogRef &#x3D; this.dialog.open(ReservasLoginComponent, {
+      data: {}
+    });
+    dialogRef.afterClosed().subscribe(result &#x3D;&gt; {
+      this.email &#x3D; result;
+      if(this.email &#x3D;&#x3D; &#x27;Error&#x27;){
+        this.loginReserva &#x3D; false;
+      }else if(this.email !&#x3D; undefined &amp;&amp; this.email[&#x27;id&#x27;]){
+        this.loginReserva &#x3D; true;   
+        if(this.email !&#x3D; null){
+          if (this.usuarioActual &#x3D;&#x3D; null) {
+            if(localStorage.getItem(&#x27;usuarioActual&#x27;) !&#x3D; null){
+              this.usuarioActual &#x3D; desencriptar(localStorage.getItem(&#x27;usuarioActual&#x27;));
+              this.reserva();
+            }
+          }
+        }
+      }
+    });
+  }
+
+  /**
+   * Popup para registrarse y hacer la reserva
+   */
+  signIn(){
+    const dialogRef &#x3D; this.dialog.open(ReservasRegistrarComponent, {
+      data: {}
+    });
+    dialogRef.afterClosed().subscribe(result &#x3D;&gt; {
+      this.email &#x3D; result;
+      if(this.email &#x3D;&#x3D; &#x27;Error&#x27;){
+        this.loginReserva &#x3D; false;
+      }else if(this.email !&#x3D; undefined &amp;&amp; this.email[&#x27;id&#x27;]){
+        this.loginReserva &#x3D; true;   
+        if(this.email !&#x3D; null){
+          if (this.usuarioActual &#x3D;&#x3D; null) {
+            if(localStorage.getItem(&#x27;usuarioActual&#x27;) !&#x3D; null){
+              this.usuarioActual &#x3D; desencriptar(localStorage.getItem(&#x27;usuarioActual&#x27;));
+              this.reserva();
+            }
+          }
+        }
+      }
+    });
+  }
+
+
+  /**
+   * Al iniciar el archivo .ts
+   */
+  ngOnInit(): void {
+    // Compruebo si hay un usuario con sesión iniciada
+    if (this.usuarioActual &#x3D;&#x3D; null) {
+      if(localStorage.getItem(&#x27;usuarioActual&#x27;) !&#x3D; null){
+        this.usuarioActual &#x3D; desencriptar(localStorage.getItem(&#x27;usuarioActual&#x27;));
+      }
+    }
+
+    // Formulario 1 - Fechas entrada y salida
+    this.fechas &#x3D; this.fb.group({
+      fechaEntrada: [&#x27;&#x27;, [Validators.required]],
+      fechaSalida: [&#x27;&#x27;, [Validators.required]],
+    });
+    this.fechas.setValidators(this.validacionFecha()); // Validator personalizado
+
+    // Formulario 2 - Alojamiento
+    this.alojamiento &#x3D; this.fb.group({
+      tipo: [&#x27;&#x27;, Validators.required],
+      caracteristicaUnica1: [&#x27;&#x27;, Validators.required],
+      caracteristicaUnica2: [&#x27;&#x27;, Validators.required],
+      numPersonas: [&#x27;&#x27;, Validators.required],
+    });
+    this.alojamiento.setValidators(this.validacionAlojamiento()); // Validator personalizado
+
+    // Formulario 3 - Datos personales (usuario)
+    if(this.usuarioActual !&#x3D; null){
+      this.persona &#x3D; new Usuario(this.usuarioActual[&#x27;id&#x27;], this.usuarioActual[&#x27;email&#x27;], this.usuarioActual[&#x27;nif&#x27;], this.usuarioActual[&#x27;nombre&#x27;], this.usuarioActual[&#x27;rol&#x27;], this.usuarioActual[&#x27;telefono&#x27;], this.usuarioActual[&#x27;alias&#x27;]);
+    }else{
+      this.usuario &#x3D; this.fb.group({
+        nombreCompleto: [&#x27;&#x27;, Validators.required],
+        telefono: [&#x27;&#x27;, [Validators.required, Validators.pattern(&#x27;^[6-7][0-9]{8}$&#x27;)]],
+        //! FALLA email
+        // email: [&#x27;&#x27;, [Validators.required, Validators.pattern(&quot;^(((\.)+)?[A-z0-9]+((\.)+)?)+@(((\.)+)?[A-z0-9]+((\.)+)?)+\.[A-z]+$&quot;)]],//Puede empezar por . o no, contener letras y numeros seguidos de punto o no, seguido por @ seguido por . o no letras y numeros y punto o no . letras
+        //? HACER ALGO PARA CONTROLAR EL EMAIL (PATTERN)
+        email: [&#x27;&#x27;, [Validators.required, Validators.pattern(&quot;^[a-zA-Z0-9.!#$%&amp;&#x27;*+/&#x3D;?^_&#x60;{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)$&quot;)]],
+        dni: [&#x27;&#x27;, [Validators.required, Validators.pattern(&#x27;^[0-9]{8,8}[A-Za-z]$&#x27;)]],
+      });
+    }
+
+    // Formulario 4 - Servicios extras a contratar
+    this.serviciosExtras &#x3D; this.fb.group({}); // Inicializar el FormBuilder y luego agregarle de forma dinámica los Controls
+    let params &#x3D; new HttpParams()
+    .set(&#x27;opcion&#x27;, &#x27;6&#x27;);
+    // Petición POST para obtener todos los servicios
+    this.http.post(&#x27;http://34.206.59.221/reserva.php&#x27;, params).subscribe(data &#x3D;&gt; {
+      if (data !&#x3D; null &amp;&amp; data !&#x3D; 0) { // Si recibe algún alojamiento
+        this.servicios &#x3D; data;
+        for (let i &#x3D; 0; i &lt; this.servicios.length; i++) {
+          this.serviciosExtras.addControl(&#x27;servicio&#x27;+this.servicios[i][&#x27;idServicio&#x27;], new FormControl(false,[]));
+          this.serviciosExtras.addControl(&#x27;num&#x27;+this.servicios[i][&#x27;idServicio&#x27;], new FormControl({value: &#x27;&#x27;, disabled: true},[]));
+        }
+      }
+    }, error &#x3D;&gt; console.log(error));
+    this.serviciosExtras.setValidators(this.validacionServicio());
+  }
+}</code></pre>
+    </div>
+</div>
+
+
+                   
+
+
+
+
+                   </div><div class="search-results">
+    <div class="has-results">
+        <h1 class="search-results-title"><span class='search-results-count'></span> result-matching "<span class='search-query'></span>"</h1>
+        <ul class="search-results-list"></ul>
+    </div>
+    <div class="no-results">
+        <h1 class="search-results-title">No results matching "<span class='search-query'></span>"</h1>
+    </div>
+</div>
+</div>
+               <!-- END CONTENT -->
+           </div>
+       </div>
+
+       <script>
+            var COMPODOC_CURRENT_PAGE_DEPTH = 1;
+            var COMPODOC_CURRENT_PAGE_CONTEXT = 'interface';
+            var COMPODOC_CURRENT_PAGE_URL = 'DialogData-1.html';
+            var MAX_SEARCH_RESULTS = 15;
+       </script>
+
+       <script src="../js/libs/custom-elements.min.js"></script>
+       <script src="../js/libs/lit-html.js"></script>
+       <!-- Required to polyfill modern browsers as code is ES5 for IE... -->
+       <script src="../js/libs/custom-elements-es5-adapter.js" charset="utf-8" defer></script>
+       <script src="../js/menu-wc.js" defer></script>
+
+       <script src="../js/libs/bootstrap-native.js"></script>
+
+       <script src="../js/libs/es6-shim.min.js"></script>
+       <script src="../js/libs/EventDispatcher.js"></script>
+       <script src="../js/libs/promise.min.js"></script>
+       <script src="../js/libs/zepto.min.js"></script>
+
+       <script src="../js/compodoc.js"></script>
+
+       <script src="../js/tabs.js"></script>
+       <script src="../js/menu.js"></script>
+       <script src="../js/libs/clipboard.min.js"></script>
+       <script src="../js/libs/prism.js"></script>
+       <script src="../js/sourceCode.js"></script>
+          <script src="../js/search/search.js"></script>
+          <script src="../js/search/lunr.min.js"></script>
+          <script src="../js/search/search-lunr.js"></script>
+          <script src="../js/search/search_index.js"></script>
+       <script src="../js/lazy-load-graphs.js"></script>
+
+
+    </body>
+</html>

@@ -6,6 +6,9 @@ import { Alojamiento } from "./alojamiento";
 
 import { encriptar, desencriptar } from '../crypto-storage';
 
+/**
+ * Componente alojamiento
+ */
 @Component({
   selector: 'app-alojamiento',
   templateUrl: './alojamiento.component.html',
@@ -13,54 +16,113 @@ import { encriptar, desencriptar } from '../crypto-storage';
 })
 export class AlojamientoComponent implements OnInit {
 
-  // Variables de las puntuaciones
+  /**
+   * Variables de las puntuaciones
+   */
   public totalPuntuaciones: number = 0; // Suma de todas las puntuaciones
+  /**
+   * Variables de las puntuaciones
+   */
   public numeroPuntuaciones: number = 0; // Cantidad de puntuaciones del alojamiento
+  /**
+   * Variables de las puntuaciones
+   */
   public currentRate = 0; // Puntuación media del alojamiento
 
-  public descripcionBungalows: Array<string> = [''];
-
-  // variable de pagination
+  /**
+   * variable de pagination
+   */
   public p: number = 1;
 
-  // Usuario
+  /**
+   * Usuario
+   */
   public usuarioActual: any;
 
-  // Parámetro de la URL (bungalows/parcelas)
+  /**
+   * Parámetro de la URL (bungalows/parcelas)
+   */
   public alojamiento: string = null;
 
-  // Situación según la URL, cambio de vista según la URL
+  /**
+   * Situación según la URL, cambio de vista según la URL
+   */
   public situacion: number;
 
-  // Listado de todos los alojamientos
+  /**
+   * Listado de todos los alojamientos
+   */
   public alojamientos: any;
 
-  // Número del alojamiento
+  /**
+   * Número del alojamiento
+   */
   public numero: number;
 
-  // Error si se introduce el número del alojamiento desde la URL y no existe
+  /**
+   * Error si se introduce el número del alojamiento desde la URL y no existe
+   */
   public errorExiste: boolean = null;
 
-  // Variables de listado de alojamientos
+  /**
+   * Variables de listado de alojamientos
+   */
   public arrayBungalows: Alojamiento[] = [];
+  /**
+   * Variables de listado de alojamientos
+   */
   public arrayParcelas: Alojamiento[] = [];
 
-  // Definición de variables como objetos Alojamiento para bungalows y parcelas 
+  /**
+   * Definición de variables como objetos Alojamiento para bungalows y parcelas 
+   */
   public bungalows: Alojamiento;
+  /**
+   * Definición de variables como objetos Alojamiento para bungalows y parcelas 
+   */
   public parcelas: Alojamiento;
 
-  // Alojamiento seleccionado (ficha)
+  /**
+   * Alojamiento seleccionado (ficha)
+   */
   public alojamientoSeleccionado: Alojamiento;
 
-  // Reseñas
+  /**
+   * Variables de reseñas
+   */
   public noResenias: boolean = false;
+  /**
+   * Variables de reseñas
+   */
   public listadoResenias: any = [];
+  /**
+   * Variables de reseñas
+   */
   public reseñas: any;
+  /**
+   * Variables de reseñas
+   */
   public resenia: FormGroup;
+  /**
+   * Variables de reseñas
+   */
   public anonimoCheck: boolean = false;
+  /**
+   * Variables de reseñas
+   */
   public errorResenia: boolean = false;
+  /**
+   * Variables de reseñas
+   */
   public reseniaOk: boolean = false;
 
+  /**
+   * Constructor de alojamiento
+   * @param router 
+   * @param http 
+   * @param fb 
+   * @param route 
+   */
   constructor(private router: ActivatedRoute, private http: HttpClient, public fb: FormBuilder, private route: Router) {
     if(this.router.snapshot.url.length == 1 && this.router.snapshot.url[0].path == 'alojamiento'){ // Si la url solo tiene 1 parámetro y es alojamiento que muestre una página para ver parcelas o bungalows (para asegurarme de que va bien)
       this.situacion = 0;
@@ -188,19 +250,33 @@ export class AlojamientoComponent implements OnInit {
     }
   }
 
-  volver(){ // Botón volver atrás
+  /**
+   * Función para volver atrás en el historial
+   */
+  volver(){
     window.history.back();
   }
 
-  anonimo(e){ // Función para contorlar si es anónimo o no
+  /**
+   * Función para controlar si la reseña es anónima o no, se pasa por parámetro el checkbox
+   * @param e 
+   */
+  anonimo(e){
     this.anonimoCheck = e.checked;
   }
 
+  /**
+   * Función que controla el cambio de página en el pagination
+   * @param $event 
+   */
   onChangePage($event) {    
     this.p = $event
   }
 
-  enviarResenia(){ // Función para guardar reseña
+  /**
+   * Función para guardar la reseña
+   */
+  enviarResenia(){
      if (this.resenia.get('puntuacion').value == '' || this.resenia.get('puntuacion').value == 0){
       this.resenia.get('puntuacion').setErrors({'noPuntuacion': true});
       
@@ -242,6 +318,9 @@ export class AlojamientoComponent implements OnInit {
     }
   }
 
+  /**
+   * Al empezar a cargar el archivo .ts
+   */
   ngOnInit(): void {
     // Comprobar que hay una sesion de usuario
     if (localStorage.getItem('usuarioActual') != null) {
