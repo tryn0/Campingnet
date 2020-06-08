@@ -1,8 +1,5 @@
 import { Component, OnInit } from '@angular/core';
 
-/**
- * Componente usuario
- */
 @Component({
   selector: 'app-usuario',
   templateUrl: './usuario.component.html',
@@ -10,13 +7,9 @@ import { Component, OnInit } from '@angular/core';
 })
 export class UsuarioComponent implements OnInit {
 
-  /**
-   * Constructor de usuario
-   */
-  constructor() {}
+  constructor() { }
 
-  /**
-   * Al empezar a cargar el archivo .ts
-   */
-  ngOnInit(): void {}
+  ngOnInit(): void {
+  }
+
 }

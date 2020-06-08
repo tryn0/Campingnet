@@ -1,9 +1,6 @@
 import { Component, OnInit } from '@angular/core';
 import { CommonModule } from '@angular/common';
 
-/**
- * Componente Home
- */
 @Component({
   selector: 'app-home',
   templateUrl: './home.component.html',
@@ -11,19 +8,12 @@ import { CommonModule } from '@angular/common';
 })
 export class HomeComponent implements OnInit {
 
-  /**
-   * Variable para el control de mostrar eventos
-   */
   public mostrarEventos: boolean = false;
 
-  /**
-   * Constructor de Home
-   */
-  constructor() {}
+  constructor() {
 
-  /**
-   * JSON con las diapositivas del carrusel
-   */
+  }
+
   public slides = [
     {
       src: "assets/images/carrusel/bienvenida.jpg", alt: "Playa de bienvenida", texto: "Te damos la bienvenida"
@@ -39,9 +29,6 @@ export class HomeComponent implements OnInit {
     },
   ];
 
-  /**
-   * JSON con los servicios
-   */
   public servicios = [
     {
       texto: "Reparto de comida al alojamiento", precio: 1.99, horario: "13:00 - 23:00"
@@ -57,9 +44,6 @@ export class HomeComponent implements OnInit {
     },
   ];
 
-  /**
-   * JSON con los datos de los alrededores
-   */
   public alrededores = [
     {
       informacion: "Minas de Rodalquilar, ruta por las auténticas minas de Rodalquilar, Almería."
@@ -81,9 +65,6 @@ export class HomeComponent implements OnInit {
     },
   ];
 
-  /**
-   * JSON con los datos de eventos
-   */
   public listaEventos = [
     {
       evento: "Campeonato de futbol", info: "Cada domingo a las 18:00 se realizará un campeonato de futbol en las pistas de futbol y baloncesto."
@@ -99,23 +80,15 @@ export class HomeComponent implements OnInit {
     },
   ];
 
-  /**
-   * Función para mostrar la vista de los eventos
-   */
   eventos() {
     this.mostrarEventos = true;
   }
 
-  /**
-   * Función para ocultar la vista de los eventos
-   */
   atrasEventos() {
     this.mostrarEventos = false;
   }
 
-  /**
-   * Al empezar a cargar el archivo .ts
-   */
-  ngOnInit(): void {}
+  ngOnInit(): void {
+  }
 
 }

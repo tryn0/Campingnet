@@ -33,17 +33,9 @@
         <span class="mt-2" style="display: table; margin: auto;">¿No tienes cuenta? Registrate <b style="cursor: pointer;" [routerLink]="'/registrar'">aquí</b></span>
     </div>
     <ng-template #user>
-        <div *ngIf="existe != null; else redirect" class="justify-content-center mt-5">
+        <div class="justify-content-center mt-5">
             <span>Iniciando sesión...</span>
             <mat-spinner class="mt-3"></mat-spinner>
         </div>
-
-        <ng-template #redirect>
-            <div class="justify-content-center mt-5">
-                <span>Redirigiendo</span>
-                <mat-spinner class="mt-3"></mat-spinner>
-            </div>
-        </ng-template>
-
     </ng-template>
 </div>

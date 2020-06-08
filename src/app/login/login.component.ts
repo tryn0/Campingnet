@@ -6,9 +6,7 @@ import { Router } from "@angular/router";
 
 import { encriptar, desencriptar } from '../crypto-storage';
 
-/**
- * Componente Login
- */
+
 @Component({
   selector: 'app-login',
   templateUrl: './login.component.html',
@@ -16,43 +14,19 @@ import { encriptar, desencriptar } from '../crypto-storage';
 })
 export class LoginComponent implements OnInit {
 
-  /**
-   * Variable con el usuario actual
-   */
-  public userdata: string ;
+  public userdata: string;
 
-  /**
-   * Variable con el FormGroup (Formulario)
-   */
   public login: FormGroup;
 
-  /**
-   * Variable que comprueba si el usuario a iniciar sesión existe
-   */
-  public existe: any = null;
+  public existe: any;
 
-  /**
-   * Variable que controla la vista
-   */
   public comprobado: string;
 
-  /**
-   * Objeto usuario
-   */
   public usuario: Usuario;
 
-  /**
-   * Constructor de login
-   * @param http 
-   * @param fb 
-   * @param router 
-   */
+
   constructor(private http: HttpClient, public fb: FormBuilder, private router: Router) {
-    if (this.userdata == null) {
-      if(localStorage.getItem('usuarioActual') != null){
-        this.userdata = desencriptar(localStorage.getItem('usuarioActual'));
-      }
-    }
+    this.userdata = localStorage.getItem('usuarioActual');
 
     this.login = this.fb.group({
       email: ['', [Validators.required]],
@@ -61,9 +35,7 @@ export class LoginComponent implements OnInit {
 
   }
 
-  /**
-   * Función para mandar los datos introducidos (email y contraseña) al archivo login-usuario.php y comprobar si existe el usuario
-   */
+  // Función para mandar los datos introducidos (email y contraseña) al archivo login-usuario.php y comprobar si existe el usuario
   LogIn(){
     if(this.login.get('email').value != null && this.login.get('password').value != null){
       this.comprobado = null;
@@ -88,9 +60,6 @@ export class LoginComponent implements OnInit {
     
   }
 
-  /**
-   * Función para creal la sesión del usuario
-   */
   crearUsuario(){
     if(this.existe != null){
       // Si el usuario está en la BD (coincide email y pass) creo usuario y lo guardo localmente para mantener sesión iniciada
@@ -104,20 +73,16 @@ export class LoginComponent implements OnInit {
     }
   }
 
-  /**
-   * Función para volver atrás en el historial del navegador
-   */
   volver(){
     history.back();
   }
 
-  /**
-   * Al empezar a iniciar el archivo .ts
-   */
   ngOnInit(): void {
     // Si hay una sesión iniciada redirige a Inicio
     if(this.userdata != null){
+      //this.router.navigate(['/']);
       window.history.back();
     }
   }
+
 }

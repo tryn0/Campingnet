@@ -10,19 +10,10 @@ import { ReservasRegistrarComponent } from '../reservas-registrar/reservas-regis
 import { Usuario } from '../usuario/usuario';
 import { encriptar, desencriptar } from '../crypto-storage';
 
-/**
- * Interfaz DialogData
- */
 interface DialogData {
-  /**
-   * Dato email del usuario a reservar
-   */
   email: any;
 }
 
-/**
- * Cómo lee y muestra las fechas de los datePicker
- */
 export const DD_MM_YYYY_Format = {
   parse: {
       dateInput: 'DD/MM/YYYY',
@@ -35,9 +26,6 @@ export const DD_MM_YYYY_Format = {
   },
 };
 
-/**
- * Componente principal Reservas
- */
 @Component({
   selector: 'app-reservas',
   templateUrl: './reservas.component.html',
@@ -52,206 +40,68 @@ export const DD_MM_YYYY_Format = {
 })
 export class ReservasComponent implements OnInit {
 
-  /**
-   * Variable de sesión iniciada
-   */
+  // Variable de sesión iniciada
   public usuarioActual: string;
 
-  /**
-   * Variables del formulario 1
-   */
+  // Variables del formulario 1
   public fechas: FormGroup;
-  /**
-   * Variables del formulario 1
-   */
   public fecha1: string;
-  /**
-   * Variables del formulario 1
-   */
   public fecha2: string;
-  /**
-   * Variables del formulario 1
-   */
   public dias: number = 0;
-  /**
-   * Variables del formulario 1
-   */
   public alojamientosDisponibles: any;
-  /**
-   * Variables del formulario 1
-   */
   public info1: boolean = false;
-  /**
-   * Variables del formulario 1
-   */
   public fechaVal: boolean = false;
-  /**
-   * Variables del formulario 1
-   */
   public fechaMenos7: boolean = null;
-  /**
-   * Variables del formulario 1
-   */
   public multiplicador: number = 0;
 
-  /**
-   * Variables del formulario 2
-   */
+  // Variables del formulario 2
   public alojamiento: FormGroup;
-  /**
-   * Variables del formulario 2
-   */
   public tipos: string;
-  /**
-   * Variables del formulario 2
-   */
   public tipos2: any = [];
-  /**
-   * Variables del formulario 2
-   */
   public tipos22: any = [];
-  /**
-   * Variables del formulario 2
-   */
   public dato1: string;
-  /**
-   * Variables del formulario 2
-   */
   public dato2: string = 'Sombra o habitaciones';
-  /**
-   * Variables del formulario 2
-   */
   public arrayCaract1: any = [];
-  /**
-   * Variables del formulario 2
-   */
   public dato3: string;
-  /**
-   * Variables del formulario 2
-   */
   public dato4: string = 'Dimensión o Número maximo de personas';
-  /**
-   * Variables del formulario 2
-   */
   public arrayCaract2: any = [];
-  /**
-   * Variables del formulario 2
-   */
   public personas: number = 0;
-  /**
-   * Variables del formulario 2
-   */
   public precioAlojamiento: number = 0;
-  /**
-   * Variables del formulario 2
-   */
   public precioAlojamientoFinal: number = 0;
-  /**
-   * Variables del formulario 2
-   */
   public noAlojamiento: boolean = false;
 
-  /**
-   * Variables del formulario 3
-   */
+  // Variables del formulario 3
   public serviciosExtras: FormGroup;
-  /**
-   * Variables del formulario 3
-   */
   public servicios: any = [];
-  /**
-   * Variables del formulario 3
-   */
   public electricidad: boolean = null;
-  /**
-   * Variables del formulario 3
-   */
   public checkado: boolean = false;
-  /**
-   * Variables del formulario 3
-   */
   public personasExtras: number;
-  /**
-   * Variables del formulario 3
-   */
   public personasExtrasMenor: number;
-  /**
-   * Variables del formulario 3
-   */
   public personasExtrasMayor: number;
-  /**
-   * Variables del formulario 3
-   */
   public extras: any = [];
-  /**
-   * Variables del formulario 3
-   */
   public idAlojamientoRandom: number;
-  /**
-   * Variables del formulario 3
-   */
   public gentePermitida: number = 12;
-  /**
-   * Variables del formulario 3
-   */
   public totalPersonasparcela: number = 0;
-  /**
-   * Variables del formulario 3
-   */
   public preciosServicios: any;
-  /**
-   * Variables del formulario 3
-   */
   public preciosExtrasFinal: number = 0;
 
-  /**
-   * Variables del formulario 4
-   */
+  // Variables del formulario 4
   public usuario: FormGroup;
-  /**
-   * Variables del formulario 4
-   */
   public loginReserva: boolean = null;
 
-  /**
-   * Variable email
-   */
+
   public email: any;
-  /**
-   * Variable de la parcela 1
-   */
   public valor1: any = '';
-  /**
-   * Variable de la parcela 2
-   */
   public valor2: any = '';
-  /**
-   * Variable de persona
-   */
   public persona: Usuario;
-  /**
-   * Variable de comprobación si tiene la reserva hecha o no
-   */
   public reservaHecha: boolean = false;
-  /**
-   * Variable del ID de la reserva
-   */
   public reservaId: any = '';
   
-  /**
-   * Constructor de la reserva
-   * @param fb 
-   * @param http 
-   * @param dateAdapter 
-   * @param dialog 
-   */
   constructor(private fb: FormBuilder, private http: HttpClient, private dateAdapter: DateAdapter<Date>, public dialog: MatDialog) {
     this.dateAdapter.setLocale('es-ES');
   }
 
-  /**
-   * Mostrar o escondes (toggle) el mensaje de info del formulario de las fechas
-   */
+  // Mostrar o escondes (toggle) el mensaje de info del formulario de las fechas
   mostrarInfo1(){
     if(this.info1 == false){
       this.info1 = true;
@@ -260,9 +110,7 @@ export class ReservasComponent implements OnInit {
     }
   }
 
-  /**
-   * Obtiene listado de alojamientos si las fechas introducidas están correctas
-   */
+  // Obtiene listado de alojamientos si las fechas introducidas están correctas
   guardarFechas(){
     this.multiplicador = 0;
     this.noAlojamiento = false;
@@ -400,9 +248,7 @@ export class ReservasComponent implements OnInit {
     }
   }
 
-  /**
-   * Al escoger un tipo de alojamiento consulta en la BD la característica 1 de todos los alojamientos de ese tipo que estén disponibles entre las fechas indicadas al principio
-   */
+  // Al escoger un tipo de alojamiento consulta en la BD la característica 1 de todos los alojamientos de ese tipo que estén disponibles entre las fechas indicadas al principio
   getCaracteristica1(datos: string){
     this.noAlojamiento = false;
 
@@ -491,9 +337,6 @@ export class ReservasComponent implements OnInit {
     }, error => console.log(error));
   }
 
-  /**
-   * Función para validar el alojamiento, Validators del FormBuilder
-   */
   validacionAlojamiento(){
     return (): ValidationErrors => {
       if(this.alojamiento.get('tipo').value == 'Bungalow'){
@@ -516,9 +359,7 @@ export class ReservasComponent implements OnInit {
     };
   }
 
-  /**
-   * Al escoger la característica 1 consulta en la BD todas las características 2 que hay disponibles para ese tipo de alojamientos con la característica 1 elegida
-   */
+  // Al escoger la característica 1 consulta en la BD todas las características 2 que hay disponibles para ese tipo de alojamientos con la característica 1 elegida
   getCaracteristica2(datos: string){
     let params2: any;
     if(this.tipos == 'parcela'){
@@ -545,10 +386,7 @@ export class ReservasComponent implements OnInit {
     }, error => console.log(error));
   }
 
-  /**
-   * Función para controlar el seteo de la cantidad de personas en la reserva
-   */
-  alojamientoElegido(){
+  alojamientoElegido(){ // Seteo de cantidad personas en la reserva
     Object.entries(this.serviciosExtras.value).forEach(entries => {
       //console.log(entries)
       if(entries[0] == 'num2' || entries[0] == 'num3' || entries[0] == 'num4') {
@@ -577,9 +415,7 @@ export class ReservasComponent implements OnInit {
     }
   }
 
-  /**
-   * Función para validar las fechas, si la fecha de salida es posterior a la de entrada no dará error, en cambio si la fecha de salida es el mismo día de entrada o anterior dará error y te pedirá que cambies de fecha
-   */
+  // Función para validar las fechas, si la fecha de salida es posterior a la de entrada no dará error, en cambio si la fecha de salida es el mismo día de entrada o anterior dará error y te pedirá que cambies de fecha
   validacionFecha(){
       return (): ValidationErrors => {
         if(this.fechas.get('fechaSalida').value != ''){
@@ -611,9 +447,7 @@ export class ReservasComponent implements OnInit {
     };
   }
 
-  /**
-   * Al elegir un servicio extra, desbloquea el input de al lado para poder introducir la cantidad
-   */
+  // Al elegir un servicio extra, desbloquea el input de al lado para poder introducir la cantidad
   onChange(a){
     if(this.serviciosExtras.get('servicio'+a['idServicio']).value){
       this.serviciosExtras.get('num'+a['idServicio']).enable();
@@ -624,9 +458,9 @@ export class ReservasComponent implements OnInit {
     }    
   }
 
-  /**
-   * Validación para el FormGroup de serviciosExtras, comprueba si se ha marcado algún checkbox y si se ha introducido una cantidad en su correspondiente <input>, si no se ha escrito crea un error para que no pueda continuar el formulario
-   */
+  /* Validación para el FormGroup de serviciosExtras,
+  comprueba si se ha marcado algún checkbox y si se ha introducido una cantidad 
+  en su correspondiente <input>, si no se ha escrito crea un error para que no pueda continuar el formulario*/
   validacionServicio(){
     return (): ValidationErrors => {
       let totalPersonasparcela2: number = 0;
@@ -658,7 +492,8 @@ export class ReservasComponent implements OnInit {
   }
 
   /**
-   * Recopila información de todos los formularios y consulta a la base de datos la información necesaria para crear un desglose de precios e información con sus precios
+   * * Recopila información de todos los formularios y consulta a la base de datos la información necesaria
+   * * para crear un desglose de precios e información con sus precios
    */
   addServicios(){
     this.preciosExtrasFinal = 0;
@@ -685,6 +520,10 @@ export class ReservasComponent implements OnInit {
     .set('caract1',this.valor1)
     .set('caract2', this.valor2);
 
+    /**
+     * ? https://trello.com/b/4xofW6oE
+     */
+
     // Obtención de los precios
     this.http.post('http://34.206.59.221/reserva.php', params2).subscribe(data =>{
       if(data != null && data!= 0){ // Si recibe algún alojamiento
@@ -702,6 +541,7 @@ export class ReservasComponent implements OnInit {
               k = k.set(element[1], element[2]);
             }
             this.precioAlojamientoFinal = ((this.precioAlojamiento*this.dias)*this.multiplicador);
+            //console.log('Precio alojamiento final = ('+this.precioAlojamiento+'*'+this.dias+')*'+this.multiplicador);
             this.http.post('http://34.206.59.221/reserva.php', k).subscribe(data =>{
               if(data != null && data != 0){ // Si recibe algún dato
                 this.preciosServicios = data;
@@ -726,19 +566,13 @@ export class ReservasComponent implements OnInit {
     }, error => console.log(error)); 
   }
 
-  /**
-   * Función para confirmar la reserva, llama a la función reserva()
-   */
   confirmarReserva(){
     if (this.usuarioActual != null) {
       this.reserva();
     }
   }
 
-  /**
-   * Función para guardar la reserva en la BD (realiza la reserva)
-   */
-  reserva() {
+  reserva() { // Si confirma la reserva, y tiene una sesión iniciada
     if(this.usuarioActual != null) {
       let params2: any;
       let totalPersonas: number;
@@ -784,6 +618,9 @@ export class ReservasComponent implements OnInit {
           params2 = params2.set(element[1], element[2]);
         }
 
+        /**
+         * * Esto es para guardar la reserva en la BD
+         */
         this.http.post('http://34.206.59.221/reserva.php', params2).subscribe(data => {
           if (data != null && data != 0) { // Si recibe algún alojamiento
             this.reservaId = data;
@@ -798,9 +635,9 @@ export class ReservasComponent implements OnInit {
   }
 
   /**
-   * Popup para iniciar sesión y hacer la reserva
+   * * Popup para iniciar sesión y hacer la reserva
    */
-  logIn(){
+  logIn(){ // Si confirma la reserva, NO tiene una sesión iniciada y tiene una cuenta creada
     const dialogRef = this.dialog.open(ReservasLoginComponent, {
       data: {}
     });
@@ -823,9 +660,9 @@ export class ReservasComponent implements OnInit {
   }
 
   /**
-   * Popup para registrarse y hacer la reserva
+   * * Popup para registrarse y hacer la reserva
    */
-  signIn(){
+  signIn(){// Si confirma la reserva, NO tiene una sesión iniciada y NO tiene una cuenta creada
     const dialogRef = this.dialog.open(ReservasRegistrarComponent, {
       data: {}
     });
@@ -848,9 +685,6 @@ export class ReservasComponent implements OnInit {
   }
 
 
-  /**
-   * Al iniciar el archivo .ts
-   */
   ngOnInit(): void {
     // Compruebo si hay un usuario con sesión iniciada
     if (this.usuarioActual == null) {

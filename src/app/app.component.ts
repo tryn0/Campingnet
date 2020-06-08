@@ -7,9 +7,7 @@ import { encriptar, desencriptar } from './crypto-storage';
 import { MatDrawer } from '@angular/material/sidenav';
 import { CommonModule } from '@angular/common';
 
-/**
- * Componente principal app
- */
+
 @Component({
   selector: 'app-root',
   templateUrl: './app.component.html',
@@ -18,37 +16,16 @@ import { CommonModule } from '@angular/common';
 
 export class AppComponent {
 
-  /**
-   * Varibale para controlar el dashboard
-   */
   public dashboard: boolean = false;
 
-  /**
-   * Título de la página
-   */
-  public title = 'CampingNet';
+  title = 'CampingNet';
 
-  /**
-   * Datos de la sesión de usuario actual
-   */
   public usuarioActual: any = null;
 
-  /**
-   * Variable de mensaje de cookies
-   */
   public mensaje: any;
 
-  /**
-   * Variable de la IP a mostrar en el footer
-   */
   public ip: string;
 
-  /**
-   * Constructor de app
-   * @param http 
-   * @param _snackBar 
-   * @param route 
-   */
   constructor(private http: HttpClient, private _snackBar: MatSnackBar, private route: Router) {    
     // Para obtener la IP
     this.http.get("http://api.ipify.org/?format=json").subscribe((res:any) =>{
@@ -70,17 +47,11 @@ export class AppComponent {
     }
   }
 
-  /**
-   * Función para cerrar sesión
-   */
   logOff(){
     localStorage.removeItem("usuarioActual");
     window.location.reload();
   }
 
-  /**
-   * Al iniciar el archivo .ts
-   */
   ngOnInit(): void {
     this.route.events.subscribe((e) => {
       if (e instanceof NavigationEnd) {
@@ -93,10 +64,7 @@ export class AppComponent {
     });
   }
 
-  /**
-   * Cuando termina de cargar la vista del componente app (para el footer siempre al final)
-   */
-  ngAfterViewInit(): void {
+  ngAfterViewInit(): void { // Footer siempre al final
     let cuerpo: number = document.getElementById('cuerpo').scrollHeight;
     let documento: number = document.documentElement.scrollHeight;
     let toolbar: number = document.getElementById('toolbar').clientHeight;
