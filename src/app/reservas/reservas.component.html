@@ -205,9 +205,10 @@
     <div class="container text-center mt-5">
         <h5 class="display-4">La reserva se ha completado.</h5>
         <p class="mb-0">El ID de su reserva es: <b>{{reservaId}}</b></p>
-        <small class="mt-0">Guarde dicho ID, se le pedirá al entrar al camping.</small>
+        <small class="mt-0">Guarde dicho ID, se le podría pedir al entrar al camping.</small>
         <p>Fecha de entrada al camping: <b>{{fecha1}}</b></p>
         <p>Hora de entrada al camping: <b>12:00</b></p>
+        <p *ngIf="errorCorreo">La reserva se ha completado, pero ha habido un error con el sistema de correo electrónico, para cualquier duda <span [routerLink]="'contact'">contáctenos</span></p>
         <br>
         <a href="/inicio" style="text-decoration: none; color: inherit;">Volver a inicio</a>
     </div>

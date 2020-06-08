@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject, ɵConsole } from '@angular/core';
 import { FormBuilder, FormGroup, Validators, FormControl, ValidationErrors } from '@angular/forms';
-import { HttpClient, HttpParams } from '@angular/common/http';
+import { HttpClient, HttpParams, HttpHeaders } from '@angular/common/http';
 import { DateAdapter, MAT_DATE_FORMATS, MAT_DATE_LOCALE } from '@angular/material/core';
 import { MomentDateAdapter, MAT_MOMENT_DATE_ADAPTER_OPTIONS } from '@angular/material-moment-adapter';
 import * as moment from 'moment/moment';
@@ -9,6 +9,7 @@ import { ReservasLoginComponent } from '../reservas-login/reservas-login.compone
 import { ReservasRegistrarComponent } from '../reservas-registrar/reservas-registrar.component';
 import { Usuario } from '../usuario/usuario';
 import { encriptar, desencriptar } from '../crypto-storage';
+import { IfStmt } from '@angular/compiler';
 
 interface DialogData {
   email: any;
@@ -96,6 +97,8 @@ export class ReservasComponent implements OnInit {
   public persona: Usuario;
   public reservaHecha: boolean = false;
   public reservaId: any = '';
+
+  public errorCorreo: boolean = false;
   
   constructor(private fb: FormBuilder, private http: HttpClient, private dateAdapter: DateAdapter<Date>, public dialog: MatDialog) {
     this.dateAdapter.setLocale('es-ES');
@@ -563,7 +566,7 @@ export class ReservasComponent implements OnInit {
           }
         }, error => console.log(error));
       }
-    }, error => console.log(error)); 
+    }, error => console.log(error));
   }
 
   confirmarReserva(){
@@ -625,14 +628,15 @@ export class ReservasComponent implements OnInit {
           if (data != null && data != 0) { // Si recibe algún alojamiento
             this.reservaId = data;
             this.reservaHecha = true;
+
             let jsonReserva = {
               persona: {
                 email: this.persona.email, 
                 nombre: this.persona.nombre
               }, 
               fechas: {
-                entrada: this.fechas.get('fechaEntrada').value, 
-                salida: this.fechas.get('fechaSalida').value
+                entrada: (this.fechas.get('fechaEntrada').value).format('YYYY-MM-DD'), 
+                salida: (this.fechas.get('fechaSalida').value).format('YYYY-MM-DD')
               },
               datosReserva: {
                 alojamiento: this.alojamiento.get('tipo').value,
@@ -640,13 +644,28 @@ export class ReservasComponent implements OnInit {
                 precioTotalFinal: (this.precioAlojamientoFinal + this.preciosExtrasFinal).toFixed(2)
               }
             };
-            window.location.href = "http://us-central1-campingnet-pi.cloudfunctions.net/sendMail?reserva="+JSON.stringify(jsonReserva);
-            /*this.http.get(("http://us-central1-campingnet-pi.cloudfunctions.net/sendMail?reserva="+JSON.stringify(jsonReserva))).subscribe(data => {
-              console.log(data)
-              if(data === 1) {
-                this.router.navigate(['/']);
+
+            let jsonEncriptado = encriptar(JSON.stringify(jsonReserva));
+            //console.log(JSON.stringify(jsonReserva))
+            console.log(jsonEncriptado)
+
+            const httpOptions = {
+              headers: new HttpHeaders({
+                'Content-Type': 'application/x-www-form-urlencoded', 
+                'Access-Control-Allow-Origin': '*',
+                'Access-Control-Allow-Headers': 'X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method',
+                'Access-Control-Allow-Methods': 'GET, POST',
+                'Allow': 'GET, POST'
+              })
+            };
+
+            let datos = new HttpParams()
+            .set('reserva', jsonEncriptado);
+            this.http.post("http://us-central1-campingnet-pi.cloudfunctions.net/reservaConfirmacion", datos, httpOptions).subscribe(data => {
+              if(data != '1') {
+                this.errorCorreo = true;
               }
-            });*/
+            });
           }
         }, error => console.log(error));
       }else{
