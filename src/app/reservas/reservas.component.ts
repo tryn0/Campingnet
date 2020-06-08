@@ -625,6 +625,28 @@ export class ReservasComponent implements OnInit {
           if (data != null && data != 0) { // Si recibe algún alojamiento
             this.reservaId = data;
             this.reservaHecha = true;
+            let jsonReserva = {
+              persona: {
+                email: this.persona.email, 
+                nombre: this.persona.nombre
+              }, 
+              fechas: {
+                entrada: this.fechas.get('fechaEntrada').value, 
+                salida: this.fechas.get('fechaSalida').value
+              },
+              datosReserva: {
+                alojamiento: this.alojamiento.get('tipo').value,
+                idReserva: this.reservaId,
+                precioTotalFinal: (this.precioAlojamientoFinal + this.preciosExtrasFinal).toFixed(2)
+              }
+            };
+            window.location.href = "http://us-central1-campingnet-pi.cloudfunctions.net/sendMail?reserva="+JSON.stringify(jsonReserva);
+            /*this.http.get(("http://us-central1-campingnet-pi.cloudfunctions.net/sendMail?reserva="+JSON.stringify(jsonReserva))).subscribe(data => {
+              console.log(data)
+              if(data === 1) {
+                this.router.navigate(['/']);
+              }
+            });*/
           }
         }, error => console.log(error));
       }else{
