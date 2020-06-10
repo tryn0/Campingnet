@@ -52,13 +52,27 @@
     display: inline-block;
     font-size: 3rem;
     color: #d3d3d3;
-  }
-  .full {
+}
+.full {
     color: rgb(255, 217, 5);
-  }
-  .half {
+}
+.half {
     position: absolute;
     display: inline-block;
     overflow: hidden;
     color: rgb(255, 217, 5);
-  }
+}
+
+/* Tamaño estrllas puntuación para pantalla con 425px máximo de ancho */
+@media only screen and (max-width: 425px) {
+    .star{
+        font-size: 2rem;
+    }
+}
+
+/* Tamaño estrllas puntuación para pantalla con 320px máximo de ancho */
+@media only screen and (max-width: 320px) {
+    .star{
+        font-size: 1.5rem;
+    }
+}
