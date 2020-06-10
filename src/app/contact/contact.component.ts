@@ -97,13 +97,13 @@ export class ContactComponent implements OnInit {
                 console.log(data);
                 if(data != '1') {
                   this.errorCorreo = true;
-                  /*setTimeout(()=>{ // Redireccion al cabo de 3 segundos
+                  setTimeout(()=>{ // Redireccion al cabo de 3 segundos
                     this.router.navigate(['/inicio']);
-                  }, 3000);*/
+                  }, 3000);
                 }else{
-                  /*setTimeout(()=>{ // Redireccion al cabo de 1 segundo y medio
+                  setTimeout(()=>{ // Redireccion al cabo de 1 segundo y medio
                     this.router.navigate(['/inicio']);
-                  }, 1500);*/
+                  }, 1500);
                 }
               });          
             }

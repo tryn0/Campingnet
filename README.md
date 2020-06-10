@@ -77,6 +77,18 @@ npm install
 ```
 Este comando instalará todas las dependencias del proyecto en la carpeta node_modules.
 
+La carpeta functions no hace falta, esta carpeta es sencillamente el lugar donde están las cloud functions, pero como ya están desplegadas en la nube no hace falta dicha carpeta, la tengo en el repositorio como parte del código fuente.
+Aún así para desplegar las cloud functions se tiene que estar en la raíz de functions y ejecutar:
+```
+firebase deploy
+```
+Aunque previamente se tiene que ejecutar:
+```
+firebase login
+```
+E identificarse en la web de firebase, como esas cloud functions están en "mi nube" nadie más podrá modificarlas.
+
+
 ## Despliegue de la web app
 Una vez se hayan instalado las dependencias, se compila y lanza la app ejecutando en la raíz del proyecto a través de una terminal:
 ```
@@ -160,6 +172,17 @@ por
 crypto = require('crypto-js');
 ```
 Yo copié la línea, y modifiqué la copia comentando la original, por si en un futuro diese problemas.  
+
+
+### Seguridad
+Para poder usar la web app con total seguridad sugiero cambiar las claves secretas ('Pi7@') de encriptación y desencriptación ubicadas en:
+```
+Campingnet/src/app/crypto-storage.ts
+```
+Campingnet/functions/index.js
+```
+
+Yo dejaré esas mismas claves como modo de muestra, pero en mi web app desplegada usaré otras.
 
 ---
 
