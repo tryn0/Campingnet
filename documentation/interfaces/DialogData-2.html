@@ -61,7 +61,7 @@
             <h3>File</h3>
         </p>
         <p class="comment">
-            <code>src/app/reservas-login/reservas-login.component.ts</code>
+            <code>src/app/reservas-registrar/reservas-registrar.component.ts</code>
         </p>
 
             <p class="comment">
@@ -128,7 +128,7 @@
 
                             <tr>
                                 <td class="col-md-4">
-                                    <div class="io-description"><p>Dato email del usuario a iniciar sesión para reservar</p>
+                                    <div class="io-description"><p>Dato email del usuario a registrarse para reservar</p>
 </div>
                                 </td>
                             </tr>
@@ -146,41 +146,42 @@ import { MatDialogRef, MAT_DIALOG_DATA } from &#x27;@angular/material/dialog&#x2
 import { Usuario } from &#x27;../usuario/usuario&#x27;;
 
 import { encriptar, desencriptar } from &#x27;../crypto-storage&#x27;;
+import { MustMatch } from &#x27;../must-match.validator&#x27;;
 
 /**
  * Interfaz DialogData
  */
 interface DialogData {
   /**
-   * Dato email del usuario a iniciar sesión para reservar
+   * Dato email del usuario a registrarse para reservar
    */
   email: string;
 }
 
 /**
- * Componente reservas-login
+ * Componente reservas-registrar
  */
 @Component({
-  selector: &#x27;app-reservas-login&#x27;,
-  templateUrl: &#x27;./reservas-login.component.html&#x27;,
-  styleUrls: [&#x27;./reservas-login.component.css&#x27;]
+  selector: &#x27;app-reservas-registrar&#x27;,
+  templateUrl: &#x27;./reservas-registrar.component.html&#x27;,
+  styleUrls: [&#x27;./reservas-registrar.component.css&#x27;]
 })
-export class ReservasLoginComponent implements OnInit {
+export class ReservasRegistrarComponent implements OnInit {
 
   /**
-   * Booleano para controlar si existe el usuario o coincide con la BD
+   * Variable con los datos del usuario con sesión iniciada
    */
-  public comprobado: boolean &#x3D; null;
+  public userdata: string;
 
   /**
-   * Formulario para el inicio de sesión
+   * Formulario de registro
    */
-  public login: FormGroup;
+  public registro: FormGroup;
 
   /**
-   * Variable si encuentra al usuario a iniciar sesión
+   * Variable que controla si se ha registrado o no
    */
-  public existe: any;
+  public registrado: string;
 
   /**
    * Objeto usuario
@@ -188,44 +189,163 @@ export class ReservasLoginComponent implements OnInit {
   public usuario: Usuario;
 
   /**
-   * Constructor de reservas-login
-   * @param dialogRef 
+   * Variables para los errores del formulario
+   */
+  public aliasVal: boolean &#x3D; null;
+  /**
+   * Variables para los errores del formulario
+   */
+  public dniVal: boolean &#x3D; null;
+  /**
+   * Variables para los errores del formulario
+   */
+  public nombreVal: boolean &#x3D; null;
+  /**
+   * Variables para los errores del formulario
+   */
+  public telVal: boolean &#x3D; null;
+  /**
+   * Variables para los errores del formulario
+   */
+  public emailVal: boolean &#x3D; null;
+  /**
+   * Variables para los errores del formulario
+   */
+  public passVal: boolean &#x3D; null;
+  /**
+   * Variables para los errores del formulario
+   */
+  public pass2Val: boolean &#x3D; null;
+
+  /**
+   * Variables de error
+   */
+  public errorEmail: boolean &#x3D; null;
+  /**
+   * Variables de error
+   */
+  public errorDni: boolean &#x3D; null;
+  /**
+   * Variables de error
+   */
+  public errorAlias: boolean &#x3D; null;
+
+  /**
+   * Constructor de reservas-registrar
+   * @param dialogRef
    * @param data 
    * @param fb 
    * @param http 
    */
-  constructor(public dialogRef: MatDialogRef&lt;ReservasLoginComponent&gt;, @Inject(MAT_DIALOG_DATA) public data: DialogData, private fb: FormBuilder, private http: HttpClient) {
-    this.login &#x3D; this.fb.group({
-      email: [&#x27;&#x27;, [Validators.required]],
-      password: [&#x27;&#x27;,  Validators.required],
-    });
+  constructor(public dialogRef: MatDialogRef&lt;ReservasRegistrarComponent&gt;, @Inject(MAT_DIALOG_DATA) public data: DialogData, private fb: FormBuilder, private http: HttpClient) {
+    this.registro &#x3D; this.fb.group({
+      alias: [&#x27;&#x27;, [Validators.required, Validators.maxLength(25)]],
+      dni: [&#x27;&#x27;, [Validators.required, Validators.pattern(&#x27;^[0-9]{8,8}[A-Za-z]$&#x27;)]],
+      nombreCompleto: [&#x27;&#x27;, Validators.required],
+      telefono: [&#x27;&#x27;, [Validators.required, Validators.pattern(&#x27;^[6-7][0-9]{8}$&#x27;)]],
+      email: [&#x27;&#x27;, [Validators.required, Validators.pattern(&quot;^[a-zA-Z0-9.!#$%&amp;&#x27;*+/&#x3D;?^_&#x60;{|}~-]+@[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])(?:\.[a-zA-Z0-9](?:[a-zA-Z0-9-]{0,61}[a-zA-Z0-9])?)$&quot;)]],
+      password: [&#x27;&#x27;, [Validators.minLength(8), Validators.required, Validators.pattern(&#x27;^(?&#x3D;.*?[A-Z])(?&#x3D;.*?[a-z])(?&#x3D;.*?[0-9]).{8,}$&#x27;)]],
+      password2: [&#x27;&#x27;,  Validators.required],
+    }, {validator: MustMatch(&#x27;password&#x27;, &#x27;password2&#x27;)});
   }
 
   /**
-   * Formulario para iniciar sesión
+   * Función para registrar al usuario
    */
-  LogIn(){
-    let fd: any &#x3D; new FormData();
-    fd.append(&#x27;email&#x27;, this.login.get(&#x27;email&#x27;).value);
-    fd.append(&#x27;password&#x27;, this.login.get(&#x27;password&#x27;).value);
+  signIn(){
+    if (!this.registro.get(&#x27;alias&#x27;).hasError(&#x27;required&#x27;) &amp;&amp; !this.registro.get(&#x27;alias&#x27;).hasError(&#x27;maxlength&#x27;)) {
+      this.aliasVal &#x3D; true;
+      if (!this.registro.get(&#x27;dni&#x27;).hasError(&#x27;required&#x27;) &amp;&amp; !this.registro.get(&#x27;dni&#x27;).hasError(&#x27;pattern&#x27;)) {
+        this.dniVal &#x3D; true;
+        if (!this.registro.get(&#x27;nombreCompleto&#x27;).hasError(&#x27;required&#x27;)) {
+          this.nombreVal &#x3D; true;
+          if (!this.registro.get(&#x27;telefono&#x27;).hasError(&#x27;required&#x27;) &amp;&amp; !this.registro.get(&#x27;telefono&#x27;).hasError(&#x27;pattern&#x27;)) {
+            this.telVal &#x3D; true;
+            if (!this.registro.get(&#x27;email&#x27;).hasError(&#x27;required&#x27;) &amp;&amp; !this.registro.get(&#x27;email&#x27;).hasError(&#x27;pattern&#x27;)) {
+              this.emailVal &#x3D; true;
+              if (!this.registro.get(&#x27;password&#x27;).hasError(&#x27;required&#x27;) &amp;&amp; !this.registro.get(&#x27;password&#x27;).hasError(&#x27;pattern&#x27;)) {
+                this.passVal &#x3D; true;
+                if (!this.registro.get(&#x27;password2&#x27;).errors) {
+                  this.pass2Val &#x3D; true;
+                  this.registrado &#x3D; null;
 
-    this.http.post&lt;any&gt;(&#x27;http://34.206.59.221/login-usuario.php&#x27;, fd).subscribe(data &#x3D;&gt;{
-      if(data !&#x3D; 0){ // Si encuentra el usuario y la pass coincide
-        this.existe &#x3D; data[0];
-        this.usuario &#x3D; new Usuario(this.existe.idUsuario, this.existe.email, this.existe.nif_usuario, this.existe.nombre_usuario, this.existe.rol, this.existe.telefono, this.existe.alias_usuario);
-        localStorage.setItem(&#x27;usuarioActual&#x27;,encriptar(this.usuario));
-        this.dialogRef.close(this.usuario);
-      }else{ // No se encuentra el usuario o la pass no coincide
-        this.comprobado &#x3D; false;
+                  //Para cambiar primera letra de nombre y cada apellido en mayúscula
+                  var nombreUser &#x3D; &#x27;&#x27;;
+                  for (let indice &#x3D; 0; indice &lt; this.registro.get(&#x27;nombreCompleto&#x27;).value.split(/\s+/).length; indice++) {
+                    const element &#x3D; this.registro.get(&#x27;nombreCompleto&#x27;).value.split(/\s+/)[indice];
+                    if (element.length &gt; 0) {
+                      nombreUser +&#x3D; element[0].toUpperCase() + element.slice(1) + &#x27; &#x27;;
+                    }
+                  }
+
+                  //Letra del DNI en mayúscula
+                  let dniUser &#x3D; this.registro.get(&#x27;dni&#x27;).value.slice(0, this.registro.get(&#x27;dni&#x27;).value.length - 1) + this.registro.get(&#x27;dni&#x27;).value[this.registro.get(&#x27;dni&#x27;).value.length - 1].toUpperCase();
+
+                  //Preparación de variables del formulario para enviar a la BD a través de PHP
+                  let fd: any &#x3D; new FormData();
+                  fd.append(&#x27;alias&#x27;, this.registro.get(&#x27;alias&#x27;).value);
+                  fd.append(&#x27;dni&#x27;, dniUser);
+                  fd.append(&#x27;nombre_usuario&#x27;, nombreUser);
+                  fd.append(&#x27;telefono&#x27;, this.registro.get(&#x27;telefono&#x27;).value);
+                  fd.append(&#x27;email&#x27;, this.registro.get(&#x27;email&#x27;).value);
+                  fd.append(&#x27;password&#x27;, this.registro.get(&#x27;password&#x27;).value);
+
+                  //Envío de variables a archivo PHP
+                  this.http.post &lt; any &gt; (&#x27;http://34.206.59.221/registro-usuario.php&#x27;, fd).subscribe(data &#x3D;&gt; {
+                     if(data &#x3D;&#x3D; &#x27;email&#x27;){ //Si no se pudo registrar el usuario (dni, telefono o email repetido u otro error ajeno a los datos)
+                      this.registrado &#x3D; &#x27;false&#x27;;
+                      this.errorEmail &#x3D; true;
+                    } else if(data &#x3D;&#x3D; &#x27;dni&#x27;){
+                      this.registrado &#x3D; &#x27;false&#x27;;
+                      this.errorDni &#x3D; true;
+                    } else if(data &#x3D;&#x3D; &#x27;alias&#x27;){
+                      this.registrado &#x3D; &#x27;false&#x27;;
+                      this.errorAlias &#x3D; true;
+                    }else{ // El registro ha ido bien (no existia en la BD un usuario con mismo DNI, teléfono o email)
+                      // Creacion del usuario, sino hace falta eliminar esta parte, aunque lo tengo para mostrar el nombre de Bienvenida y crear la sesión de sesion iniciada
+                      this.usuario &#x3D; new Usuario(data[0].idUsuario, this.registro.get(&#x27;email&#x27;).value, dniUser, nombreUser, &#x27;cliente&#x27;, this.registro.get(&#x27;telefono&#x27;).value, this.registro.get(&#x27;alias&#x27;).value);
+                      this.registrado &#x3D; &#x27;true&#x27;;
+                      this.errorEmail &#x3D; null;
+                      this.errorDni &#x3D; null;
+                      this.errorAlias &#x3D; null;
+                      localStorage.setItem(&#x27;usuarioActual&#x27;,encriptar(this.usuario));
+                      this.dialogRef.close(this.usuario);
+                    }
+                  }, error &#x3D;&gt; console.log(error));
+                } else { // Si el campo password2 (confirmación de contraseña) tiene algún error (requerido o no coincide con password)
+                  this.pass2Val &#x3D; false;
+                }
+              } else { //Si el campo password (contraseña) tiene algún error (requerido o no contiene carácteres necesarios)
+                this.passVal &#x3D; false;
+              }
+            } else { //Si el campo email tiene algún error (requerido o patrón) patrón aun no funciona
+              this.emailVal &#x3D; false;
+            }
+          } else { //Si el campo teléfono tiene algún error (requerido o patrón [9 dígitos, empieza por 6 o 7])
+            this.telVal &#x3D; false;
+          }
+        } else { //Si el campo nombre y apellidos tiene algún error (requerido)
+          this.nombreVal &#x3D; false;
+        }
+      } else { //Si el campo DNI tiene algún error (requerido y 8 dígitos con una letra al final)
+        this.dniVal &#x3D; false;
       }
-    }, error &#x3D;&gt; console.log(error)
-    );
+    }else { // Si el campo alias tiene algún error (requerido)
+      this.aliasVal &#x3D; false;
+    }
   }
 
   /**
    * Al empezar a cargar el archivo .ts
    */
-  ngOnInit() {}
+  ngOnInit(): void {
+    if(localStorage.getItem(&#x27;usuarioActual&#x27;) !&#x3D; null){
+      this.userdata &#x3D; desencriptar(localStorage.getItem(&#x27;usuarioActual&#x27;));
+    }
+    if(this.userdata !&#x3D; null){
+      window.history.back();
+    }
+  }
 }</code></pre>
     </div>
 </div>

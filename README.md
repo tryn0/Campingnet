@@ -6,6 +6,8 @@ Aplicación web desarrollada en Angular para reservar alojamiento en un camping.
 La vista de la app web tiene bootstrap y módulos de Angular (Flex-Layout, Angular Material, moment e Ignite-UI)  
 La comunicación con la base de datos se hace a través de PHP.
 
+Para los automails de aviso de reserva, registro y de contacto he usado Firebase, concretamente su apartado de Cloud Functions, no es más que unas funciones desplegadas en la nube y junto con los módulos nodemailer y cors es capaz de enviar los emails.
+
 ## Creación del proyecto
 Para crear el proyecto seguí estos pasos:  
 + Abrí una terminal NodeJS y ejecuté: 
@@ -54,6 +56,12 @@ Para la paginación usé NGX-Pagination:
 npm install ngx-pagination --save
 ```
 
+Para los automails uso firebase (tools y functions):
+```
+npm install -g firebase-tools
+```
+[Tutorial seguido para empezar a crear las funciones](https://medium.com/@edigleyssonsilva/cloud-functions-for-firebase-sending-e-mail-1f2631d1022e)
+
 Y con este último ya estarían todas las dependencias externas instaladas.
 
 ## Proceso de instalación
@@ -68,6 +76,18 @@ Clonar el repositorio donde se quiera tener el proyecto. En la raíz del proyect
 npm install
 ```
 Este comando instalará todas las dependencias del proyecto en la carpeta node_modules.
+
+La carpeta functions no hace falta, esta carpeta es sencillamente el lugar donde están las cloud functions, pero como ya están desplegadas en la nube no hace falta dicha carpeta, la tengo en el repositorio como parte del código fuente.
+Aún así para desplegar las cloud functions se tiene que estar en la raíz de functions y ejecutar:
+```
+firebase deploy
+```
+Aunque previamente se tiene que ejecutar:
+```
+firebase login
+```
+E identificarse en la web de firebase, como esas cloud functions están en "mi nube" nadie más podrá modificarlas.
+
 
 ## Despliegue de la web app
 Una vez se hayan instalado las dependencias, se compila y lanza la app ejecutando en la raíz del proyecto a través de una terminal:
@@ -84,6 +104,7 @@ Este proyecto ha sido creado con:
 - [Moment](https://momentjs.com/) versión 2.25.1
 - [CryptoJS](https://github.com/brix/crypto-js) versión 4.0.0
 - [NGX-Pagination](https://github.com/michaelbromley/ngx-pagination) versión 5.0.0 [NGX-Pagination en npmjs.com](https://www.npmjs.com/package/ngx-pagination)
+- [Firebase](https://firebase.google.com/?hl=es)
 
 
 ## Errores conocidos y sus soluciones
@@ -151,6 +172,18 @@ por
 crypto = require('crypto-js');
 ```
 Yo copié la línea, y modifiqué la copia comentando la original, por si en un futuro diese problemas.  
+
+
+### Seguridad
+Para poder usar la web app con total seguridad sugiero cambiar las claves secretas ('Pi7@') de encriptación y desencriptación ubicadas en:
+```
+Campingnet/src/app/crypto-storage.ts
+```
+```
+Campingnet/functions/index.js
+```
+
+Yo dejaré esas mismas claves como modo de muestra, pero en mi web app desplegada usaré otras.
 
 ---
 
