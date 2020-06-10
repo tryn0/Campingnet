@@ -1,5 +1,5 @@
 import { Component, OnInit } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpHeaders, HttpParams } from '@angular/common/http';
 import { FormGroup, Validators, FormBuilder } from '@angular/forms';
 import { Usuario } from '../usuario/usuario';
 import { Router } from "@angular/router";
@@ -40,6 +40,8 @@ export class RegistrarComponent implements OnInit {
   public errorEmail: boolean = null;
   public errorDni: boolean = null;
   public errorAlias: boolean = null;
+
+  public errorCorreo: boolean = false;
 
   constructor(private http: HttpClient, public fb: FormBuilder, private router: Router) {
 
@@ -133,10 +135,43 @@ export class RegistrarComponent implements OnInit {
                       this.errorDni = null;
                       this.errorAlias = null;
 
-                      localStorage.setItem('usuarioActual', encriptar(this.usuario));
-                      this.router.navigate(['/registrar']);
-                      window.location.reload();
-  
+                      let jsonReserva = {
+                        persona: {
+                          email: this.usuario.email, 
+                          nombre: this.usuario.nombre
+                        }
+                      };
+          
+                      let jsonEncriptado = encriptar(JSON.stringify(jsonReserva));
+                      console.log(jsonEncriptado)
+          
+                      const httpOptions = {
+                        headers: new HttpHeaders({
+                          'Content-Type': 'application/x-www-form-urlencoded', 
+                          'Access-Control-Allow-Origin': '*',
+                          'Access-Control-Allow-Headers': 'X-API-KEY, Origin, X-Requested-With, Content-Type, Accept, Access-Control-Request-Method',
+                          'Access-Control-Allow-Methods': 'GET, POST',
+                          'Allow': 'GET, POST'
+                        })
+                      };
+          
+                      let datos = new HttpParams()
+                      .set('registro', jsonEncriptado);
+                      this.http.post("http://us-central1-campingnet-pi.cloudfunctions.net/registroConfirmacion", datos, httpOptions).subscribe(data => {
+                        console.log(data);
+                        if(data != '1') {
+                          this.errorCorreo = true;
+                          localStorage.setItem('usuarioActual', encriptar(this.usuario));
+                          this.router.navigate(['/registrar']);
+                          setTimeout(() => {
+                            window.location.reload();
+                          }, 1500);
+                        }else {
+                          localStorage.setItem('usuarioActual', encriptar(this.usuario));
+                          this.router.navigate(['/registrar']);
+                          window.location.reload();
+                        }
+                      });
                     }
                   }, error => console.log(error));
                 } else { // Si el campo password2 (confirmación de contraseña) tiene algún error (requerido o no coincide con password)
