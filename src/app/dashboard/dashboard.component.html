@@ -547,7 +547,7 @@
                                                 </div>
                                             </ng-template>
                                             <p *ngIf="errorEdicionReserva" class="text-danger">Hubo un error, inténtelo de nuevo más tarde</p>
-                                            <p *ngIf="!errorFechas" class="text-danger">Este alojamiento no está disponible en esas fechas</p>
+                                            <p *ngIf="errorFechas" class="text-danger">Este alojamiento no está disponible en esas fechas</p>
                                             <p><mat-icon class="icon">info</mat-icon>Si la fecha se cambia se comprobará si está disponible el alojamiento en dicha fecha.</p>
                                             <div class="d-flex justify-content-center mt-2 pb-2">
                                                 <button mat-raised-button color="accent" (click)="edicionReserva(buscado)">Guardar</button>
