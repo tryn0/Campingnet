@@ -646,8 +646,6 @@ export class ReservasComponent implements OnInit {
             };
 
             let jsonEncriptado = encriptar(JSON.stringify(jsonReserva));
-            //console.log(JSON.stringify(jsonReserva))
-            console.log(jsonEncriptado)
 
             const httpOptions = {
               headers: new HttpHeaders({

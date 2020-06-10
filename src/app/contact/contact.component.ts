@@ -64,7 +64,6 @@ export class ContactComponent implements OnInit {
 
             if(this.contactoVal == null){
               // Aqui se manda el correo, todo correcto, FALTA POR ACABAR EL ENVIO DEL FORMULARIO POR CORREO O ALGO 
-              console.log(this.contacto.value);
               this.contactoVal = true;
 
               let jsonReserva = {
@@ -94,7 +93,6 @@ export class ContactComponent implements OnInit {
               let datos = new HttpParams()
               .set('contacto', jsonEncriptado);
               this.http.post("http://us-central1-campingnet-pi.cloudfunctions.net/contacto", datos, httpOptions).subscribe(data => {
-                console.log(data);
                 if(data != '1') {
                   this.errorCorreo = true;
                   setTimeout(()=>{ // Redireccion al cabo de 3 segundos

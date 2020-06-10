@@ -143,7 +143,6 @@ export class RegistrarComponent implements OnInit {
                       };
           
                       let jsonEncriptado = encriptar(JSON.stringify(jsonReserva));
-                      console.log(jsonEncriptado)
           
                       const httpOptions = {
                         headers: new HttpHeaders({
@@ -158,7 +157,6 @@ export class RegistrarComponent implements OnInit {
                       let datos = new HttpParams()
                       .set('registro', jsonEncriptado);
                       this.http.post("http://us-central1-campingnet-pi.cloudfunctions.net/registroConfirmacion", datos, httpOptions).subscribe(data => {
-                        console.log(data);
                         if(data != '1') {
                           this.errorCorreo = true;
                           localStorage.setItem('usuarioActual', encriptar(this.usuario));
