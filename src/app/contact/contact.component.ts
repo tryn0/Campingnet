@@ -78,7 +78,6 @@ export class ContactComponent implements OnInit {
               };
   
               let jsonEncriptado = encriptar(JSON.stringify(jsonReserva));
-              console.log(jsonEncriptado)
   
               const httpOptions = {
                 headers: new HttpHeaders({
