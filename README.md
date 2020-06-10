@@ -179,6 +179,7 @@ Para poder usar la web app con total seguridad sugiero cambiar las claves secret
 ```
 Campingnet/src/app/crypto-storage.ts
 ```
+```
 Campingnet/functions/index.js
 ```
 
