@@ -78,6 +78,29 @@ exports.registroConfirmacion = functions.https.onRequest((req, res) => {
     });
 });
 
-/**
- * Crear funciones para contacto y para el registro
- */
+exports.contacto = functions.https.onRequest((req, res) => {
+    cors(req, res, () => {
+        res.setHeader('Access-Control-Allow-Origin', '*');
+        res.setHeader('Access-Control-Allow-Methods', 'GET, POST');
+        const datos = (req.body.contacto).replace(/\s/g, "+");
+        const json = JSON.parse(JSON.parse(crypto.AES.decrypt(datos.toString(), 'Pi7@').toString(crypto.enc.Utf8)));
+        const mailOptions = {
+            from: `${json.persona.nombre} <${json.persona.email}>`,
+            to: 'guillermop.aragon@gmail.com',
+            subject: `Contacto de ${json.persona.nombre}`,
+            html:
+            `<div>
+                <p>La persona que contactó es: ${json.persona.nombre}</p>
+                <p>Con teléfono móvil: ${json.persona.telefono}</p>
+                <p>Y el mensaje es:</p>
+                <p>${json.datos.mensaje}</p>
+            </div>`,
+        };
+        return transporter.sendMail(mailOptions, (err, info) => {
+            if(err) {
+                return res.send(err.toString());
+            }
+            return res.status(200).send('1');
+        });
+    });
+});

@@ -6,6 +6,8 @@ Aplicación web desarrollada en Angular para reservar alojamiento en un camping.
 La vista de la app web tiene bootstrap y módulos de Angular (Flex-Layout, Angular Material, moment e Ignite-UI)  
 La comunicación con la base de datos se hace a través de PHP.
 
+Para los automails de aviso de reserva, registro y de contacto he usado Firebase, concretamente su apartado de Cloud Functions, no es más que unas funciones desplegadas en la nube y junto con los módulos nodemailer y cors es capaz de enviar los emails.
+
 ## Creación del proyecto
 Para crear el proyecto seguí estos pasos:  
 + Abrí una terminal NodeJS y ejecuté: 
@@ -54,6 +56,12 @@ Para la paginación usé NGX-Pagination:
 npm install ngx-pagination --save
 ```
 
+Para los automails uso firebase (tools y functions):
+```
+npm install -g firebase-tools
+```
+[Tutorial seguido para empezar a crear las funciones](https://medium.com/@edigleyssonsilva/cloud-functions-for-firebase-sending-e-mail-1f2631d1022e)
+
 Y con este último ya estarían todas las dependencias externas instaladas.
 
 ## Proceso de instalación
@@ -84,6 +92,7 @@ Este proyecto ha sido creado con:
 - [Moment](https://momentjs.com/) versión 2.25.1
 - [CryptoJS](https://github.com/brix/crypto-js) versión 4.0.0
 - [NGX-Pagination](https://github.com/michaelbromley/ngx-pagination) versión 5.0.0 [NGX-Pagination en npmjs.com](https://www.npmjs.com/package/ngx-pagination)
+- [Firebase](https://firebase.google.com/?hl=es)
 
 
 ## Errores conocidos y sus soluciones
