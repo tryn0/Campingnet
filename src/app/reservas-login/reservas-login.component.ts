@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { FormBuilder, FormGroup, Validators, FormControl, ValidationErrors } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Usuario } from '../usuario/usuario';
 

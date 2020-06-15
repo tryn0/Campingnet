@@ -1,6 +1,6 @@
 import { Component, OnInit, Inject } from '@angular/core';
-import { HttpClient, HttpParams } from '@angular/common/http';
-import { FormBuilder, FormGroup, Validators, FormControl, ValidationErrors } from '@angular/forms';
+import { HttpClient } from '@angular/common/http';
+import { FormBuilder, FormGroup, Validators } from '@angular/forms';
 import { MatDialogRef, MAT_DIALOG_DATA } from '@angular/material/dialog';
 import { Usuario } from '../usuario/usuario';
 
@@ -125,80 +125,55 @@ export class ReservasRegistrarComponent implements OnInit {
 
                   //Envío de variables a archivo PHP
                   this.http.post < any > ('http://34.206.59.221/registro-usuario.php', fd).subscribe(data => {
-                    //console.log(data);
                      if(data == 'email'){ //Si no se pudo registrar el usuario (dni, telefono o email repetido u otro error ajeno a los datos)
-
                       this.registrado = 'false';
                       this.errorEmail = true;
-                      //console.log(data);
-
                     } else if(data == 'dni'){
-
                       this.registrado = 'false';
                       this.errorDni = true;
-                      //console.log(data);
-
                     } else if(data == 'alias'){
-
                       this.registrado = 'false';
                       this.errorAlias = true;
-                      //console.log(data);
-
                     }else{ // El registro ha ido bien (no existia en la BD un usuario con mismo DNI, teléfono o email)
-
                       // Creacion del usuario, sino hace falta eliminar esta parte, aunque lo tengo para mostrar el nombre de Bienvenida y crear la sesión de sesion iniciada
                       this.usuario = new Usuario(data[0].idUsuario, this.registro.get('email').value, dniUser, nombreUser, 'cliente', this.registro.get('telefono').value, this.registro.get('alias').value);
-
                       this.registrado = 'true';
                       this.errorEmail = null;
                       this.errorDni = null;
                       this.errorAlias = null;
-        
                       localStorage.setItem('usuarioActual',encriptar(this.usuario));
-
                       this.dialogRef.close(this.usuario);
-  
                     }
                   }, error => console.log(error));
                 } else { // Si el campo password2 (confirmación de contraseña) tiene algún error (requerido o no coincide con password)
                   this.pass2Val = false;
-                  //console.log('pass2 falla');
                 }
               } else { //Si el campo password (contraseña) tiene algún error (requerido o no contiene carácteres necesarios)
                 this.passVal = false;
-                //console.log('pass falla');
               }
             } else { //Si el campo email tiene algún error (requerido o patrón) patrón aun no funciona
               this.emailVal = false;
-              //console.log('email falla');
             }
           } else { //Si el campo teléfono tiene algún error (requerido o patrón [9 dígitos, empieza por 6 o 7])
             this.telVal = false;
-            //console.log('tel falla');
           }
         } else { //Si el campo nombre y apellidos tiene algún error (requerido)
           this.nombreVal = false;
-          //console.log('nombre falla');
         }
       } else { //Si el campo DNI tiene algún error (requerido y 8 dígitos con una letra al final)
         this.dniVal = false;
-        //console.log('dni falla');
       }
     }else { // Si el campo alias tiene algún error (requerido)
       this.aliasVal = false;
-      //console.log('alias falla);
     }
   }
-
 
   ngOnInit(): void {
     if(localStorage.getItem('usuarioActual') != null){
       this.userdata = desencriptar(localStorage.getItem('usuarioActual'));
     }
     
-
     if(this.userdata != null){
-      //this.router.navigate(['/']);
       window.history.back();
     }
   }
