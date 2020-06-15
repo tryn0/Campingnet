@@ -105,6 +105,7 @@ export class ReservasUsuarioComponent implements OnInit {
             }
             element.totalPagar = totalPagar;
           });
+          console.log(this.reservas)
         }else{
           this.reservas = 'NO';
         }

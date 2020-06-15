@@ -32,11 +32,14 @@
                             </ng-template>
                         </div>
                         <div class="col-6 mr-0">
-                            <div *ngIf="reserva.ServiciosExtras && reserva.ServiciosExtras.length > 0; else servicios">
+                            <div *ngIf="reserva.serviciosExtras; else servicios">
                                 <p>Servicios extras:</p>
                                 <div class="text-center">
-                                    <div *ngFor="let servicio of reserva.ServiciosExtras">
-                                        <p>{{servicio.nombre}}</p>
+                                    <div *ngFor="let servicio of reserva.serviciosExtras">
+                                        <p *ngIf="servicio.idServicio != '1'; else electricidad">{{servicio.nombre}}: {{servicio.cantidad}}</p>
+                                        <ng-template #electricidad>
+                                            <p >{{servicio.nombre}}</p>
+                                        </ng-template>
                                     </div>
                                 </div>
                             </div>
