@@ -1,0 +1,68 @@
+<div class="container" *ngIf="reservas != 'NO'; else noReservas1">
+    <div class="column" *ngIf="reservas?.length > 0; else noReservas">
+        <div *ngFor="let reserva of reservas | paginate: { id: 'pagination', itemsPerPage: 5, currentPage: p, totalItems: reservas?.length };">
+            <mat-card class="mt-5 mb-5">
+                <mat-card-header>
+                    <mat-card-title>ID reserva: {{reserva.idReserva}}</mat-card-title>
+                    <mat-card-subtitle>Fechas: {{reserva.fecha_entrada}} hasta {{reserva.fecha_salida}}</mat-card-subtitle>
+                </mat-card-header>
+                <div class="d-flex justify-content-center mt-4">
+                    <img *ngIf="reserva.caracteristicas.tipo == 'Bungalow'" class="rounded" mat-card-image src="../../assets/images/alojamientos/bungalow1.jpg" alt="Foto del bungalow">
+                    <img *ngIf="reserva.caracteristicas.tipo == 'Parcela'" mat-card-image src="../../assets/images/alojamientos/parcela1.jpg" alt="Foto de la parcela">
+                </div>
+                <mat-card-content class="mt-3">
+                    <div class="col-12 row">
+                        <div class="col-6 ml-0">
+                            <p>Tipo de alojamiento: {{reserva.caracteristicas.tipo}}</p>
+                            <p>Número de <span *ngIf="reserva.caracteristicas.tipo == 'bungalow'; else parcela">bungalow</span>: {{reserva.caracteristicas.numeroAlojamiento}}</p>
+                            <ng-template #parcela>parcela</ng-template>
+                            <div *ngIf="reserva.caracteristicas.tipo == 'Bungalow'; else alojamientoParecla">
+                                <p>Características del bungalow:</p>
+                                <div>
+                                    <p>Habitaciones: {{reserva.caracteristicas.habitaciones}}</p>
+                                    <p>Máximo de personas: {{reserva.caracteristicas.maximo_personas}}</p>
+                                </div>
+                            </div>
+                            <ng-template #alojamientoParecla>
+                                <p>Características de la parcela:</p>
+                                <div>
+                                    <p>Dimensiones: {{reserva.caracteristicas.dimension}}</p>
+                                    <p>Sombra: {{reserva.caracteristicas.sombra}}</p>
+                                </div>
+                            </ng-template>
+                        </div>
+                        <div class="col-6 mr-0">
+                            <div *ngIf="reserva.ServiciosExtras && reserva.ServiciosExtras.length > 0; else servicios">
+                                <p>Servicios extras:</p>
+                                <div class="text-center">
+                                    <div *ngFor="let servicio of reserva.ServiciosExtras">
+                                        <p>{{servicio.nombre}}</p>
+                                    </div>
+                                </div>
+                            </div>
+                            <ng-template #servicios>
+                                <div class="text-center">
+                                    <p>Ningún servicio extra contratado</p>
+                                </div>
+                            </ng-template>
+                        </div>
+                        <p class="text-center col-12">Total a pagar al salir del camping: {{(reserva.totalPagar).toFixed(2)}}€</p>
+                    </div>
+                </mat-card-content>
+            </mat-card>
+        </div>
+        <!-- Paginación de las reservas -->
+        <pagination-controls class="text-center" [id]="'pagination'" (pageChange)="onChangePage($event)" autoHide="true" nextLabel="Siguiente" previousLabel="Anterior"></pagination-controls>
+    </div>
+    <ng-template #noReservas>
+        <div class="d-flex justify-content-center mt-5">
+            <mat-spinner></mat-spinner>
+        </div>
+        <p class="text-center">Cargando reservas...</p>
+    </ng-template>
+</div>
+<ng-template #noReservas1>
+    <div class="d-flex justify-content-center mt-5">
+        <p>Aún no ha realizado ninguna reserva.</p>
+    </div>
+</ng-template>

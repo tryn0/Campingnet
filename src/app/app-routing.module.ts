@@ -6,6 +6,7 @@ import { HomeComponent } from './home/home.component';
 import { ReservasComponent } from './reservas/reservas.component';
 import { AboutComponent } from './about/about.component';
 import { ContactComponent } from './contact/contact.component';
+import { ReservasUsuarioComponent } from './reservas-usuario/reservas-usuario.component'
 import { LoginComponent } from './login/login.component';
 import { RegistrarComponent } from './registrar/registrar.component';
 import { AlojamientoComponent } from './alojamiento/alojamiento.component';
@@ -28,6 +29,7 @@ const routes: Routes = [
   { path: 'alojamiento/parcelas', component: AlojamientoComponent },
   { path: 'alojamiento/bungalows/:numero', component: AlojamientoComponent },
   { path: 'alojamiento/parcelas/:numero', component: AlojamientoComponent },
+  { path: 'reserva-usuario', component: ReservasUsuarioComponent },
   { path: 'controlpanel', component: PaneldeControlComponent },
   { path: 'dashboard', component: DashboardComponent },
   { path: 'dashboard/reservas', component: DashboardComponent },

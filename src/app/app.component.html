@@ -21,9 +21,36 @@
       <a style="text-decoration: none; color: inherit;" href="/reservas"><button class="botonInicio" mat-button (click)="sidenav.close()"><mat-icon fxShow="true" fxHide.sm="true" class="icon">store</mat-icon>Reservar</button></a>
       <button class="botonInicio" mat-button [matMenuTriggerFor]="info"><mat-icon fxShow="true" fxHide.sm="true" class="icon">info</mat-icon>Información</button>
       <mat-menu #info="matMenu" class="text-center">
-        <button class="botonInicio" mat-button (click)="sidenav.close()" [routerLink]="'/alojamiento'"><mat-icon fxShow="true" fxHide.sm="true" class="icon">local_hotel</mat-icon>Alojamientos</button><br>
-        <button class="botonInicio" mat-button (click)="sidenav.close()" [routerLink]="'/acerca'"><mat-icon fxShow="true" fxHide.sm="true" class="icon">business</mat-icon>Acerca</button><br>
-        <button class="botonInicio" mat-button (click)="sidenav.close()" [routerLink]="'/contacto'"><mat-icon fxShow="true" fxHide.sm="true" class="icon">email</mat-icon>Contacto</button>
+        <button class="botonInicio w-100" mat-button (click)="sidenav.close()" [routerLink]="'/alojamiento'">
+          <div class="col-10 row">
+            <div class="col-3" fxShow="true" fxHide.sm="true">
+              <mat-icon class="align-middle">local_hotel</mat-icon>
+            </div>
+            <div class="col-7">
+              <span class="align-middle">Alojamientos</span>
+            </div>
+          </div>
+        </button><br>
+        <button class="botonInicio w-100" mat-button (click)="sidenav.close()" [routerLink]="'/acerca'">
+          <div class="col-10 row">
+            <div class="col-3" fxShow="true" fxHide.sm="true">
+              <mat-icon class="align-middle">business</mat-icon>
+            </div>
+            <div class="col-7">
+              <span class="align-middle">Acerca</span>
+            </div>
+          </div>
+        </button><br>
+        <button class="botonInicio w-100" mat-button (click)="sidenav.close()" [routerLink]="'/contacto'">
+          <div class="col-10 row">
+            <div class="col-3" fxShow="true" fxHide.sm="true">
+              <mat-icon class="align-middle">email</mat-icon>
+            </div>
+            <div class="col-7">
+              <span class="align-middle">Contacto</span>
+            </div>
+          </div>
+        </button>
       </mat-menu>
     </div>
     <!-- Botón para iniciar sesión, registrarse y mensaje bienvenida, link para cerrar sesión y link para ir al panel de control -->
@@ -39,10 +66,43 @@
           <!-- Si el usuario con sesión iniciada no es un trabajador (trabajador o administrador) aparecerá la opción Ajustes, sino solo aparecerá Panel de control -->
           <div style="float: right;">&nbsp;
             <small id="ajustes" mat-button [matMenuTriggerFor]="ajustes">Ajustes<mat-icon fxShow="true" fxHide.sm="true" class="icon">arrow_drop_down</mat-icon></small>&nbsp;
-            <mat-menu #ajustes="matMenu" class="text-center">
-              <button class="botonInicio" mat-button (click)="sidenav.close()" [routerLink]="'/controlpanel'"><mat-icon fxShow="true" fxHide.sm="true" class="icon">dashboard</mat-icon>Panel de control</button><br>
-              <button class="botonInicio" mat-button (click)="sidenav.close()" [routerLink]="'/dashboard'" *ngIf="usuarioActual != null && usuarioActual.rol != 'cliente'" ><mat-icon fxShow="true" fxHide.sm="true" class="icon">supervisor_account</mat-icon>Administración</button><br> <!-- Dashboard TRABAJADOR-->
-              <button class="botonInicio" mat-button (click)="logOff()"><mat-icon fxShow="true" fxHide.sm="true" class="icon">input</mat-icon>Cerrar sesión</button>
+            <mat-menu #ajustes="matMenu">
+              <button class="botonInicio w-100" mat-button (click)="sidenav.close()" [routerLink]="'/controlpanel'">
+                <div class="col-10 row">
+                  <div class="col-3" fxShow="true" fxHide.sm="true"><mat-icon class="align-middle">dashboard</mat-icon></div>
+                  <div class="col-7"><span class="align-middle">Panel de control</span></div>
+                </div>
+              </button><br>
+              <button class="botonInicio w-100" mat-button (click)="sidenav.close()" [routerLink]="'/reserva-usuario'">
+                <div class="col-10 row">
+                  <div class="col-3" fxShow="true" fxHide.sm="true">
+                    <mat-icon class="align-middle">book</mat-icon>
+                  </div>
+                  <div class="col-7">
+                    <span class="align-middle">Ver reservas</span>
+                  </div>
+                </div>
+              </button><br>
+              <button class="botonInicio w-100" mat-button (click)="sidenav.close()" [routerLink]="'/dashboard'" *ngIf="usuarioActual != null && usuarioActual.rol != 'cliente'">
+                <div class="col-10 row">
+                  <div class="col-3" fxShow="true" fxHide.sm="true">
+                    <mat-icon class="align-middle">supervisor_account</mat-icon>
+                  </div>
+                  <div class="col-7">
+                    <span class="align-middle">Administración</span>
+                  </div>
+                </div>
+              </button><br> <!-- Dashboard TRABAJADOR-->
+              <button class="botonInicio w-100" mat-button (click)="logOff()">
+                <div class="col-10 row">
+                  <div class="col-3" fxShow="true" fxHide.sm="true">
+                    <mat-icon class="align-middle">input</mat-icon> 
+                  </div>
+                  <div class="col-7">
+                    <span class="align-middle">Cerrar sesión</span>
+                  </div>
+                </div>
+              </button>
             </mat-menu>
           </div>
         </div>
@@ -72,6 +132,7 @@
           <p class="px-2 mt-0 mb-0">Bienvenido {{usuarioActual.alias}}</p>
           <button mat-button (click)="logOff()">Cerrar sesión</button><br>
           <button mat-button (click)="sidenav.toggle()" [routerLink]="'/controlpanel'">Panel de control</button><br>
+          <button mat-button (click)="sidenav.toggle()" [routerLink]="'/reserva-usuario'">Ver reservas</button><br>
           <button *ngIf="usuarioActual.rol != 'cliente'" mat-button (click)="sidenav.toggle()" [routerLink]="'/dashboard'">Administración</button>
           <br><br>
         </div>

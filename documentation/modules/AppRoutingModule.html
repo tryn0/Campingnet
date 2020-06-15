@@ -78,6 +78,7 @@ import { HomeComponent } from &#x27;./home/home.component&#x27;;
 import { ReservasComponent } from &#x27;./reservas/reservas.component&#x27;;
 import { AboutComponent } from &#x27;./about/about.component&#x27;;
 import { ContactComponent } from &#x27;./contact/contact.component&#x27;;
+import { ReservasUsuarioComponent } from &#x27;./reservas-usuario/reservas-usuario.component&#x27;
 import { LoginComponent } from &#x27;./login/login.component&#x27;;
 import { RegistrarComponent } from &#x27;./registrar/registrar.component&#x27;;
 import { AlojamientoComponent } from &#x27;./alojamiento/alojamiento.component&#x27;;
@@ -100,6 +101,7 @@ const routes: Routes &#x3D; [
   { path: &#x27;alojamiento/parcelas&#x27;, component: AlojamientoComponent },
   { path: &#x27;alojamiento/bungalows/:numero&#x27;, component: AlojamientoComponent },
   { path: &#x27;alojamiento/parcelas/:numero&#x27;, component: AlojamientoComponent },
+  { path: &#x27;reserva-usuario&#x27;, component: ReservasUsuarioComponent },
   { path: &#x27;controlpanel&#x27;, component: PaneldeControlComponent },
   { path: &#x27;dashboard&#x27;, component: DashboardComponent },
   { path: &#x27;dashboard/reservas&#x27;, component: DashboardComponent },
@@ -122,8 +124,7 @@ const routes: Routes &#x3D; [
   imports: [RouterModule.forRoot(routes, {onSameUrlNavigation: &#x27;reload&#x27;})],
   exports: [RouterModule]
 })
-export class AppRoutingModule { }
-</code></pre>
+export class AppRoutingModule { }</code></pre>
     </div>
 </div>
 

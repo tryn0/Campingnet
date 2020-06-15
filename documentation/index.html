@@ -34,6 +34,7 @@
 <p>Proyecto Integrado de 2º DAW</p>
 <h2 id="¿en-qué-consiste">¿En qué consiste?</h2>
 <p>Aplicación web desarrollada en Angular para reservar alojamiento en un camping.<br>La vista de la app web tiene bootstrap y módulos de Angular (Flex-Layout, Angular Material, moment e Ignite-UI)<br>La comunicación con la base de datos se hace a través de PHP.</p>
+<p>Para los automails de aviso de reserva, registro y de contacto he usado Firebase, concretamente su apartado de Cloud Functions, no es más que unas funciones desplegadas en la nube y junto con los módulos nodemailer y cors es capaz de enviar los emails.</p>
 <h2 id="creación-del-proyecto">Creación del proyecto</h2>
 <p>Para crear el proyecto seguí estos pasos:  </p>
 <ul>
@@ -63,11 +64,17 @@
 <div><pre class="line-numbers"><code class="language-none">npm i moment --save</code></pre></div><p>Para la encriptación y decriptación de datos:</p>
 <div><pre class="line-numbers"><code class="language-none">npm install crypto-js</code></pre></div><p><a href="https://stackoverflow.com/questions/53478860/how-to-encrypt-and-decrypt-in-angular-6?noredirect=1&amp;lq=1">Mini tutorial de cómo implementarlo en el proyecto</a></p>
 <p>Para la paginación usé NGX-Pagination:</p>
-<div><pre class="line-numbers"><code class="language-none">npm install ngx-pagination --save</code></pre></div><p>Y con este último ya estarían todas las dependencias externas instaladas.</p>
+<div><pre class="line-numbers"><code class="language-none">npm install ngx-pagination --save</code></pre></div><p>Para los automails uso firebase (tools y functions):</p>
+<div><pre class="line-numbers"><code class="language-none">npm install -g firebase-tools</code></pre></div><p><a href="https://medium.com/@edigleyssonsilva/cloud-functions-for-firebase-sending-e-mail-1f2631d1022e">Tutorial seguido para empezar a crear las funciones</a></p>
+<p>Y con este último ya estarían todas las dependencias externas instaladas.</p>
 <h2 id="proceso-de-instalación">Proceso de instalación</h2>
 <p>Para el proceso de instalación o importación de este proyecto deberá tener instalado nodeJS y npm.<br>Una vez se tengan instalar Angular:</p>
 <div><pre class="line-numbers"><code class="language-none">npm install -g &#64;angular/cli</code></pre></div><p>Clonar el repositorio donde se quiera tener el proyecto. En la raíz del proyecto ejecutar a través de una terminal:</p>
 <div><pre class="line-numbers"><code class="language-none">npm install</code></pre></div><p>Este comando instalará todas las dependencias del proyecto en la carpeta node_modules.</p>
+<p>La carpeta functions no hace falta, esta carpeta es sencillamente el lugar donde están las cloud functions, pero como ya están desplegadas en la nube no hace falta dicha carpeta, la tengo en el repositorio como parte del código fuente.
+Aún así para desplegar las cloud functions se tiene que estar en la raíz de functions y ejecutar:</p>
+<div><pre class="line-numbers"><code class="language-none">firebase deploy</code></pre></div><p>Aunque previamente se tiene que ejecutar:</p>
+<div><pre class="line-numbers"><code class="language-none">firebase login</code></pre></div><p>E identificarse en la web de firebase, como esas cloud functions están en &quot;mi nube&quot; nadie más podrá modificarlas.</p>
 <h2 id="despliegue-de-la-web-app">Despliegue de la web app</h2>
 <p>Una vez se hayan instalado las dependencias, se compila y lanza la app ejecutando en la raíz del proyecto a través de una terminal:</p>
 <div><pre class="line-numbers"><code class="language-none">ng serve</code></pre></div><p>Navegar a la URL <code>http://localhost:4200/</code> y aparecerá la web app recargada automáticamente.</p>
@@ -81,6 +88,7 @@
 <li><a href="https://momentjs.com/">Moment</a> versión 2.25.1</li>
 <li><a href="https://github.com/brix/crypto-js">CryptoJS</a> versión 4.0.0</li>
 <li><a href="https://github.com/michaelbromley/ngx-pagination">NGX-Pagination</a> versión 5.0.0 <a href="https://www.npmjs.com/package/ngx-pagination">NGX-Pagination en npmjs.com</a></li>
+<li><a href="https://firebase.google.com/?hl=es">Firebase</a></li>
 </ul>
 <h2 id="errores-conocidos-y-sus-soluciones">Errores conocidos y sus soluciones</h2>
 <p>A lo largo del desarrollo del proyecto han surgido varios errores, los explicaré aquí junto a las soluciones que me han servido.</p>
@@ -105,6 +113,9 @@ Para ello a la hora de crear la máquina AWS elegí 15Gb de espacio, en vez de l
 <div><pre class="line-numbers"><code class="language-none">// Native crypto import via require (NodeJS)</code></pre></div><p>Cambiar:  </p>
 <div><pre class="line-numbers"><code class="language-none">crypto = require(&#39;crypto&#39;);</code></pre></div><p>por</p>
 <div><pre class="line-numbers"><code class="language-none">crypto = require(&#39;crypto-js&#39;);</code></pre></div><p>Yo copié la línea, y modifiqué la copia comentando la original, por si en un futuro diese problemas.  </p>
+<h3 id="seguridad">Seguridad</h3>
+<p>Para poder usar la web app con total seguridad sugiero cambiar las claves secretas (&#39;Pi7@&#39;) de encriptación y desencriptación ubicadas en:</p>
+<div><pre class="line-numbers"><code class="language-none">Campingnet/src/app/crypto-storage.ts</code></pre></div><div><pre class="line-numbers"><code class="language-none">Campingnet/functions/index.js</code></pre></div><p>Yo dejaré esas mismas claves como modo de muestra, pero en mi web app desplegada usaré otras.</p>
 <hr>
 <p>Este proyecto no puede copiarse y/o usarse sin el consentimiento de su creador, <a href="https://github.com/tryn0">tryn0</a><br>&copy;tryn0 2020</p>
 

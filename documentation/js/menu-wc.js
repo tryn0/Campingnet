@@ -55,13 +55,13 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                 <a href="modules/AppModule.html" data-type="entity-link">AppModule</a>
                                     <li class="chapter inner">
                                         <div class="simple menu-toggler" data-toggle="collapse" ${ isNormalMode ?
-                                            'data-target="#components-links-module-AppModule-c84c11adf1c6816eab6e307ae6f3481d"' : 'data-target="#xs-components-links-module-AppModule-c84c11adf1c6816eab6e307ae6f3481d"' }>
+                                            'data-target="#components-links-module-AppModule-3dd38d25ad9148c0ac6e975a4e0601e7"' : 'data-target="#xs-components-links-module-AppModule-3dd38d25ad9148c0ac6e975a4e0601e7"' }>
                                             <span class="icon ion-md-cog"></span>
                                             <span>Components</span>
                                             <span class="icon ion-ios-arrow-down"></span>
                                         </div>
-                                        <ul class="links collapse" ${ isNormalMode ? 'id="components-links-module-AppModule-c84c11adf1c6816eab6e307ae6f3481d"' :
-                                            'id="xs-components-links-module-AppModule-c84c11adf1c6816eab6e307ae6f3481d"' }>
+                                        <ul class="links collapse" ${ isNormalMode ? 'id="components-links-module-AppModule-3dd38d25ad9148c0ac6e975a4e0601e7"' :
+                                            'id="xs-components-links-module-AppModule-3dd38d25ad9148c0ac6e975a4e0601e7"' }>
                                             <li class="link">
                                                 <a href="components/AboutComponent.html"
                                                     data-type="entity-link" data-context="sub-entity" data-context-id="modules">AboutComponent</a>
@@ -113,6 +113,10 @@ customElements.define('compodoc-menu', class extends HTMLElement {
                                             <li class="link">
                                                 <a href="components/ReservasRegistrarComponent.html"
                                                     data-type="entity-link" data-context="sub-entity" data-context-id="modules">ReservasRegistrarComponent</a>
+                                            </li>
+                                            <li class="link">
+                                                <a href="components/ReservasUsuarioComponent.html"
+                                                    data-type="entity-link" data-context="sub-entity" data-context-id="modules">ReservasUsuarioComponent</a>
                                             </li>
                                             <li class="link">
                                                 <a href="components/UsuarioComponent.html"
