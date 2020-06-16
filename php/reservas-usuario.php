@@ -16,8 +16,8 @@
     $idUsuario = substr(json_encode($_POST['idUsuario']),1,-1);
     $hoy = date('Y-m-d');
 
-    $sql = "SELECT * FROM reserva WHERE idUsuario = $idUsuario";
-    //$sql = "SELECT * FROM reserva WHERE idUsuario = $idUsuario AND fecha_entrada > '$hoy'";
+    //$sql = "SELECT * FROM reserva WHERE idUsuario = $idUsuario";
+    $sql = "SELECT * FROM reserva WHERE idUsuario = $idUsuario AND fecha_entrada > '$hoy'";
     $reservas = consulta($conn, $sql);
 
     for ($i=0; $i < count($reservas); $i++) {
