@@ -183,6 +183,23 @@ Campingnet/src/app/crypto-storage.ts
 Campingnet/functions/index.js
 ```
 
+### Documentación
+Para la generación de la documentación he usado compodoc para el proyecto de Angular y phpDocumentor para el archivo php bd.php (el único con funciones)
+
+Instalación de [phpDocumentor](https://docs.phpdoc.org/latest/getting-started/installing.html) y [Compodoc](https://compodoc.app/guides/installation.html).
+
+Tras la correcta comentación de todos los archivos, ver [phpDocumentor](https://docs.phpdoc.org/latest/references/phpdoc/basic-syntax.html) y [Compodoc](https://compodoc.app/guides/comments.html), se ejecutan respectivamente los comandos:
+```
+$ php phpDocumentor.phar -f bd.php -t /carpetaSalida
+```
+-f para un solo archivo seguido del archivo, y para un directorio (proyecto completo en php) -d seguido del directorio.
+
+```
+npm run compodoc
+```
+
+Para visualizar las documentaciones visitar el branch de este proyecto llamado [documentacion](https://github.com/tryn0/Campingnet/tree/documentacion)
+
 Yo dejaré esas mismas claves como modo de muestra, pero en mi web app desplegada usaré otras.
 
 ---
