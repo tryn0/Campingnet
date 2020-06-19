@@ -117,8 +117,32 @@
       <div style="float: right;">&nbsp;
         <small id="ajustes" mat-button [matMenuTriggerFor]="ajustes">Ajustes<mat-icon fxShow="true" fxHide.sm="true" class="icon">arrow_drop_down</mat-icon></small>&nbsp;
         <mat-menu #ajustes="matMenu" class="text-center">
-          <button class="botonInicio" mat-button (click)="sidenav.close()" [routerLink]="'/controlpanel'"><mat-icon fxShow="true" fxHide.sm="true" class="icon">dashboard</mat-icon>Panel de control</button><br>
-          <button  class="botonInicio" mat-button (click)="logOff()"><mat-icon fxShow="true" fxHide.sm="true" class="icon">input</mat-icon>Cerrar sesión</button>
+          <button class="botonInicio w-100" mat-button (click)="sidenav.close()" [routerLink]="'/controlpanel'">
+            <div class="col-10 row">
+              <div class="col-3" fxShow="true" fxHide.sm="true"><mat-icon class="align-middle">dashboard</mat-icon></div>
+              <div class="col-7"><span class="align-middle">Panel de control</span></div>
+            </div>
+          </button><br>
+          <button class="botonInicio w-100" mat-button (click)="sidenav.close()" [routerLink]="'/reserva-usuario'">
+            <div class="col-10 row">
+              <div class="col-3" fxShow="true" fxHide.sm="true">
+                <mat-icon class="align-middle">book</mat-icon>
+              </div>
+              <div class="col-7">
+                <span class="align-middle">Ver reservas</span>
+              </div>
+            </div>
+          </button><br>
+          <button class="botonInicio w-100" mat-button (click)="logOff()">
+            <div class="col-10 row">
+              <div class="col-3" fxShow="true" fxHide.sm="true">
+                <mat-icon class="align-middle">input</mat-icon> 
+              </div>
+              <div class="col-7">
+                <span class="align-middle">Cerrar sesión</span>
+              </div>
+            </div>
+          </button>
         </mat-menu>
       </div>
     </div>
